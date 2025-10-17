@@ -1,6 +1,13 @@
 "use client";
 import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
-import "./styles/globals.css";
+import "./globals.css";
+import { Space_Grotesk } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"], // required
+  weight: ["400", "500", "700"], // choose weights you need
+  variable: "--font-space-grotesk", // optional custom CSS variable
+});
 
 const theme = createTheme({
   palette: {
@@ -15,7 +22,7 @@ const theme = createTheme({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={spaceGrotesk.variable}>
       <body>
         <ThemeProvider theme={theme}>
           <CssBaseline /> {/* resets default browser styles */}

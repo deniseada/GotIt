@@ -1,12 +1,132 @@
-.container {
-  padding: 2rem;
-}
-
 .title {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 
-.description {
-  color: #555;
+/* Navigation Bar */
+.navBar {
+  margin: 2em;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+.gotItImage {
+  display: block;
+  height: 36px;
+  width: auto;
+}
+
+.icon {
+  display: block;
+  margin-right: 20px;
+  width: auto;
+}
+
+.settingsBtn {
+  background: #fff;
+  border: 1px solid #e9e9ea;
+  padding: 0.45rem;
+  border-radius: 18px;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.gearImg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.settingsLabel {
+  margin-left: 0.5rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Tool Bar container */
+
+.toolBar {
+  background-color: #efefef;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+/* toolbar icon layout */
+.toolbarIcons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.toolbarIcons .toolButton {
+  background: transparent;
+  border: none;
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.toolbarIcons .toolButton img {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+/* PDF Placeholder */
+.pdfPlaceholder {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem 0;
+}
+
+.pdfBox {
+  width: 640px;
+  height: 360px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  background: linear-gradient(180deg, #fff, #fafafa);
+}
+
+/* Margins */
+
+.viewerArea {
+  background-color: #4a445980;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.pdfBoxLarge {
+  width: 800px;
+  height: 520px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
 }
