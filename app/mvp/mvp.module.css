@@ -18,6 +18,11 @@
   display: flex;
   align-items: center;
 }
+.brandText {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
 
 .gotItImage {
   display: block;
@@ -58,36 +63,60 @@
 /* Tool Bar container */
 
 .toolBar {
+  width: 100vw;
+  position: sticky;
+  top: 64px;
   background-color: #efefef;
-  padding: 1rem 0;
   border-bottom: 1px solid #e6e6e6;
 }
 
-/* toolbar icon layout */
-.toolbarIcons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+.toolbarInner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 6px 20px;
 }
 
-.toolbarIcons .toolButton {
+.toolbarLeft,
+.toolbarCenter,
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbarLeft {
+  flex: 0 0 auto;
+}
+.toolbarCenter {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+.toolbarRight {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.toolButton {
   background: transparent;
   border: none;
-  width: 40px;
-  height: 36px;
-  padding: 0;
+  padding: 6px;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 }
-.toolbarIcons .toolButton img {
-  width: 32px;
-  height: 32px;
+
+.toolButton:hover {
+  background: rgba(82, 42, 112, 0.06);
+}
+
+.toolbarIcon {
+  width: 25px;
+  height: 25px;
   display: block;
 }
 
@@ -112,7 +141,7 @@
 /* Margins */
 
 .viewerArea {
-  background-color: #4a445980;
+  background-color: #522a7080;
   display: flex;
   justify-content: center;
   padding: 2rem 0;
@@ -122,7 +151,6 @@
   width: 800px;
   height: 520px;
   border-radius: 6px;
-  border: 1px solid #e6e6e6;
   background: #fff;
   box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
   display: flex;

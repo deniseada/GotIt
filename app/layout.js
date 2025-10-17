@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={spaceGrotesk.variable}>
       <body>
         <ThemeProvider theme={theme}>
-          <CssBaseline /> {/* resets default browser styles */}
+          <CssBaseline />
           {children}
         </ThemeProvider>
       </body>

@@ -13,13 +13,7 @@ export default function MVPPage() {
               width="200"
               height="36"
             />
-            <img
-              src="/icons/doc.svg"
-              className={styles.gotItImage}
-              alt="Got It Logo"
-              width="200"
-              height="36"
-            />
+            <span className={styles.brandText}>Doc Title</span>
           </div>
         </div>
 
@@ -40,88 +34,52 @@ export default function MVPPage() {
       </div>
 
       <div className={styles.toolBar}>
-        <div className={styles.toolbarIcons}>
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/sideBarIcon.svg"
-              alt="sidebar"
-              className={styles.toolbarIcon}
-            />
-          </button>
+        <div className={styles.toolbarInner}>
+          <div className={styles.toolbarLeft}>
+            <button className={styles.toolButton}>
+              <img
+                src="/icons/sideBarIcon.svg"
+                className={styles.toolbarIcon}
+              />
+            </button>
 
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/searchIcon.svg"
-              alt="search"
-              className={styles.toolbarIcon}
-            />
-          </button>
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/sideCompareIcon.svg"
-              alt="side compare"
-              className={styles.toolbarIcon}
-            />
-          </button>
+            <button className={styles.toolButton}>
+              <img
+                src="/icons/sideCompareIcon.svg"
+                className={styles.toolbarIcon}
+              />
+            </button>
+            <button className={styles.toolButton}>
+              <img src="/icons/searchIcon.svg" className={styles.toolbarIcon} />
+            </button>
+          </div>
 
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/highlightIcon.svg"
-              alt="highlight"
-              className={styles.toolbarIcon}
-            />
-          </button>
-
-          <button className={styles.toolButton}>
-            <img src="/icons/lineSpaceIcon.svg" alt="line space" />
-          </button>
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/textIcon.svg"
-              alt="text"
-              className={styles.toolbarIcon}
-            />
-          </button>
-
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/drawIcon.svg"
-              alt="draw"
-              className={styles.toolbarIcon}
-            />
-          </button>
-
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/addPicIcon.svg"
-              alt="add picture"
-              className={styles.toolbarIcon}
-            />
-          </button>
-
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/printIcon.svg"
-              alt="print"
-              className={styles.toolbarIcon}
-            />
-          </button>
-
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/downloadIcon.svg"
-              alt="download"
-              className={styles.toolbarIcon}
-            />
-          </button>
-
-          <button className={styles.toolButton}>
-            <img
-              src="/icons/moreIcon.svg"
-              alt="more"
-              className={styles.toolbarIcon}
-            />
-          </button>
+          <div className={styles.toolbarRight}>
+            <button className={styles.toolButton}>
+              <img
+                src="/icons/highlightIcon.svg"
+                className={styles.toolbarIcon}
+              />
+            </button>
+            <button className={styles.toolButton}>
+              <img src="/icons/textIcon.svg" className={styles.toolbarIcon} />
+            </button>
+            <button className={styles.toolButton}>
+              <img src="/icons/addPicIcon.svg" className={styles.toolbarIcon} />
+            </button>
+            <button className={styles.toolButton}>
+              <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />{" "}
+            </button>
+            <button className={styles.toolButton}>
+              <img
+                src="/icons/downloadIcon.svg"
+                className={styles.toolbarIcon}
+              />
+            </button>
+            <button className={styles.toolButton}>
+              <img src="/icons/moreIcon.svg" className={styles.toolbarIcon} />
+            </button>
+          </div>
         </div>
       </div>
 
