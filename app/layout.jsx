@@ -23,7 +23,7 @@ const theme = createTheme({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={spaceGrotesk.variable}>
-      <body>
+      <body style={{ margin: 0 }}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           {children}
@@ -32,7 +32,6 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
 
 // import { Geist, Geist_Mono } from "next/font/google";
 // import "./globals.css";
