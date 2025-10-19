@@ -1,3 +1,12 @@
+// 'use client';
+
+// import * as React from 'react';
+// import DocScreen from '@/components/doc/DocScreen';
+
+// export default function Page() {
+//   return <DocScreen />;
+// }
+
 import styles from "./mvp.module.css";
 
 export default function MVPPage() {
