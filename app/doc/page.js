@@ -1,47 +1,10 @@
-// 'use client';
-
-// import * as React from 'react';
-// import DocScreen from '@/components/doc/DocScreen';
-
-// export default function Page() {
-//   return <DocScreen />;
-// }
-
+import React from "react";
 import DocScreen from "./components/DocScreen";
 import styles from "./mvp.module.css";
 
 export default function MVPPage() {
   return (
     <main className={styles.container}>
-      <div className={styles.navBar}>
-        <div className={styles.leftGroup}>
-          <div className={styles.brand}>
-            <img
-              src="/icons/Omega.svg"
-              className={styles.icon}
-              alt="Got It Logo"
-              width="200"
-              height="36"
-            />
-            <span className={styles.brandText}>Doc Title</span>
-          </div>
-        </div>
-
-        <div className={styles.rightGroup}>
-          <div className={styles.toolIcons}>
-            <button className={styles.settingsBtn}>
-              <img
-                src="/icons/gear.svg"
-                alt="settings"
-                className={styles.gearImg}
-                width="20"
-                height="20"
-              />
-              <span className={styles.settingsLabel}>Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
 
       <div className={styles.toolBar}>
         <div className={styles.toolbarInner}>
@@ -95,11 +58,10 @@ export default function MVPPage() {
 
       <section className={styles.viewerArea}>
         <div className={styles.viewerCenter}>
-          <div className={styles.pdfBoxLarge}>PDF CONTENT (placeholder)</div>
+          <DocScreen />
         </div>
       </section>
       
-      <DocScreen />
     </main>
   );
 }

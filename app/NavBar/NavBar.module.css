@@ -1,0 +1,56 @@
+/* Navigation Bar */
+.navBar {
+    margin: 2em;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+.brand {
+    display: flex;
+    align-items: center;
+}
+.brandText {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.gotItImage {
+    display: block;
+    height: 36px;
+    width: auto;
+}
+
+.icon {
+    display: block;
+    margin-right: 20px;
+    width: auto;
+}
+
+.settingsBtn {
+    background: #fff;
+    border: 1px solid #e9e9ea;
+    padding: 0.45rem;
+    border-radius: 18px;
+    box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.gearImg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.settingsLabel {
+    margin-left: 0.5rem;
+    color: #333;
+    font-size: 0.95rem;
+}
