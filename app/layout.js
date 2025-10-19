@@ -1,4 +1,6 @@
-"use client";
+// app/layout.js
+'use client';
+
 import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
 import "./globals.css";
 import { Space_Grotesk } from "next/font/google";
@@ -20,6 +22,8 @@ const theme = createTheme({
   },
 });
 
+// export const metadata = { title: 'GotIt', description: 'Prototype' };
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={spaceGrotesk.variable}>
@@ -33,6 +37,10 @@ export default function RootLayout({ children }) {
   );
 }
 
+
+// Previous Code Commented Out:
+
+// 'use client';
 // import { Geist, Geist_Mono } from "next/font/google";
 // import "./globals.css";
 

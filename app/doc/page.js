@@ -7,6 +7,7 @@
 //   return <DocScreen />;
 // }
 
+import DocScreen from "./components/DocScreen";
 import styles from "./mvp.module.css";
 
 export default function MVPPage() {
@@ -97,6 +98,8 @@ export default function MVPPage() {
           <div className={styles.pdfBoxLarge}>PDF CONTENT (placeholder)</div>
         </div>
       </section>
+      
+      <DocScreen />
     </main>
   );
 }
