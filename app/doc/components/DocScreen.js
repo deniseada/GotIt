@@ -14,6 +14,9 @@ export default function DocScreen() {
     const [mode, setMode] = useState('simplified');
 
     const toggleSplit = () => setSplit(s => !s);
+    const zoomIn  = () => setZoom(z => Math.min(3, +(z + 0.1).toFixed(2)));
+    const zoomOut = () => setZoom(z => Math.max(0.5, +(z - 0.1).toFixed(2)));
+    const zoomReset = () => setZoom(1);
 
     function MockOriginalPage({ page, zoom }) {
         return (
@@ -77,18 +80,19 @@ export default function DocScreen() {
     
     return (
         <div>
+            <Box sx={{ height: '100dvh', display: 'flex', flexDirection: 'column' }}>
             <ToolBar
-            page={page}
-            onPrev={() => setPage(p => Math.max(1, p - 1))}
-            onNext={() => setPage(p => p + 1)}
-            split={split}
-            onToggleSplit={toggleSplit} /><Box sx={{ flex: 1, display: 'grid', gridTemplateRows: 'auto 1fr', gap: 1, p: { xs: 1, md: 2 } }}>
-                <ZoomControls
-                    zoom={zoom}
-                    onZoomIn={() => setZoom(z => Math.min(3, +(z + 0.1).toFixed(2)))}
-                    onZoomOut={() => setZoom(z => Math.max(0.5, +(z - 0.1).toFixed(2)))}
-                    onReset={() => setZoom(1)} />
-
+                page={page}
+                onPrev={() => setPage(p => Math.max(1, p - 1))}
+                onNext={() => setPage(p => p + 1)}
+                split={split}
+                onToggleSplit={toggleSplit}
+                /* NEW: zoom props */
+                zoom={zoom}
+                onZoomIn={zoomIn}
+                onZoomOut={zoomOut}
+                onZoomReset={zoomReset}
+            />
 
                 {split ? (
                     <SplitView
@@ -98,7 +102,7 @@ export default function DocScreen() {
                             <MockRightPane mode={mode} page={page} zoom={zoom} />
                         </Box>} />
                 ) : (
-            <Box sx={{ height: '100%', borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1, overflow: 'hidden', display: 'grid', placeItems: 'center', p: 2 }}>
+        <Box sx={{ height: '100%', borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1, overflow: 'hidden', display: 'grid', placeItems: 'center', p: 2 }}>
                         <MockOriginalPage page={page} zoom={zoom} />
                     </Box>
                 )}
