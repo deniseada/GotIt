@@ -98,7 +98,7 @@ export default function DocScreen() {
                             <MockRightPane mode={mode} page={page} zoom={zoom} />
                         </Box>} />
                 ) : (
-                    <Box sx={{ height: '100%', borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1, overflow: 'hidden', display: 'grid', placeItems: 'center', p: 2 }}>
+            <Box sx={{ height: '100%', borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1, overflow: 'hidden', display: 'grid', placeItems: 'center', p: 2 }}>
                         <MockOriginalPage page={page} zoom={zoom} />
                     </Box>
                 )}

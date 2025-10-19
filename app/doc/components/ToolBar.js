@@ -12,11 +12,18 @@ export default function ToolBar({
     }) {
     return (
             // {/* Secondary toolbar row */}
-            <div className={styles.toolBar}>
+                <div className={`${styles.toolBar} ${styles.toolBarNoOffset}`}>
                 <div className={styles.toolbarInner}>
                     <div className={styles.toolbarLeft}>
                         <button className={styles.toolButton}><img src="/icons/sideBarIcon.svg" className={styles.toolbarIcon} /></button>
-                        <button className={styles.toolButton}><img src="/icons/sideCompareIcon.svg" className={styles.toolbarIcon} /></button>
+                        <button
+                            className={`${styles.toolButton} ${split ? styles.toolButtonActive : ''}`}
+                            onClick={onToggleSplit}
+                            aria-pressed={split}
+                            title={split ? 'Single View' : 'Split View'}
+                        >
+                        <img src="/icons/sideCompareIcon.svg" className={styles.toolbarIcon} alt="" aria-hidden="true" />
+                        </button>
                         <button className={styles.toolButton}><img src="/icons/searchIcon.svg" className={styles.toolbarIcon} /></button>
                     </div>
 
@@ -35,16 +42,6 @@ export default function ToolBar({
                         <button className={styles.toolButton}><img src="/icons/printIcon.svg" className={styles.toolbarIcon} /></button>
                         <button className={styles.toolButton}><img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} /></button>
                         <button className={styles.toolButton}><img src="/icons/moreIcon.svg" className={styles.toolbarIcon} /></button>
-
-                        {/* NEW: Split View toggle */}
-                        <button
-                            className={styles.splitBtn}
-                            onClick={onToggleSplit}
-                            aria-pressed={split}
-                            >
-                            <img src="/icons/split.svg" className={styles.splitIcon} />
-                            <span>{split ? 'Single View' : 'Split View'}</span>
-                        </button>
                     </div>
                 </div>
             </div>
