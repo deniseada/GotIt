@@ -11,25 +11,7 @@ export default function ToolBar({
         onToggleSplit
     }) {
     return (
-        <div className={styles.navWrapper}>
-            {/* Top brand row */}
-            <div className={styles.navBar}>
-                <div className={styles.leftGroup}>
-                    <div className={styles.brand}>
-                        <img src="/icons/Omega.svg" className={styles.icon} alt="Got It Logo" width="200" height="36" />
-                        <span className={styles.brandText}>Doc Title</span>
-                    </div>
-                </div>
-
-                <div className={styles.rightGroup}>
-                    <button className={styles.settingsBtn}>
-                        <img src="/icons/gear.svg" alt="settings" className={styles.gearImg} width="20" height="20" />
-                        <span className={styles.settingsLabel}>Settings</span>
-                    </button>
-                </div>
-            </div>
-
-            {/* Secondary toolbar row */}
+            // {/* Secondary toolbar row */}
             <div className={styles.toolBar}>
                 <div className={styles.toolbarInner}>
                     <div className={styles.toolbarLeft}>
@@ -66,6 +48,5 @@ export default function ToolBar({
                     </div>
                 </div>
             </div>
-        </div>
     );
 }

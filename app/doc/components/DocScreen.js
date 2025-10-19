@@ -18,27 +18,27 @@ export default function DocScreen() {
     function MockOriginalPage({ page, zoom }) {
         return (
             <Box sx={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', p: 2 }}>
-            <Box
-                sx={{
-                width: `${Math.min(900, 700 * zoom)}px`,
-                aspectRatio: '8.5 / 11',
-                bgcolor: 'common.white',
-                borderRadius: 2,
-                boxShadow: 4,
-                p: 3,
-                overflow: 'auto',
-                }}
-            >
-                <Typography variant="h6" gutterBottom>
-                {page}. Manual Circuits
-                </Typography>
-                <Typography variant="body2" paragraph>
-                (Original document mock) A manual circuit is started/stopped by a person...
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                Zoom: {(zoom * 100).toFixed(0)}%
-                </Typography>
-            </Box>
+                <Box
+                    sx={{
+                    width: `${Math.min(900, 700 * zoom)}px`,
+                    aspectRatio: '8.5 / 11',
+                    bgcolor: 'common.white',
+                    borderRadius: 2,
+                    boxShadow: 4,
+                    p: 3,
+                    overflow: 'auto',
+                    }}
+                >
+                    <Typography variant="h6" gutterBottom>
+                    {page}. Manual Circuits
+                    </Typography>
+                    <Typography variant="body2" paragraph>
+                    (Original document mock) A manual circuit is started/stopped by a person...
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                    Zoom: {(zoom * 100).toFixed(0)}%
+                    </Typography>
+                </Box>
             </Box>
         );
     }
