@@ -1,10 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import SplitView from './SplitView';
 import ModeTabs from './ModeTabs';
-import ZoomControls from './ZoomControls';
-import ToolBar from './ToolBar'; 
+import ToolBar from './ToolBar';
+import styles from '../mvp.module.css';
 
 
 export default function DocScreen() {
@@ -17,6 +17,13 @@ export default function DocScreen() {
     const zoomIn  = () => setZoom(z => Math.min(3, +(z + 0.1).toFixed(2)));
     const zoomOut = () => setZoom(z => Math.max(0.5, +(z - 0.1).toFixed(2)));
     const zoomReset = () => setZoom(1);
+
+    // Press 'S' to toggle split view
+    useEffect(() => {
+    const onKey = e => { if (e.key.toLowerCase() === 's') setSplit(s => !s); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    }, []);
 
     function MockOriginalPage({ page, zoom }) {
         return (
@@ -79,34 +86,57 @@ export default function DocScreen() {
     }
     
     return (
-        <div>
-            <Box sx={{ height: '100dvh', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ height: '100dvh', display: 'flex', flexDirection: 'column' }}>
+            {/* Toolbar at the top */}
             <ToolBar
-                page={page}
-                onPrev={() => setPage(p => Math.max(1, p - 1))}
-                onNext={() => setPage(p => p + 1)}
-                split={split}
-                onToggleSplit={toggleSplit}
-                /* NEW: zoom props */
-                zoom={zoom}
-                onZoomIn={zoomIn}
-                onZoomOut={zoomOut}
-                onZoomReset={zoomReset}
+            page={page}
+            onPrev={() => setPage(p => Math.max(1, p - 1))}
+            onNext={() => setPage(p => p + 1)}
+            split={split}
+            onToggleSplit={toggleSplit}
+            zoom={zoom}
+            onZoomIn={zoomIn}
+            onZoomOut={zoomOut}
+            onZoomReset={zoomReset}
             />
 
-                {split ? (
-                    <SplitView
-                        left={<MockOriginalPage page={page} zoom={zoom} />}
-                        right={<Box sx={{ height: '100%', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
-                            <ModeTabs value={mode} onChange={setMode} />
-                            <MockRightPane mode={mode} page={page} zoom={zoom} />
-                        </Box>} />
-                ) : (
-        <Box sx={{ height: '100%', borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1, overflow: 'hidden', display: 'grid', placeItems: 'center', p: 2 }}>
-                        <MockOriginalPage page={page} zoom={zoom} />
+            {/* Main content area gets padded down */}
+            <Box
+            className={styles.contentUnderToolbar}
+            sx={{
+                flex: 1,
+                display: 'grid',
+                gridTemplateRows: '1fr',
+                p: { xs: 1, md: 2 },
+            }}
+            >
+            {split ? (
+                <SplitView
+                left={<MockOriginalPage page={page} zoom={zoom} />}
+                right={
+                    <Box sx={{ height: '100%', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
+                    <ModeTabs value={mode} onChange={setMode} />
+                    <MockRightPane mode={mode} page={page} zoom={zoom} />
                     </Box>
-                )}
+                }
+                />
+            ) : (
+                <Box
+                sx={{
+                    height: '100%',
+                    borderRadius: 2,
+                    bgcolor: 'background.paper',
+                    boxShadow: 1,
+                    overflow: 'hidden',
+                    display: 'grid',
+                    placeItems: 'center',
+                    p: 2,
+                }}
+                >
+                <MockOriginalPage page={page} zoom={zoom} />
+                </Box>
+            )}
             </Box>
-        </div>
+        </Box>
     );
 }

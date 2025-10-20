@@ -23,6 +23,7 @@ export default function ToolBar({
             // {/* Secondary toolbar row */}
                 <div className={`${styles.toolBar} ${styles.toolBarNoOffset}`}>
                 <div className={styles.toolbarInner}>
+                    {/* Left Side */}
                     <div className={styles.toolbarLeft}>
                         <button className={styles.toolButton}><img src="/icons/sideBarIcon.svg" className={styles.toolbarIcon} /></button>
                         <button
@@ -39,7 +40,7 @@ export default function ToolBar({
                         <button className={styles.iconBtn} onClick={onNext} aria-label="Next page">›</button>
                     </div>
 
-                    {/* Center: page controls (optional) */}
+                    {/* Center: zoom controls */}
                     <div className={styles.toolbarCenter}>
                             {/* Zoom group */}
                             <div className={styles.zoomGroup} role="group" aria-label="Zoom controls">
@@ -58,7 +59,7 @@ export default function ToolBar({
                                 </button>
                             </div>
                         </div>
-
+                    {/* Right Side */}
                     <div className={styles.toolbarRight}>
                         {/* your existing icons */}
                         <button className={styles.toolButton}><img src="/icons/highlightIcon.svg" className={styles.toolbarIcon} /></button>
