@@ -1,3 +1,5 @@
+// ModeTabs are the tabs to switch between different AI modes in the right panel
+
 'use client';
 import React from 'react';
 import { Tabs, Tab, Box } from '@mui/material';

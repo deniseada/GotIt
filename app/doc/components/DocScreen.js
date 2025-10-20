@@ -1,10 +1,19 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
+import styles from '../mvp.module.css';
+
+// 
 import SplitView from './SplitView';
 import ModeTabs from './ModeTabs';
 import ToolBar from './ToolBar';
-import styles from '../mvp.module.css';
+
+// Right side modals and their buttons
+import RightDockButtons from './rightSideModals/RightDockButtons';
+import useModal from './useModal';
+import AIModal from './AIModal';
+import TimerModal from './TimerModal';
+import VocabModal from './VocabModal';
 
 
 export default function DocScreen() {
@@ -13,6 +22,13 @@ export default function DocScreen() {
     const [page, setPage] = useState(1);
     const [mode, setMode] = useState('simplified');
 
+    // Right Side Modals
+    const timer = useModal(false);
+    const ai = useModal(false);
+    const vocab = useModal(false);
+
+
+    // Split view toggle and Zoom controls
     const toggleSplit = () => setSplit(s => !s);
     const zoomIn  = () => setZoom(z => Math.min(3, +(z + 0.1).toFixed(2)));
     const zoomOut = () => setZoom(z => Math.max(0.5, +(z - 0.1).toFixed(2)));
@@ -24,6 +40,8 @@ export default function DocScreen() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
     }, []);
+
+
 
     function MockOriginalPage({ page, zoom }) {
         return (
@@ -137,6 +155,18 @@ export default function DocScreen() {
                 </Box>
             )}
             </Box>
+
+            {/* RIGHT-SIDE BUTTONS */}
+            <RightDockButtons
+                onOpenA={timer.onOpen}
+                onOpenB={ai.onOpen}
+                onOpenC={vocab.onOpen}
+            />
+
+            {/* MODALS */}
+            <TimerModal open={timer.open} onClose={timer.onClose} />
+            <AIModal open={ai.open} onClose={ai.onClose} />
+            <VocabModal open={vocab.open} onClose={vocab.onClose} />
         </Box>
     );
 }
