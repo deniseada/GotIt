@@ -1,9 +1,9 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import styles from '../mvp.module.css';
 
-// 
+// Components
 import SplitView from './SplitView';
 import ModeTabs from './ModeTabs';
 import ToolBar from './ToolBar';
@@ -11,8 +11,8 @@ import ToolBar from './ToolBar';
 // Right side modals and their buttons
 import RightDockButtons from './rightSideModals/RightDockButtons';
 import useModal from './useModal';
+import TimerPopover from './TimerPopover';
 import AIModal from './AIModal';
-import TimerModal from './TimerModal';
 import VocabModal from './VocabModal';
 
 
@@ -21,25 +21,62 @@ export default function DocScreen() {
     const [zoom, setZoom] = useState(1);
     const [page, setPage] = useState(1);
     const [mode, setMode] = useState('simplified');
-
-    // Right Side Modals
-    const timer = useModal(false);
-    const ai = useModal(false);
-    const vocab = useModal(false);
-
-
+    
     // Split view toggle and Zoom controls
     const toggleSplit = () => setSplit(s => !s);
     const zoomIn  = () => setZoom(z => Math.min(3, +(z + 0.1).toFixed(2)));
     const zoomOut = () => setZoom(z => Math.max(0.5, +(z - 0.1).toFixed(2)));
     const zoomReset = () => setZoom(1);
-
+    
     // Press 'S' to toggle split view
     useEffect(() => {
-    const onKey = e => { if (e.key.toLowerCase() === 's') setSplit(s => !s); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+        const onKey = e => { if (e.key.toLowerCase() === 's') setSplit(s => !s); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
     }, []);
+    
+    // Right Side Buttons
+    const timer = useModal(false);
+    const ai = useModal(false);
+    const vocab = useModal(false);
+
+
+    // ** Timer Functionality **
+    const [timerAnchor, setTimerAnchor] = useState(null);    
+    const timerBtnRef = useRef(null);          // <— anchor ref
+    const [timerOpen, setTimerOpen] = useState(false);
+    const [timerSeconds, setTimerSeconds] = useState(0);  // remaining secs
+    const [timerRunning, setTimerRunning] = useState(false);
+    const openTimer  = () => setTimerOpen(true);
+    const closeTimer = () => setTimerOpen(false);
+
+    // Handles when user changes timer value in the popover
+    const handleTimerChange = (mins) => {
+        setTimerSeconds(mins * 60);
+        setTimerRunning(mins > 0);
+        setTimerOpen(true); // make sure it's visible after choosing
+    };
+
+
+    // Ticks only when popover is open AND running
+    useEffect(() => {
+        if (!timerOpen || !timerRunning || timerSeconds <= 0) return;
+        const id = setInterval(() => {
+            setTimerSeconds(s => (s > 0 ? s - 1 : 0));
+        }, 1000);
+        return () => clearInterval(id);
+    }, [timerOpen, timerRunning, timerSeconds]);
+
+
+    // Stop at 0
+    useEffect(() => {
+        if (timerSeconds === 0 && timerRunning) setTimerRunning(false);
+    }, [timerSeconds, timerRunning]);
+
+    // Controls for the Popover
+    const pauseTimer  = () => setTimerRunning(false);
+    const resumeTimer = () => { if (timerSeconds > 0) setTimerRunning(true); };
+    const resetTimer  = () => { setTimerSeconds(0); setTimerRunning(false); };
 
 
 
@@ -158,13 +195,25 @@ export default function DocScreen() {
 
             {/* RIGHT-SIDE BUTTONS */}
             <RightDockButtons
-                onOpenA={timer.onOpen}
+                // onOpenA={timer.openTimer}
+                timerBtnRef={timerBtnRef}
+                onOpenTimer={openTimer}
                 onOpenB={ai.onOpen}
                 onOpenC={vocab.onOpen}
             />
 
             {/* MODALS */}
-            <TimerModal open={timer.open} onClose={timer.onClose} />
+            <TimerPopover
+                anchorEl={timerBtnRef.current}      // <— anchor is the real DOM node
+                open={timerOpen}
+                onClose={() => { pauseTimer(); closeTimer(); }}
+                seconds={timerSeconds}
+                running={timerRunning}
+                onPause={pauseTimer}
+                onResume={resumeTimer}
+                onReset={resetTimer}
+                onChange={handleTimerChange}
+            />
             <AIModal open={ai.open} onClose={ai.onClose} />
             <VocabModal open={vocab.open} onClose={vocab.onClose} />
         </Box>
