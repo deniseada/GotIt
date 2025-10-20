@@ -1,7 +1,7 @@
 'use client';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
-    Popover, Box, Button, Typography, Stack, Grid, IconButton
+    Box, Button, Typography, Stack, Grid, IconButton, Divider, Collapse, Paper, Popper
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -17,7 +17,6 @@ function fmt(seconds) {
     const m = Math.floor((seconds % 3600) / 60);
     return `${h}:${String(m).padStart(2, '0')} hr`;
 }
-
 function minsLabel(mins) {
     if (mins === 0) return 'No Timer';
     if (mins < 60) return `${String(mins).padStart(2, '0')}:00 min`;
@@ -28,132 +27,200 @@ function minsLabel(mins) {
 
 export default function TimerPopover({
     anchorEl,
-    open,
-    onClose,
-    onChange,      // (mins) => void
-    seconds = 0,   // remaining seconds (live)
+    open,            // parent controls visibility of the mini/presets UI
+    onClose,         // optional, not used for outside clicks in this pattern
+    onHide,          // NEW: called when the user hides the mini via icon
+    onChange,        // (mins) => void
+    seconds = 0,
     running = false,
     onPause,
     onResume,
     onReset,
-}) {
+    }) {
+    const [expanded, setExpanded] = useState(false);
+
+    // Collapse when parent closes the UI
+    useEffect(() => { if (!open) setExpanded(false); }, [open]);
+
     const presetsMin = useMemo(() => [0, 10, 15, 20, 30], []);
     const presetsHr  = useMemo(() => [60, 90, 120, 150, 180], []);
+
     const setTimer = (mins) => {
-        onChange?.(mins);   // parent sets seconds + starts
-};
+        onChange?.(mins);
+        if (mins > 0) onResume?.(); else { onReset?.(); onPause?.(); }
+        setExpanded(false);
+    };
+    const isSelected = (m) => Math.round(seconds / 60) === m && seconds > 0;
+
+    // Hide handler: collapse if open, then ask parent to hide the UI entirely.
+    const handleHide = () => {
+        setExpanded(false);
+        // Prefer onHide (non-pausing close). Fall back to onClose if not provided.
+        (onHide || onClose)?.();
+    };
 
     return (
-        <Popover
-            open={open}
-            onClose={onClose}
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            PaperProps={{
-                elevation: 6,
-                sx: {
-                borderRadius: 2,
-                p: 2,
-                bgcolor: 'background.paper',
-                minWidth: 260,
-                mt: -1, // slightly overlap the button
-                },
-            }}
+        <Popper
+        open={open}
+        anchorEl={anchorEl}
+        placement="top-end"
+        // Positioning of the Popper
+        modifiers={[
+            { name: 'offset', options: { offset: [0, -50] } }, // removes gap
+            { name: 'preventOverflow', options: { padding: 8 } },
+            { name: 'flip', options: { padding: 8 } },
+        ]}
+        // Let the page remain interactive; only the timer surface catches clicks
+        sx={{ zIndex: (t) => t.zIndex.modal + 1, pointerEvents: 'none' }}
         >
-        
-        <Stack spacing={1}>
-            {/* Header: icon + readout + controls */}
+        <Paper
+            elevation={8}
+            sx={{ pointerEvents: 'auto', borderRadius: 3, p: 1.25, width: expanded ? 420 : 'auto' }}
+        >
+            <Stack spacing={expanded ? 1.5 : 0.5}>
+            {/* MINI BAR */}
             <Box
                 sx={{
+                display: 'grid',
+                gridTemplateColumns: expanded ? '44px 1fr auto auto' : '28px auto auto auto',
+                alignItems: 'center',
+                gap: 0.75,
+                p: expanded ? 1 : 0.5,
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: '#f6f0fa',
+                minHeight: expanded ? 64 : 40,
+                }}
+            >
+                {/* DARK ICON — now hides the widget (but timer keeps running) */}
+                <Box
+                role="button"
+                tabIndex={0}
+                aria-expanded={expanded}
+                onClick={handleHide}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleHide(); }
+                }}
+                sx={{
+                    width: expanded ? 44 : 28,
+                    height: expanded ? 44 : 28,
+                    borderRadius: 2,
                     display: 'grid',
-                    gridTemplateColumns: '32px 1fr auto auto',
-                    alignItems: 'center',
-                    gap: 1,
-                    p: 0.5,
+                    placeItems: 'center',
+                    bgcolor: '#522A70',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    '&:focus-visible': { boxShadow: (t) => `0 0 0 3px ${t.palette.primary.main}33` },
+                }}
+                title="Hide timer"
+                >
+                <img src="/icons/timerDark.svg" alt="Timer" width={expanded ? 28 : 18} height={expanded ? 28 : 18} />
+                </Box>
+
+                {/* READOUT — expands presets (won’t collapse) */}
+                <Box
+                role="button"
+                tabIndex={0}
+                aria-expanded={expanded}
+                aria-controls="timer-presets"
+                onClick={() => { if (!expanded) setExpanded(true); }}
+                onKeyDown={(e) => {
+                    if ((e.key === 'Enter' || e.key === ' ') && !expanded) { e.preventDefault(); setExpanded(true); }
+                }}
+                sx={{
+                    height: expanded ? 40 : 28,
+                    display: 'grid',
+                    placeItems: 'center',
+                    px: expanded ? 1.5 : 1,
                     borderRadius: 2,
                     border: '1px solid',
                     borderColor: 'divider',
-                    bgcolor: '#f6f0fa'
+                    bgcolor: 'white',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    minWidth: expanded ? 140 : 96,
+                    '&:focus-visible': { boxShadow: (t) => `0 0 0 3px ${t.palette.primary.main}33` },
                 }}
-            >
-            <Box
-                sx={{
-                width: 40, height: 40, borderRadius: 1.5,
-                display: 'grid', placeItems: 'center',
-                bgcolor: '#522A70'
-                }}
-            >
-                <img src="/icons/timerDark.svg" alt="" width="30" height="30" />
-            </Box>
-
-            <Box
-                sx={{
-                height: 32, display: 'grid', placeItems: 'center',
-                px: 1.25, borderRadius: 1.5,
-                border: '1px solid', borderColor: 'divider', bgcolor: 'white'
-                }}
-            >
-                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.2 }}>
-                {fmt(seconds)}
+                title="Set timer"
+                >
+                <Typography variant={expanded ? 'body1' : 'body2'} sx={{ color: 'text.secondary', fontWeight: 700 }}>
+                    {fmt(seconds)}
                 </Typography>
-            </Box>
+                </Box>
 
-            <IconButton
+                <IconButton
                 size="small"
                 onClick={running ? onPause : onResume}
                 title={running ? 'Pause' : 'Play'}
-                sx={{ border: '1px solid', borderColor: 'divider', bgcolor: 'white' }}
-            >
+                sx={{
+                    border: '1px solid', borderColor: 'divider', bgcolor: 'white',
+                    width: expanded ? 40 : 28, height: expanded ? 40 : 28,
+                }}
+                >
                 {running ? <PauseIcon fontSize="small" /> : <PlayArrowIcon fontSize="small" />}
-            </IconButton>
+                </IconButton>
 
-            <IconButton
+                <IconButton
                 size="small"
-                onClick={onReset}
+                onClick={() => { onReset?.(); setExpanded(false); }}
                 title="Reset"
-                sx={{ border: '1px solid', borderColor: 'divider', bgcolor: 'white' }}
-            >
+                sx={{
+                    border: '1px solid', borderColor: 'divider', bgcolor: 'white',
+                    width: expanded ? 40 : 28, height: expanded ? 40 : 28,
+                }}
+                >
                 <ReplayIcon fontSize="small" />
-            </IconButton>
+                </IconButton>
             </Box>
 
-            {/* Minute presets */}
-            <Grid container spacing={1} columns={6}>
-            {presetsMin.map((m) => (
-                <Grid item xs={3} key={`m-${m}`}>
-                <Button
-                    fullWidth size="small" variant="outlined" onClick={() => setTimer(m)}
-                    sx={{
-                    textTransform: 'none', fontWeight: 600, borderRadius: 2,
-                    borderColor: '#5E35B1', color: '#5E35B1',
-                    '&:hover': { borderColor: '#5E35B1', bgcolor: 'rgba(94,53,177,0.06)' }
-                    }}
-                >
-                    {minsLabel(m)}
-                </Button>
+            {/* PRESETS */}
+            <Collapse in={expanded} timeout={160} mountOnEnter unmountOnExit>
+                <Divider sx={{ my: 1 }} />
+                <Grid id="timer-presets" container spacing={1} columns={12} sx={{ mb: 1 }}>
+                {[0, 10, 15, 20, 30].map((m) => (
+                    <Grid item xs={4} key={`m-${m}`}>
+                    <Button
+                        fullWidth size="small"
+                        variant={isSelected(m) ? 'contained' : 'outlined'}
+                        onClick={() => setTimer(m)}
+                        sx={{
+                        textTransform: 'none', fontWeight: 700, borderRadius: 2,
+                        borderColor: '#5E35B1',
+                        color: isSelected(m) && m !== 0 ? 'white' : '#5E35B1',
+                        bgcolor: isSelected(m) && m !== 0 ? '#5E35B1' : 'transparent',
+                        '&:hover': { borderColor: '#5E35B1', bgcolor: isSelected(m) ? '#5E35B1' : 'rgba(94,53,177,0.06)' },
+                        }}
+                    >
+                        {minsLabel(m)}
+                    </Button>
+                    </Grid>
+                ))}
                 </Grid>
-            ))}
-            </Grid>
 
-            {/* Hour presets */}
-            <Grid container spacing={1} columns={6}>
-            {presetsHr.map((m) => (
-                <Grid item xs={3} key={`h-${m}`}>
-                <Button
-                    fullWidth size="small" variant="outlined" onClick={() => setTimer(m)}
-                    sx={{
-                    textTransform: 'none', fontWeight: 600, borderRadius: 2,
-                    borderColor: '#B3261E', color: '#B3261E',
-                    '&:hover': { borderColor: '#B3261E', bgcolor: 'rgba(179,38,30,0.06)' }
-                    }}
-                >
-                    {minsLabel(m)}
-                </Button>
+                <Grid container spacing={1} columns={12}>
+                {[60, 90, 120, 150, 180].map((m) => (
+                    <Grid item xs={4} key={`h-${m}`}>
+                    <Button
+                        fullWidth size="small"
+                        variant={isSelected(m) ? 'contained' : 'outlined'}
+                        onClick={() => setTimer(m)}
+                        sx={{
+                        textTransform: 'none', fontWeight: 700, borderRadius: 2,
+                        borderColor: '#B3261E',
+                        color: isSelected(m) ? 'white' : '#B3261E',
+                        bgcolor: isSelected(m) ? '#B3261E' : 'transparent',
+                        '&:hover': { borderColor: '#B3261E', bgcolor: isSelected(m) ? '#B3261E' : 'rgba(179,38,30,0.06)' },
+                        }}
+                    >
+                        {minsLabel(m)}
+                    </Button>
+                    </Grid>
+                ))}
                 </Grid>
-            ))}
-            </Grid>
-        </Stack>
-        </Popover>
+            </Collapse>
+            </Stack>
+        </Paper>
+        </Popper>
     );
 }
