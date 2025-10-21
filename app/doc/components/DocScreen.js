@@ -21,6 +21,7 @@ export default function DocScreen() {
   const [zoom, setZoom] = useState(1);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Split view + zoom
   const toggleSplit = () => setSplit((s) => !s);
@@ -91,15 +92,17 @@ export default function DocScreen() {
         sx={{
           width: "100%",
           height: "100%",
-          display: "grid",
-          placeItems: "center",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
           p: 2,
+          overflow: "auto",
         }}
       >
         <Box
           sx={{
             width: `${Math.min(900, 700 * zoom)}px`,
-            aspectRatio: "8.5 / 11",
+            height: "600px",
             bgcolor: "common.white",
             borderRadius: 2,
             boxShadow: 4,
@@ -180,6 +183,7 @@ export default function DocScreen() {
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
         onZoomReset={zoomReset}
+        onToggleSidebar={() => setSidebarOpen((v) => !v)}
       />
 
       {/* Main content */}
@@ -189,9 +193,15 @@ export default function DocScreen() {
           flex: 1,
           display: "grid",
           gridTemplateRows: "1fr",
-          p: { xs: 1, md: 2 },
+          gridTemplateColumns: sidebarOpen ? "280px 1fr" : "1fr",
+          columnGap: 0,
+          pl: sidebarOpen ? 0 : { xs: 1, md: 2 },
+          pr: { xs: 1, md: 2 },
+          pb: { xs: 1, md: 2 },
+          pt: 0, // keep content flush to toolbar
         }}
       >
+        {sidebarOpen && <SideBar />}
         {split ? (
           <SplitView
             left={<MockOriginalPage page={page} zoom={zoom} />}
@@ -212,12 +222,13 @@ export default function DocScreen() {
           <Box
             sx={{
               height: "100%",
-              borderRadius: 2,
-              bgcolor: "background.paper",
-              boxShadow: 1,
-              overflow: "hidden",
-              display: "grid",
-              placeItems: "center",
+              borderRadius: 0,
+              bgcolor: "transparent",
+              boxShadow: "none",
+              overflow: "auto",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
               p: 2,
             }}
           >
@@ -230,7 +241,7 @@ export default function DocScreen() {
       <RightDockButtons
         timerBtnRef={timerBtnRef}
         onOpenTimer={openTimer}
-        onOpenB={ai.onOpen}
+        onOpenB={() => (ai.open ? ai.onClose() : ai.onOpen())}
         onOpenC={vocab.onOpen}
       />
 

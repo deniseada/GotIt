@@ -1,5 +1,5 @@
 // app/layout.js
-'use client';
+"use client";
 
 import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
 import "./globals.css";
@@ -27,7 +27,13 @@ const theme = createTheme({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={spaceGrotesk.variable}>
-      <body style={{ margin: 0 }}>
+      <body
+        style={
+          {
+            /*margin: 0 */
+          }
+        }
+      >
         <ThemeProvider theme={theme}>
           <CssBaseline />
           {children}

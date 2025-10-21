@@ -1,13 +1,29 @@
-'use client';
-import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+"use client";
+import React from "react";
+import styles from "../mvp.module.css";
 
 export default function AIModal({ open, onClose }) {
-    return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-        <DialogTitle>AI Assistant</DialogTitle>
-        <DialogContent dividers>AI tools go here…</DialogContent>
-        <DialogActions><Button onClick={onClose}>Close</Button></DialogActions>
-        </Dialog>
-    );
+  if (!open) return null;
+
+  return (
+    <div className={styles.aiPanel}>
+      <div className={styles.aiPanelHeader}>
+        <h3 className={styles.aiPanelTitle}>AI Study Tools</h3>
+      </div>
+      <div className={styles.aiPanelContent}>
+        <button className={styles.aiToolButton}>
+          <span className={styles.aiToolLabel}>Language Simplification</span>
+        </button>
+        <button className={styles.aiToolButton}>
+          <span className={styles.aiToolLabel}>Create Summary</span>
+        </button>
+        <button className={styles.aiToolButton}>
+          <span className={styles.aiToolLabel}>Mind-map</span>
+        </button>
+        <button className={styles.aiToolButton}>
+          <span className={styles.aiToolLabel}>Citation</span>
+        </button>
+      </div>
+    </div>
+  );
 }
