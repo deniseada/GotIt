@@ -1,6 +1,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --button-color: #522a70;
   font-family: var(--font-space-grotesk), sans-serif;
 }
 

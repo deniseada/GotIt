@@ -1,0 +1,56 @@
+/* Sidebar Styles */
+.sideBar {
+  width: 280px;
+  background: #f8f8f9;
+  border-right: 1px solid #e6e6e6;
+  padding: 1.5rem 0;
+  overflow-y: auto;
+}
+
+.sideBarHeader {
+  padding: 0 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 1rem;
+}
+
+.sideBarTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.sideBarNav {
+  padding: 0;
+}
+
+.sideBarList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sideBarItem {
+  margin: 0;
+}
+
+.sideBarLink {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: background-color 0.2s ease;
+}
+
+.sideBarLink:hover {
+  background-color: #ececed;
+}
+
+.sideBarLink:active,
+.sideBarLink.active {
+  background-color: #e0e0e1;
+  font-weight: 500;
+}
