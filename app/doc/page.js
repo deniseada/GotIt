@@ -6,7 +6,6 @@ import ToolBar from "./components/ToolBar";
 export default function MVPPage() {
   return (
     <div>
-      <ToolBar />
       <main className={styles.container}>
         <section className={styles.viewerArea}>
           <div className={styles.viewerCenter}>

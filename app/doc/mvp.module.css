@@ -1,23 +1,44 @@
+html, body { margin: 0; }
+
 .title {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
+
+:root { --toolbar-h: 64px; }
 
 /* Tool Bar container */
 
 .toolBar {
   width: 100vw;
   position: sticky;
-  top: 64px;
+  top: 0; 
+  margin: 0;
   background-color: #efefef;
   border-bottom: 1px solid #e6e6e6;
-  box-shadow: 1px 2px 3px rgba(16, 24, 40, 1);
+  box-shadow: 1px 2px 3px rgba(16, 24, 40, 0.1); 
+  z-index: 100;
+  min-height: var(--toolbar-h);
+  display: flex;
+  align-items: center;
+}
+
+/* Content below Toolbar gets padding so it isn't hidden */
+.contentUnderToolbar {
+  padding-top: calc(var(--toolbar-h) + 8px);
+}
+
+/* when there is NO brand/header above */
+.toolBarNoOffset { 
+  top: 0; 
 }
 
 .toolbarInner {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1rem;
   padding: 6px 20px;
@@ -52,6 +73,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: #522A70;
 }
 
 .toolButton:hover {
@@ -62,6 +84,61 @@
   width: 25px;
   height: 25px;
   display: block;
+}
+
+/* Zoom Buttons */
+
+.toolbarSvg { font-size: 22px; display: block; line-height: 1; }
+
+.zoomGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px; /* space before other icons */
+}
+
+.zoomText {
+  font: 500 14px/1 system-ui;
+  opacity: .85;
+  min-width: 40px;
+  text-align: right;
+}
+
+.zoomGroup .toolButton { padding: 4px; }
+
+/* Active look for the split button */
+.toolButtonActive {
+  background: rgba(94, 53, 177, 0.16); 
+  outline: 2px solid #5e35b1;
+  outline-offset: 0;
+}
+
+/* Screen-reader-only text */
+.srOnly {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+
+/* ToolBar Functionality */
+
+/* active look when split is ON */
+.toolButtonActive {
+  background: rgba(25, 118, 210, 0.12);
+  outline: 2px solid #1976d2;
+  outline-offset: 0;
+}
+
+/* screen-reader only text */
+.srOnly {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
 }
 
 /* PDF Placeholder */
@@ -88,7 +165,7 @@
   background-color: #522a7080;
   display: flex;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 0 1rem 1rem 1rem;
 }
 
 .pdfBoxLarge {
