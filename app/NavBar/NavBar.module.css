@@ -1,0 +1,97 @@
+/* Navigation Bar */
+.navBarWrapper {
+  width: 100%;
+  background: #fff;
+}
+
+.navBar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2em 20px 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.brand {
+  display: flex;
+  align-items: center;
+}
+.brandText {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.icon {
+  display: block;
+  height: 45px;
+  margin-right: 10px;
+  width: auto;
+}
+
+.settingsBtn {
+  background: #fff;
+  border: 1px solid #e9e9ea;
+  padding: 0.45rem;
+  border-radius: 18px;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bookmarkBtn {
+  background: #fff;
+  border: none;
+  padding: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bookmarkImg {
+  margin-left: 10px;
+  width: 35px;
+  height: 30px;
+  display: block;
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.gearImg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.settingsLabel {
+  margin-left: 0.5rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.backBtnContainer {
+  max-width: 1200px;
+  margin-top: 20px;
+  margin-left: 130px;
+  margin-bottom: 20px;
+  padding: 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--button-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.arrow {
+  transform: rotate(90deg);
+  margin-right: 5px;
+}
