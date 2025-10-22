@@ -3,6 +3,7 @@ import SideBar from "./sideBar";
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 import styles from "../mvp.module.css";
+import NavBar from "./NavBar";
 
 // Components
 import SplitView from "./SplitView";
@@ -172,6 +173,7 @@ export default function DocScreen() {
 
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
+      <NavBar />
       {/* Toolbar */}
       <ToolBar
         page={page}

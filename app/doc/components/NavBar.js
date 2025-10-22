@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./NavBar.module.css";
+import styles from "../mvp.module.css";
 
 export default function NavBar() {
   const [isBookmarked, setIsBookmarked] = useState(false);

@@ -1,4 +1,4 @@
-import styles from "../sideBar.module.css";
+import styles from "../mvp.module.css";
 
 export default function SideBar({ title = "Part V: Circuits", items = [] }) {
   // Default items if none provided
