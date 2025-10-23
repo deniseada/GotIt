@@ -17,12 +17,19 @@ import TimerPopover from "./TimerPopover";
 import AIModal from "./AIModal";
 import VocabModal from "./VocabModal";
 
+import { Worker, Viewer  } from "@react-pdf-viewer/core";
+
+import { RetrieveResponse } from "roughlyai";
+
 export default function DocScreen() {
   const [split, setSplit] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [summary, setSummary] = useState("");
+  const [mm, setMM] = useState("");
 
   // Split view + zoom
   const toggleSplit = () => setSplit((s) => !s);
@@ -42,6 +49,60 @@ export default function DocScreen() {
   // Right Side Buttons (AI/Vocab)
   const ai = useModal(false);
   const vocab = useModal(false);
+
+  const CreateSummary = async (stepnum) => {
+    try {
+      const _resp = await fetch(
+        "https://m3rcwp4vofeta3kqelrykbgosi0rswzn.lambda-url.ca-central-1.on.aws/",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            prompt: `Using "Manual Circuits.pdf", create a summary detailing each sections and their learning blocks.`,
+            project_name: "gotit",
+          }),
+        }
+      );
+
+      const _json_string = await _resp.json();
+      const _json = JSON.parse(_json_string);
+
+      console.log("what is _json", _json.url);
+      // console.log("url", _url)
+      const _report = await RetrieveResponse(_json.url);
+      console.log("what is report", _report)
+      const _summ = _report.answer;
+      setSummary(_summ);
+    } catch (e) {
+      console.log("fail parse or retrieve", e.message);
+    }
+  };
+
+  const CreateMindMap = async () => {
+    try {
+      const _resp = await fetch(
+        "https://m3rcwp4vofeta3kqelrykbgosi0rswzn.lambda-url.ca-central-1.on.aws/",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            prompt: `Using "Manual Circuits.pdf", create a mind map detailing how the components of the manual is related.`,
+            project_name: "gotit",
+          }),
+        }
+      );
+
+      const _json_string = await _resp.json();
+      const _json = JSON.parse(_json_string);
+
+      console.log("what is _json", _json.url);
+      // console.log("url", _url)
+      const _report = await RetrieveResponse(_json.url);
+      console.log("what is report", _report)
+      const _mm = _report.answer;
+      setMM(_mm);
+    } catch (e) {
+      console.log("fail parse or retrieve", e.message);
+    }
+  };
 
   // ===== TIMER (single source of truth) =====
   const timerBtnRef = useRef(null); // anchor for Popper
@@ -111,7 +172,10 @@ export default function DocScreen() {
             overflow: "auto",
           }}
         >
-          <Typography variant="h6" gutterBottom>
+          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+            <Viewer fileUrl="/manual.pdf" />;
+          </Worker>
+          {/* <Typography variant="h6" gutterBottom>
             {page}. Manual Circuits
           </Typography>
           <Typography variant="body2" paragraph>
@@ -120,7 +184,7 @@ export default function DocScreen() {
           </Typography>
           <Typography variant="caption" color="text.secondary">
             Zoom: {(zoom * 100).toFixed(0)}%
-          </Typography>
+          </Typography> */}
         </Box>
       </Box>
     );
@@ -156,16 +220,24 @@ export default function DocScreen() {
           </>
         )}
         {mode === "summarized" && (
-          <Typography variant="body2">
-            Summary: Start/stop energizes a motor via a starter; overloads open
-            on high current.
-          </Typography>
+          <>
+            <button onClick={() => CreateSummary()}>Summarize</button>
+            <div style={{ whiteSpace: "pre-wrap", width: "100%" }}>
+              {summary}
+            </div>
+          </>
+          // <Typography variant="body2">
+          //   Summary: Start/stop energizes a motor via a starter; overloads open
+          //   on high current.
+          // </Typography>
         )}
         {mode === "mindmap" && (
-          <Typography variant="body2">
-            Mind map: Manual → Inputs: Stop/Start → Output: Starter → Safety:
-            OLR → Behavior.
-          </Typography>
+          <>
+            <button onClick={() => CreateMindMap()}>Mind Map</button>
+            <div style={{ whiteSpace: "pre-wrap", width: "100%" }}>
+              {mm}
+            </div>
+          </>
         )}
       </Box>
     );
