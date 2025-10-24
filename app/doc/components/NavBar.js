@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import styles from "../mvp.module.css";
 
-export default function NavBar() {
+export default function NavBar({ title }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const toggleBookmark = () => {
@@ -22,7 +22,7 @@ export default function NavBar() {
               width="200"
               height="36"
             />
-            <span className={styles.brandText}>Doc Title</span>
+            <span className={styles.brandText}>{title}</span>
             <button className={styles.bookmarkBtn} onClick={toggleBookmark}>
               <img
                 src={

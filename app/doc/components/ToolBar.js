@@ -116,9 +116,6 @@ export default function ToolBar({
             <img src="/icons/textIcon.svg" className={styles.toolbarIcon} />
           </button>
           <button className={styles.toolButton}>
-            <img src="/icons/addPicIcon.svg" className={styles.toolbarIcon} />
-          </button>
-          <button className={styles.toolButton}>
             <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />
           </button>
           <button className={styles.toolButton}>

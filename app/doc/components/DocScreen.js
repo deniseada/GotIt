@@ -173,7 +173,7 @@ export default function DocScreen() {
 
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
-      <NavBar />
+      <NavBar title={"Doc Title"} />
       {/* Toolbar */}
       <ToolBar
         page={page}
