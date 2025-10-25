@@ -1,0 +1,129 @@
+/* font */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+.page {
+  min-height: 100vh;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  background-image: radial-gradient(
+      1100px 700px at 20% -10%,
+      rgba(137, 80, 235, 0.55),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 600px at 80% 110%,
+      rgba(214, 68, 255, 0.35),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #0b0b0e 40%, #161317 100%);
+  font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+}
+
+.navbar {
+  position: absolute;
+  top: 24px;
+  right: 40px;
+  display: flex;
+  gap: 40px;
+  font-size: 18px;
+}
+
+.navLink {
+  color: #e5e7eb;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.navLink:hover {
+  color: #ffffff;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 112px 32px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.leftCol {
+  max-width: 600px;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brandText {
+  font-size: 64px;
+  font-weight: 600;
+  letter-spacing: -1.5px;
+  margin: 0;
+}
+
+.tagline {
+  margin-top: 32px;
+  font-size: 40px;
+  max-width: 520px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.cta {
+  margin-top: 28px;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 22px;
+  font-size: 18px;
+  font-weight: 600;
+  background: rgba(171, 63, 191, 0.9);
+  color: white;
+  box-shadow: 0 14px 30px rgba(171, 63, 191, 0.2);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.cta:hover {
+  background: rgba(171, 63, 191, 1);
+}
