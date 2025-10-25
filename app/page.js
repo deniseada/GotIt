@@ -5,6 +5,7 @@ import NavBar from "./doc/components/NavBar";
 import MVPPage from "./doc/page";
 import SideBar from "./doc/components/sideBar";
 import Dashboard from "./dashboard/page";
+import Link from "next/link";
 
 export default function Home() {
   return <div>

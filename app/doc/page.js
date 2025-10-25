@@ -1,6 +1,7 @@
 import React from "react";
 import DocScreen from "./components/DocScreen";
 import styles from "./mvp.module.css";
+import Link from "next/link";
 
 export default function MVPPage() {
   return (
