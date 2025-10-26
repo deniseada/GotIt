@@ -1,4 +1,6 @@
-/* font */
+/* ===========================
+   Local font: Space Grotesk
+   =========================== */
 @font-face {
   font-family: "Space Grotesk";
   src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Light.ttf") format("truetype");
@@ -34,6 +36,9 @@
   font-style: normal;
 }
 
+/* ===========================
+   Page background + defaults
+   =========================== */
 .page {
   min-height: 100vh;
   color: #fff;
@@ -54,13 +59,18 @@
     "Helvetica Neue", Arial;
 }
 
+/* ===========================
+   Top navigation
+   =========================== */
 .navbar {
   position: absolute;
-  top: 24px;
-  right: 40px;
+  top: 3rem;
+  right: 16rem; /* Move the nav toward center from the far right edge */
   display: flex;
-  gap: 40px;
-  font-size: 18px;
+  gap: 3rem;
+  font-size: 24px;
+  justify-content: center;
+  max-width: 80%;
 }
 
 .navLink {
@@ -71,22 +81,39 @@
 
 .navLink:hover {
   color: #ffffff;
+  font-weight: bold;
 }
 
+/* ===========================
+   Main layout (2 columns)
+   Left = text; Right = image
+   =========================== */
 .container {
-  max-width: 1120px;
+  /* Switch to a 2-column grid so HoverSwap sits on the right side */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center; /* Vertically center both columns */
+  gap: 16rem; /* Space between left and right */
+
+  max-width: 1120px; /* Tighter max width for desktop composition */
   margin: 0 auto;
   padding: 112px 32px 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   min-height: 100vh;
 }
 
 .leftCol {
-  max-width: 600px;
+  max-width: 800px;
 }
 
+.rightCol {
+  display: flex;
+  justify-content: flex-end; /* Push HoverSwap to the right edge of its column */
+  align-items: center;
+}
+
+/* ===========================
+   Brand/hero text
+   =========================== */
 .brandRow {
   display: flex;
   align-items: center;
@@ -108,6 +135,9 @@
   line-height: 1.2;
 }
 
+/* ===========================
+   CTA button
+   =========================== */
 .cta {
   margin-top: 28px;
   display: inline-flex;
@@ -117,13 +147,114 @@
   padding: 14px 22px;
   font-size: 18px;
   font-weight: 600;
-  background: rgba(171, 63, 191, 0.9);
+  background: #8e1149; /* Slightly deeper magenta to match your screenshot */
   color: white;
   box-shadow: 0 14px 30px rgba(171, 63, 191, 0.2);
   cursor: pointer;
   transition: background 0.3s;
+  font-family: "Space Grotesk";
 }
 
 .cta:hover {
   background: rgba(171, 63, 191, 1);
+}
+
+/* ===========================
+   Hover image swap component
+   Put two images on top of each other,
+   then cross-fade + transform on hover
+   =========================== */
+.swap {
+  position: relative;
+  width: 690px; /* updated to match the asset size */
+  height: 905px; /* updated to match the asset size */
+  outline: none;
+}
+
+.img {
+  position: absolute;
+  inset: 0;
+  width: 690px; /* exact size */
+  height: 905px; /* exact size */
+  object-fit: cover; /* for SVG, keeps bounding box; change to 'contain' if needed */
+  border-radius: 24px; /* match the background radius */
+  transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
+  z-index: 1;
+  top: 15%;
+  left: 0%;
+}
+
+/* Front image (shown by default) */
+.front {
+  opacity: 1;
+  transform: rotate(-2deg) translate(-4px, -2px);
+}
+
+/* Back image (hidden by default) */
+.back {
+  opacity: 0;
+  transform: rotate(4deg) translate(8px, 6px);
+}
+
+/* Swap on hover (and keyboard focus for accessibility) */
+.swap:hover .front,
+.swap:focus-visible .front {
+  opacity: 0;
+  transform: translate(-12px, -10px);
+  filter: blur(0.1px);
+}
+
+.swap:hover .back,
+.swap:focus-visible .back {
+  opacity: 1;
+  transform: rotate(2.12deg) translate(0, 0);
+  filter: none;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .img {
+    transition: none;
+  }
+}
+
+/* ===========================
+   Responsive: stack columns
+   =========================== */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr; /* Stack: left on top, right below */
+    gap: 28px;
+  }
+
+  .rightCol {
+    justify-content: center; /* Center the image on small screens */
+  }
+
+  .swap {
+    width: 100%; /* Make the preview fluid on mobile */
+    height: auto;
+    aspect-ratio: 690 / 905; /* keep the exact document ratio */
+  }
+
+  .img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* ===========================
+   Static background rectangle
+   (behind both images)
+   =========================== */
+.swapBackground {
+  position: absolute;
+  width: 680px; /* updated to match image size */
+  height: 905px; /* updated to match image size */
+  border-radius: 24px;
+  background-color: rgba(142, 17, 73, 0.6); /* #8E1149 with 60% transparency */
+  top: 70%;
+  left: 52%;
+  transform: translate(-50%, -50%) rotate(-2.12deg); /* centered + rotated as requested */
+  z-index: 0; /* stays behind the images */
 }
