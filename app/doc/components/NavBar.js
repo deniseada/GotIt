@@ -60,7 +60,7 @@ export default function NavBar({ title }) {
           alt="back arrow"
           className={styles.arrow}
         />
-        <div> Go back</div>
+        <div>back</div>
       </button>
     </div>
   );
