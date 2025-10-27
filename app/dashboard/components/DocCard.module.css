@@ -24,18 +24,7 @@
 }
 
 
-/* Ribbon button */
-/* .ribbon {
-    position: absolute;
-    right: 12px;
-    top: 0;
-    width: 18px;
-    height: 24px;
-    background: #b589d6;
-    clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-} */
+/* Bookmark button */
 
 .ribbonBtn {
     position: absolute;
@@ -71,8 +60,8 @@
 }
 
 .emoji {
-    width: 40px;
-    height: 40px;
+    /* width: 30px;
+    height: 30px; */
     border-radius: 999px;
     display: grid;
     place-items: center;

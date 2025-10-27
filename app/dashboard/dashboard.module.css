@@ -184,13 +184,15 @@
 }
 
 .filterInner {
-  padding: 12px;
+  padding: 10px;
 }
 
 .filterOption {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: white;
+  border: white;
   padding: 5px 6px;
 }
 
@@ -234,7 +236,7 @@
 }
 
 .filterEmotionIcons {
-  width: 35px;
+  width: 40px;
   display: block;
 }
 
