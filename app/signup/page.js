@@ -65,7 +65,7 @@ export default function SignUpPage() {
                         </button>
 
                         <p className={styles.signinText}>
-                            Already a member? <a href='/login'>Sign in</a>
+                            Already a member? <a href='/login'>Log in</a>
                         </p>
                     </form>
                 </div>
