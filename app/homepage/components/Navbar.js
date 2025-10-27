@@ -16,7 +16,7 @@ export default function Navbar() {
         href="https://dwong429.wixsite.com/gotit"
         className={styles.navLink}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="Blogs"
       >
         Blogs
       </a>

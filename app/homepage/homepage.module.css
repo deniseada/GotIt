@@ -45,15 +45,11 @@
   position: relative;
   overflow: hidden;
   background-image: radial-gradient(
-      1100px 700px at 20% -10%,
-      rgba(137, 80, 235, 0.55),
+      2285px 1235px at 50% -25%,
+      #7e57c2,
       transparent 60%
     ),
-    radial-gradient(
-      900px 600px at 80% 110%,
-      rgba(214, 68, 255, 0.35),
-      transparent 60%
-    ),
+    radial-gradient(900px 2514px at 40% 180%, #ad1057, transparent 60%),
     linear-gradient(180deg, #0b0b0e 40%, #161317 100%);
   font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial;
@@ -65,12 +61,13 @@
 .navbar {
   position: absolute;
   top: 3rem;
-  right: 16rem; /* Move the nav toward center from the far right edge */
+  right: 0;
+  left: 0;
   display: flex;
+  justify-content: flex-end;
   gap: 3rem;
-  font-size: 24px;
-  justify-content: center;
-  max-width: 80%;
+  font-size: 1.25rem;
+  padding: 0 8rem; /* equal left/right margin for desktop */
 }
 
 .navLink {
@@ -89,99 +86,82 @@
    Left = text; Right = image
    =========================== */
 .container {
-  /* Switch to a 2-column grid so HoverSwap sits on the right side */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center; /* Vertically center both columns */
-  gap: 16rem; /* Space between left and right */
+  align-items: center;
+  gap: 8rem;
 
-  max-width: 1120px; /* Tighter max width for desktop composition */
-  margin: 0 auto;
-  padding: 112px 32px 80px;
+  /* equal margin on both sides for large screen */
+  width: min(90%, 1280px);
+  margin-inline: auto;
+  padding-block: 8rem 5rem;
   min-height: 100vh;
 }
 
 .leftCol {
-  max-width: 800px;
+  max-width: 640px;
 }
 
 .rightCol {
   display: flex;
-  justify-content: flex-end; /* Push HoverSwap to the right edge of its column */
+  justify-content: flex-end;
   align-items: center;
 }
 
 /* ===========================
    Brand/hero text
    =========================== */
-.brandRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.brandText {
-  font-size: 64px;
-  font-weight: 600;
-  letter-spacing: -1.5px;
-  margin: 0;
-}
-
 .tagline {
-  margin-top: 32px;
-  font-size: 40px;
+  margin-top: 2rem;
+  font-size: clamp(1.8rem, 2.5vw + 1rem, 2.5rem);
   max-width: 520px;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 /* ===========================
    CTA button
    =========================== */
 .cta {
-  margin-top: 28px;
   display: inline-flex;
   align-items: center;
   border: none;
-  border-radius: 12px;
-  padding: 14px 22px;
-  font-size: 18px;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  background: #8e1149; /* Slightly deeper magenta to match your screenshot */
+  background: #8e1149;
   color: white;
-  box-shadow: 0 14px 30px rgba(171, 63, 191, 0.2);
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, box-shadow 0.3s;
   font-family: "Space Grotesk";
+  margin-top: 2rem;
 }
 
 .cta:hover {
-  background: rgba(171, 63, 191, 1);
+  background: #7e57c2;
+  box-shadow: 0 8px 32px #7e57c2;
 }
 
 /* ===========================
    Hover image swap component
-   Put two images on top of each other,
-   then cross-fade + transform on hover
    =========================== */
 .swap {
   position: relative;
-  width: 690px; /* updated to match the asset size */
-  height: 905px; /* updated to match the asset size */
+  width: 690px;
+  height: 905px;
   outline: none;
 }
 
 .img {
   position: absolute;
   inset: 0;
-  width: 690px; /* exact size */
-  height: 905px; /* exact size */
-  object-fit: cover; /* for SVG, keeps bounding box; change to 'contain' if needed */
-  border-radius: 24px; /* match the background radius */
+  width: 690px;
+  height: 905px;
+  object-fit: cover;
+  border-radius: 24px;
   transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
   z-index: 1;
-  top: 15%;
-  left: 0%;
 }
 
 /* Front image (shown by default) */
@@ -196,7 +176,7 @@
   transform: rotate(4deg) translate(8px, 6px);
 }
 
-/* Swap on hover (and keyboard focus for accessibility) */
+/* Swap on hover (and keyboard focus) */
 .swap:hover .front,
 .swap:focus-visible .front {
   opacity: 0;
@@ -208,53 +188,97 @@
 .swap:focus-visible .back {
   opacity: 1;
   transform: rotate(2.12deg) translate(0, 0);
-  filter: none;
-}
-
-/* Respect reduced-motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  .img {
-    transition: none;
-  }
-}
-
-/* ===========================
-   Responsive: stack columns
-   =========================== */
-@media (max-width: 900px) {
-  .container {
-    grid-template-columns: 1fr; /* Stack: left on top, right below */
-    gap: 28px;
-  }
-
-  .rightCol {
-    justify-content: center; /* Center the image on small screens */
-  }
-
-  .swap {
-    width: 100%; /* Make the preview fluid on mobile */
-    height: auto;
-    aspect-ratio: 690 / 905; /* keep the exact document ratio */
-  }
-
-  .img {
-    width: 100%;
-    height: 100%;
-  }
 }
 
 /* ===========================
    Static background rectangle
-   (behind both images)
    =========================== */
 .swapBackground {
   position: absolute;
-  width: 680px; /* updated to match image size */
-  height: 905px; /* updated to match image size */
+  width: 640px;
+  height: 880px;
   border-radius: 24px;
-  background-color: rgba(142, 17, 73, 0.6); /* #8E1149 with 60% transparency */
-  top: 70%;
-  left: 52%;
-  transform: translate(-50%, -50%) rotate(-2.12deg); /* centered + rotated as requested */
-  z-index: 0; /* stays behind the images */
+  background-color: rgba(142, 17, 73, 0.6);
+  top: 54%;
+  left: 54%;
+  transform: translate(-50%, -50%) rotate(-2.12deg);
+  z-index: 0;
+}
+
+/* ===========================
+   Responsive adjustments
+   =========================== */
+
+/* Tablet breakpoint */
+@media (max-width: 1200px) {
+  .container {
+    gap: 6rem;
+    width: min(92%, 1100px);
+    padding-block: 6rem 4rem;
+  }
+
+  .swap {
+    width: 560px;
+    height: 736px;
+  }
+
+  .img,
+  .swapBackground {
+    width: 560px;
+    height: 736px;
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    width: min(92%, 720px);
+    text-align: center;
+  }
+
+  .navbar {
+    justify-content: center;
+    gap: 2rem;
+    padding: 0 2rem;
+    font-size: 1rem;
+  }
+
+  .rightCol {
+    justify-content: center;
+  }
+
+  .swap {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 690 / 905;
+  }
+
+  .img,
+  .swapBackground {
+    width: 100%;
+    height: 100%;
+  }
+
+  .cta {
+    margin-inline: auto;
+  }
+}
+
+/* Small mobile breakpoint */
+@media (max-width: 600px) {
+  .tagline {
+    font-size: 1.75rem;
+  }
+
+  .cta {
+    font-size: 1rem;
+    padding: 0.9rem 1.6rem;
+  }
+
+  .navbar {
+    font-size: 0.95rem;
+    gap: 1.25rem;
+  }
 }
