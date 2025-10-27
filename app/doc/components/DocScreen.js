@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 import styles from "../mvp.module.css";
 import NavBar from "./NavBar";
+import Link from "next/link";
 
 // Components
 import SplitView from "./SplitView";
