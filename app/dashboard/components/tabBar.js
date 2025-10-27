@@ -307,15 +307,17 @@ const [cardList, setCardList] = useState(cards);
       {/* Rendering Cards */}
       <CustomTabPanel value={value} index={0}>
         <div className={styles.contentWrap}>
-          <UploadButton />
-            {renderGrid()}
+          <div className={styles.cardsGrid}>
+            <UploadButton />
+          </div>
+              {renderGrid()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
         <div className={styles.contentWrap}>
-          <UploadButton />
-          {renderGrid()}
+            <UploadButton />
+            {renderGrid()}
         </div>
       </CustomTabPanel>
 
