@@ -58,7 +58,6 @@
 /* active/bookmarked */
 .ribbonActive {
     background-color: #facc15; /* yellow (e.g., Tailwind amber-400) */
-    /* box-shadow: 0 0 0 1px #d97706 inset; */
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
     transform: scale(1.05);
 }
@@ -87,9 +86,9 @@
 }
 
 /* Emotion tints */
-.confident { background: #e9f8ee; }  /* light green */
-.needs     { background: #fdecec; }  /* light red */
-.neutral   { background: #f2f2f2; }  /* light gray */
+.confident { background: #e9f8ee; }
+.needs     { background: #fdecec; }
+.neutral   { background: #f2f2f2; }
 
 .kebab {
     width: 40px;

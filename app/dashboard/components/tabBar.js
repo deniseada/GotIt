@@ -73,6 +73,30 @@ export default function TabBar() {
     },
   ];
 
+  const renderGrid = () => (
+    <div className={styles.cardsGrid}>
+      {filteredCards.length === 0 ? (
+        <p className={styles.emptyState}>No items match this filter.</p>
+      ) : (
+        filteredCards.map((c) => (
+          <DocCard
+            key={c.id}
+            {...c}
+            onToggleBookmark={() =>
+              setCardList((prev) =>
+                prev.map((card) =>
+                  card.id === c.id
+                    ? { ...card, bookmarked: !card.bookmarked }
+                    : card
+                )
+              )
+            }
+          />
+        ))
+      )}
+    </div>
+  );
+
   // Bookmark states
 const [cardList, setCardList] = useState(cards);
 
@@ -121,12 +145,11 @@ const [cardList, setCardList] = useState(cards);
       default: // All
         base = cardList;
     }
-
     if (emotion !== "none") {
       base = base.filter((c) => (c.emotion || "neutral") === emotion);
     }
     return base;
-  }, [cards, value, emotion]);
+  }, [cardList, value, emotion]);
 
   // Render once; content changes with filters
   const Content = (
@@ -136,8 +159,8 @@ const [cardList, setCardList] = useState(cards);
       ) : (
         <div className={styles.cardsGrid}>
           {filteredCards.map((c) => (
-            <DocCard key=
-              {c.id} 
+            <DocCard 
+              key={c.id} 
               {...c}
               onToggleBookmark={() =>
                 setCardList((prev) =>
@@ -285,69 +308,37 @@ const [cardList, setCardList] = useState(cards);
       <CustomTabPanel value={value} index={0}>
         <div className={styles.contentWrap}>
           <UploadButton />
-          {/* Cards below the button */}
-          <div className={styles.cardsGrid}>
-            {filteredCards.length === 0 ? (
-              <p className={styles.emptyState}>No items match this filter.</p>
-            ) : (
-              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
-            )}
-          </div>
+            {renderGrid()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
         <div className={styles.contentWrap}>
           <UploadButton />
-          <div className={styles.cardsGrid}>
-            {filteredCards.length === 0 ? (
-              <p className={styles.emptyState}>No items match this filter.</p>
-            ) : (
-              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
-            )}
-          </div>
+          {renderGrid()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>
         <div className={styles.contentWrap}>
           <UploadButton />
-          <div className={styles.cardsGrid}>
-            {filteredCards.length === 0 ? (
-              <p className={styles.emptyState}>No items match this filter.</p>
-            ) : (
-              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
-            )}
-          </div>
+          {renderGrid()}
         </div>
       </CustomTabPanel>
 
 <CustomTabPanel value={value} index={3}>
         <div className={styles.contentWrap}>
           <UploadButton />
-          <div className={styles.cardsGrid}>
-            {filteredCards.length === 0 ? (
-              <p className={styles.emptyState}>No items match this filter.</p>
-            ) : (
-              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
-            )}
-          </div>
+          {renderGrid()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={4}>
         <div className={styles.contentWrap}>
           <UploadButton />
-          <div className={styles.cardsGrid}>
-            {filteredCards.length === 0 ? (
-              <p className={styles.emptyState}>No items match this filter.</p>
-            ) : (
-              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
-            )}
-          </div>
+          {renderGrid()}
         </div>
       </CustomTabPanel>
-      {/* If you have tabs 3 & 4, add panels similarly */}
 
     </Box>
   );
