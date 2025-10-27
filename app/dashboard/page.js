@@ -16,7 +16,7 @@ export default function DashboardPage() {
         <Nav />
         <SearchBar />
         <TabBar />
-        <section className="p-6 grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+        {/* <section className="p-6 grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
                 {cards.map((c) => (
                     <Link
                     key={c.id}
@@ -27,8 +27,7 @@ export default function DashboardPage() {
                     <p className="text-sm opacity-80">Open {c.title}</p>
                     </Link>
                 ))}
-            </section>
+            </section> */}
         {/* <NavBar /> */}
-        <p>Hi there from the dashboard!</p>
     </div>;
 }

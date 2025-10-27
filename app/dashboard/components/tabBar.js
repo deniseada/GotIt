@@ -1,15 +1,14 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import styles from "../dashboard.module.css";
-import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import UploadButton from "./uploadButton";
+import DocCard from "../components/DocCard"; 
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -23,12 +22,6 @@ function CustomTabPanel(props) {
   );
 }
 
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -37,13 +30,48 @@ function a11yProps(index) {
 }
 
 export default function TabBar() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(0); // 0 All, 1 Recent, 2 Bookmarked, 3 Course Books, 4 Uploaded
   const [filterOpen, setFilterOpen] = useState(false);
+  const [emotion, setEmotion] = useState("none"); // "none" | "confident" | "needs" | "neutral"
   const filterRef = useRef(null);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const handleChange = (_e, newValue) => setValue(newValue);
+
+  // --- Sample data (replace with real data later)
+  const cards = [
+    {
+      id: "1",
+      title: "Electrical Codes and Regulations",
+      category: "Course Books",
+      bookmarked: true,
+      updatedAt: "2025-10-20T18:12:00.000Z",
+      emotion: "confident",
+    },
+    {
+      id: "2",
+      title: "Lecture Slides - Chp 3 to 6",
+      category: "Uploaded",
+      bookmarked: false,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "confident",
+    },
+        {
+      id: "3",
+      title: "Electrical Codes and Regulations",
+      category: "Course Books",
+      bookmarked: false,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "needs",
+    },
+        {
+      id: "4",
+      title: "Lecture Slides - Chp 1 to 2",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "neutral",
+    },
+  ];
 
   useEffect(() => {
     function onDocClick(e) {
@@ -51,11 +79,9 @@ export default function TabBar() {
         setFilterOpen(false);
       }
     }
-
     function onKey(e) {
       if (e.key === "Escape") setFilterOpen(false);
     }
-
     document.addEventListener("click", onDocClick);
     document.addEventListener("keydown", onKey);
     return () => {
@@ -68,6 +94,50 @@ export default function TabBar() {
     e.stopPropagation();
     setFilterOpen((s) => !s);
   };
+
+  // Card Filtering
+  const filteredCards = useMemo(() => {
+    let base = cards;
+
+    switch (value) {
+      case 1: // Recent
+        base = [...cards].sort(
+          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+        );
+        break;
+      case 2: // Bookmarked
+        base = cards.filter((c) => c.bookmarked);
+        break;
+      case 3: // Course Books
+        base = cards.filter((c) => c.category === "Course Books");
+        break;
+      case 4: // Uploaded
+        base = cards.filter((c) => c.category === "Uploaded");
+        break;
+      default: // All
+        base = cards;
+    }
+
+    if (emotion !== "none") {
+      base = base.filter((c) => (c.emotion || "neutral") === emotion);
+    }
+    return base;
+  }, [cards, value, emotion]);
+
+  // Render once; content changes with filters
+  const Content = (
+    <div className={styles.contentWrap}>
+      {filteredCards.length === 0 ? (
+        <p className={styles.emptyState}>No items match this filter.</p>
+      ) : (
+        <div className={styles.cardsGrid}>
+          {filteredCards.map((c) => (
+            <DocCard key={c.id} {...c} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -87,6 +157,7 @@ export default function TabBar() {
           </Tabs>
         </div>
 
+        {/* FILTER */}
         <div className={styles.filterContainer} ref={filterRef}>
           <button
             className={styles.filterPill}
@@ -95,7 +166,15 @@ export default function TabBar() {
             aria-expanded={filterOpen}
             type="button"
           >
-            <span className={styles.filterText}>No Filter</span>
+            <span className={styles.filterText}>
+              {emotion === "none"
+                ? "No Filter"
+                : emotion === "confident"
+                ? "Confident"
+                : emotion === "needs"
+                ? "Needs Review"
+                : "Neutral"}
+            </span>
           </button>
 
           <button
@@ -104,17 +183,20 @@ export default function TabBar() {
             onClick={toggleFilter}
             aria-label="Open filters"
           >
-            <img
-              src="/icons/filterIcon.svg"
-              className={styles.filterIcon}
-              alt=""
-            />
+            <img src="/icons/filterIcon.svg" className={styles.filterIcon} alt="" />
           </button>
 
           {filterOpen && (
             <div className={styles.filterMenu} role="menu">
               <div className={styles.filterInner}>
-                <div className={styles.filterOption} role="menuitem">
+                <button
+                  className={styles.filterOption}
+                  role="menuitem"
+                  onClick={() => {
+                    setEmotion("confident");
+                    setFilterOpen(false);
+                  }}
+                >
                   <span className={styles.optionPill}>Confident</span>
                   <span className={styles.optionIcon} aria-hidden>
                     <img
@@ -123,38 +205,60 @@ export default function TabBar() {
                       className={styles.filterEmotionIcons}
                     />
                   </span>
-                </div>
+                </button>
 
                 <div className={styles.separator} />
 
-                <div className={styles.filterOption} role="menuitem">
+                <button
+                  className={styles.filterOption}
+                  role="menuitem"
+                  onClick={() => {
+                    setEmotion("needs");
+                    setFilterOpen(false);
+                  }}
+                >
                   <span className={styles.optionPillNeeds}>Needs Review</span>
                   <span className={styles.optionIcon} aria-hidden>
                     <img
                       src="/icons/sadFilter.svg"
-                      alt="sad"
+                      alt="Needs review"
                       className={styles.filterEmotionIcons}
                     />
                   </span>
-                </div>
+                </button>
 
                 <div className={styles.separator} />
 
-                <div className={styles.filterOption} role="menuitem">
+                <button
+                  className={styles.filterOption}
+                  role="menuitem"
+                  onClick={() => {
+                    setEmotion("neutral");
+                    setFilterOpen(false);
+                  }}
+                >
                   <span className={styles.optionPillNeutral}>Neutral</span>
                   <span className={styles.optionIcon} aria-hidden>
                     <img
                       src="/icons/neutralFilter.svg"
-                      alt="neutral"
+                      alt="Neutral"
                       className={styles.filterEmotionIcons}
                     />
                   </span>
-                </div>
+                </button>
 
                 <div className={styles.separator} />
 
                 <div className={styles.filterFooter}>
-                  <button className={styles.clearFilterBtn}>No Filter</button>
+                  <button
+                    className={styles.clearFilterBtn}
+                    onClick={() => {
+                      setEmotion("none");
+                      setFilterOpen(false);
+                    }}
+                  >
+                    No Filter
+                  </button>
                 </div>
               </div>
             </div>
@@ -162,22 +266,75 @@ export default function TabBar() {
         </div>
       </div>
 
-      {/* ADD CONTENT HERE: folders and sections */}
+
+      {/* Rendering Cards */}
       <CustomTabPanel value={value} index={0}>
         <div className={styles.contentWrap}>
           <UploadButton />
+          {/* Cards below the button */}
+          <div className={styles.cardsGrid}>
+            {filteredCards.length === 0 ? (
+              <p className={styles.emptyState}>No items match this filter.</p>
+            ) : (
+              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
+            )}
+          </div>
         </div>
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={1}>
         <div className={styles.contentWrap}>
           <UploadButton />
+          <div className={styles.cardsGrid}>
+            {filteredCards.length === 0 ? (
+              <p className={styles.emptyState}>No items match this filter.</p>
+            ) : (
+              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
+            )}
+          </div>
         </div>
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={2}>
         <div className={styles.contentWrap}>
           <UploadButton />
+          <div className={styles.cardsGrid}>
+            {filteredCards.length === 0 ? (
+              <p className={styles.emptyState}>No items match this filter.</p>
+            ) : (
+              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
+            )}
+          </div>
         </div>
       </CustomTabPanel>
+
+<CustomTabPanel value={value} index={3}>
+        <div className={styles.contentWrap}>
+          <UploadButton />
+          <div className={styles.cardsGrid}>
+            {filteredCards.length === 0 ? (
+              <p className={styles.emptyState}>No items match this filter.</p>
+            ) : (
+              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
+            )}
+          </div>
+        </div>
+      </CustomTabPanel>
+
+      <CustomTabPanel value={value} index={4}>
+        <div className={styles.contentWrap}>
+          <UploadButton />
+          <div className={styles.cardsGrid}>
+            {filteredCards.length === 0 ? (
+              <p className={styles.emptyState}>No items match this filter.</p>
+            ) : (
+              filteredCards.map((c) => <DocCard key={c.id} {...c} />)
+            )}
+          </div>
+        </div>
+      </CustomTabPanel>
+      {/* If you have tabs 3 & 4, add panels similarly */}
+
     </Box>
   );
 }
