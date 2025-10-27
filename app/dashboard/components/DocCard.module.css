@@ -23,7 +23,9 @@
     color: #522A70;
 }
 
-.ribbon {
+
+/* Ribbon button */
+/* .ribbon {
     position: absolute;
     right: 12px;
     top: 0;
@@ -33,7 +35,34 @@
     clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
+} */
+
+.ribbonBtn {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    width: 20px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+    background-color: #bca5d8; /* purple outline color */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.ribbonBtn:hover {
+    box-shadow: 0 0 0 2px #d8c8ef inset;
+}
+
+/* active/bookmarked */
+.ribbonActive {
+    background-color: #facc15; /* yellow (e.g., Tailwind amber-400) */
+    /* box-shadow: 0 0 0 1px #d97706 inset; */
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
 
 .row {
     display: flex;

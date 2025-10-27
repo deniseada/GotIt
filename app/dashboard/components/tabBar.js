@@ -73,6 +73,10 @@ export default function TabBar() {
     },
   ];
 
+  // Bookmark states
+const [cardList, setCardList] = useState(cards);
+
+  // Close filter menu on outside click or Escape key
   useEffect(() => {
     function onDocClick(e) {
       if (filterRef.current && !filterRef.current.contains(e.target)) {
@@ -97,25 +101,25 @@ export default function TabBar() {
 
   // Card Filtering
   const filteredCards = useMemo(() => {
-    let base = cards;
+    let base = cardList;
 
     switch (value) {
       case 1: // Recent
-        base = [...cards].sort(
+        base = [...cardList].sort(
           (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
         );
         break;
       case 2: // Bookmarked
-        base = cards.filter((c) => c.bookmarked);
+        base = cardList.filter((c) => c.bookmarked);
         break;
       case 3: // Course Books
-        base = cards.filter((c) => c.category === "Course Books");
+        base = cardList.filter((c) => c.category === "Course Books");
         break;
       case 4: // Uploaded
-        base = cards.filter((c) => c.category === "Uploaded");
+        base = cardList.filter((c) => c.category === "Uploaded");
         break;
       default: // All
-        base = cards;
+        base = cardList;
     }
 
     if (emotion !== "none") {
@@ -132,7 +136,17 @@ export default function TabBar() {
       ) : (
         <div className={styles.cardsGrid}>
           {filteredCards.map((c) => (
-            <DocCard key={c.id} {...c} />
+            <DocCard key=
+              {c.id} 
+              {...c}
+              onToggleBookmark={() =>
+                setCardList((prev) =>
+                  prev.map((card) =>
+                    card.id === c.id ? { ...card, bookmarked: !card.bookmarked } : card
+                  )
+                )
+              }
+            />
           ))}
         </div>
       )}
