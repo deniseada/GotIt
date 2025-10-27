@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "./homepage.module.css";
 import Navbar from "./components/Navbar";
 import HoverSwap from "./components/HoverSwap";
+import Link from "next/link";
 
 /**
  * Homepage: left column (logo + text + CTA),
@@ -19,19 +20,21 @@ export default function GotItHomepage() {
       <main className={styles.container}>
         {/* left side: brand + tagline + CTA */}
         <section className={styles.leftCol}>
-          <Image
-            src="/logo/Logo.svg"
-            alt="Got It Logo"
-            width={360}
-            height={110.12}
-            priority
-          />
-          <p className={styles.tagline}>
-            Confidence starts
-            <br />
-            with clarity
-          </p>
-          <button className={styles.cta}>Sign Up</button>
+            <Image
+              src="/logo/Logo.svg"
+              alt="Got It Logo"
+              width={360}
+              height={110.12}
+              priority
+            />
+            <p className={styles.tagline}>
+              Confidence starts
+              <br />
+              with clarity
+            </p>
+          <Link href="/dashboard">
+            <button className={styles.cta}>Sign Up</button>
+          </Link>
         </section>
 
         {/* right side: hover-swap image */}
