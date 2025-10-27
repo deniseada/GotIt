@@ -104,7 +104,7 @@ export default function DocScreen() {
         <Box
           sx={{
             width: `${Math.min(900, 700 * zoom)}px`,
-            height: "600px",
+            height: "100%",
             bgcolor: "common.white",
             borderRadius: 2,
             boxShadow: 4,

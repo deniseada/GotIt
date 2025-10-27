@@ -1,6 +1,6 @@
 /* NAV BAR CSS */
 .navBar {
-  max-width: 1200px;
+  max-width: 80%;
   margin: 0 auto;
   padding: 2em 20px 20px 20px;
   display: flex;
