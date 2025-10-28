@@ -50,6 +50,7 @@ export default function SignUpPage() {
                             <img
                                 src='https://developers.google.com/identity/images/g-logo.png'
                                 alt='Google logo'
+                                
                             />
                             Sign Up with Google
                         </button>
