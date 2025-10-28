@@ -1,3 +1,4 @@
+import { Search } from "@mui/icons-material";
 import styles from "../dashboard.module.css";
 import Link from "next/link";
 
@@ -5,7 +6,7 @@ export default function Nav() {
   return (
     <div className={styles.navBar}>
       <div className={styles.leftGroup}>
-        <Link href="/dashboard"> 
+        <Link href="/dashboard">
           <div className={styles.brand}>
             <img
               src="/icons/gotit.svg"
