@@ -7,7 +7,7 @@
     padding: 10px 12px 12px;
     height: 100%;
     position: relative;
-}
+} 
 
 .topBar {
     height: 50px;
@@ -15,14 +15,13 @@
     margin: -10px -12px 8px;
     padding: 6px 12px 0;
     position: relative;
-}
+} 
 
 .kind {
     font-size: 1.6rem;
     font-weight: 400;
     color: #522A70;
 }
-
 
 /* Bookmark button */
 
@@ -36,7 +35,7 @@
     border: none;
     cursor: pointer;
     clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
-    background-color: #bca5d8; /* purple outline color */
+    background-color: #bca5d8;
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
