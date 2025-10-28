@@ -32,7 +32,7 @@ export default function GotItHomepage() {
               <br />
               with clarity
             </p>
-          <Link href="/dashboard">
+          <Link href="/login">
             <button className={styles.cta}>Sign Up</button>
           </Link>
         </section>

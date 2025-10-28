@@ -3,6 +3,9 @@
 import React from "react";
 import styles from "./signup.module.css";
 
+// Page linking
+import Link from "next/link";
+
 export default function SignUpPage() {
   return (
     <div className={styles.authContainer}>
@@ -65,7 +68,7 @@ export default function SignUpPage() {
             </button>
 
             <p className={styles.signinText}>
-              Already a member? <a href="/login">Log in</a>
+              Already a member? <Link href="/dashboard">Log in</Link>
             </p>
           </form>
         </div>
@@ -75,7 +78,7 @@ export default function SignUpPage() {
       <div className={styles.authHeroSection}>
         <div className={styles.overlay}>
           <img
-            src="icons/signup.png"
+            src="/icons/signin.png"
             alt="Hero Image"
             className={styles.heroImage}
           />
