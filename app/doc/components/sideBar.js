@@ -1,22 +1,25 @@
 import styles from "../mvp.module.css";
 
-export default function SideBar({ title = "Part V: Circuits", items = [] }) {
+export default function SideBar({
+  title = "Unit 1: Atomic Structure",
+  items = [],
+}) {
   // Default items if none provided
   const defaultItems = [
-    { href: "#circuits-overview", label: "Circuits Overview" },
-    { href: "#power-circuit", label: "Power Circuit" },
+    { href: "#early-history", label: "Early History of Electricity" },
+    { href: "#Atoms", label: "Atoms" },
     {
-      href: "#control-circuit-source",
-      label: "Control Circuit's Source of Supply",
+      href: "#the-law-of-charges",
+      label: "The Law of Charges",
     },
     {
-      href: "#automatic-control-circuits",
-      label: "Automatic Control Circuits",
+      href: "#structure-of-the-atom",
+      label: "Structure of the Atom",
     },
-    { href: "#sump-pump-circuit", label: "Sump-Pump Circuit" },
-    { href: "#reservoir-circuit", label: "Reservoir Circuit" },
-    { href: "#manual-circuits", label: "Manual Circuits" },
-    { href: "#three-wire-circuit", label: "Three-Wire Circuit" },
+    { href: "#electron-orbits", label: "Electron Orbits" },
+    { href: "#valence-electrons", label: "Valence Electrons" },
+    { href: "#electron-flow", label: "Electron Flow" },
+    { href: "#insulators", label: "Insulators" },
   ];
 
   const menuItems = items.length > 0 ? items : defaultItems;
