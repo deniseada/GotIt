@@ -30,8 +30,8 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
               <img
                 src={
                   isBookmarked
-                    ? "/icons/bookmarkTrue.svg"
-                    : "/icons/bookmarkFalse.svg"
+                    ? "/icons/bookMarkTrue.svg"
+                    : "/icons/bookMarkFalse.svg"
                 }
                 alt="bookmark"
                 className={styles.bookmarkImg}
@@ -58,14 +58,14 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
         </div>
       </div>
       <Link href={backHref} className="rounded px-3 py-1 border">
-      <button className={styles.backBtnContainer}>
+        <button className={styles.backBtnContainer}>
           <img
             src="/icons/arrowDown.svg"
             alt="back arrow"
             className={styles.arrow}
           />
-        <div>back</div>
-      </button>
+          <div>back</div>
+        </button>
       </Link>
     </div>
   );
