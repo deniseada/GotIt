@@ -75,7 +75,7 @@ export default function SignUpPage() {
       <div className={styles.authHeroSection}>
         <div className={styles.overlay}>
           <img
-            src="icons/signup.png"
+            src="/icons/login.png"
             alt="Hero Image"
             className={styles.heroImage}
           />
