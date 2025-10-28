@@ -127,6 +127,19 @@
   color: #522a70 !important;
 }
 
+/* Make the selected tab have a darker filled background (square look) */
+.TabBar :global(.MuiTab-root.Mui-selected) {
+  background-color: rgba(82, 42, 112, 0.16) !important;
+  color: #522a70 !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+}
+
+/* Keep the selected look when hovered */
+.TabBar :global(.MuiTab-root.Mui-selected:hover) {
+  background-color: rgba(82, 42, 112, 0.18) !important;
+}
+
 /* Filter styling */
 .filterContainer {
   display: flex;

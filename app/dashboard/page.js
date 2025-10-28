@@ -17,9 +17,19 @@ export default function DashboardPage() {
       <Nav />
       <SearchBar />
       <TabBar />
-
+      {/* <section className="p-6 grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+                {cards.map((c) => (
+                    <Link
+                    key={c.id}
+                    href="/doc"
+                    className="rounded-lg border p-4 hover:shadow"
+                    >
+                    <h2 className="font-semibold">{c.title}</h2>
+                    <p className="text-sm opacity-80">Open {c.title}</p>
+                    </Link>
+                ))}
+            </section> */}
       {/* <NavBar /> */}
-      <p>Hi there from the dashboard!</p>
     </div>
   );
 }
