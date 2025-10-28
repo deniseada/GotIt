@@ -124,7 +124,7 @@ body {
 /* Content below Toolbar gets padding so it isn't hidden */
 .contentUnderToolbar {
   padding-top: 64px;
-  background-color: #522a7080;
+  background-color: #DCD4E2;
 }
 
 /* when there is NO brand/header above */
