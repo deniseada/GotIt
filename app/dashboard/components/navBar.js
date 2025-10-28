@@ -1,4 +1,3 @@
-import { Search } from "@mui/icons-material";
 import styles from "../dashboard.module.css";
 
 export default function Nav() {
