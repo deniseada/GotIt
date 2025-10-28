@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import styles from "./login.module.css";
+import styles from "./signup.module.css";
 
 // Page linking
 import Link from "next/link";
@@ -12,12 +12,22 @@ export default function SignUpPage() {
       {/* LEFT SIDE */}
       <div className={styles.authFormSection}>
         <div className={styles.authFormWrapper}>
-          <h1 className={styles.title}>Welcome back!</h1>
+          <h1 className={styles.title}>Welcome!</h1>
           <p className={styles.subtitle}>
             Start your learning journey in the trades today!
           </p>
 
           <form>
+            <label htmlFor="name" className={styles.label}>
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              placeholder="Enter your name"
+              className={styles.input}
+            />
+
             <label htmlFor="email" className={styles.label}>
               Email
             </label>
@@ -42,9 +52,9 @@ export default function SignUpPage() {
             </div>
 
             <Link href="/dashboard">
-                <button type="submit" className={styles.btnPrimary}>
-                Login
-                </button>
+              <button type="submit" className={styles.btnPrimary}>
+                Sign Up
+              </button>
             </Link>
 
             <div className={styles.divider}>
@@ -52,17 +62,17 @@ export default function SignUpPage() {
             </div>
 
             <Link href="/dashboard">
-                <button type="button" className={styles.btnGoogle}>
+              <button type="button" className={styles.btnGoogle}>
                 <img
-                    src="https://developers.google.com/identity/images/g-logo.png"
-                    alt="Google logo"
-                />
-                Log In with Google
-                </button>
+                  src="https://developers.google.com/identity/images/g-logo.png"
+                  alt="Google logo"
+                  />
+                Sign Up with Google
+              </button>
             </Link>
 
             <p className={styles.signinText}>
-              Not a member? <Link href="/signup">Sign Up</Link>
+              Already a member? <Link href="/login">Log in</Link>
             </p>
           </form>
         </div>
@@ -72,7 +82,7 @@ export default function SignUpPage() {
       <div className={styles.authHeroSection}>
         <div className={styles.overlay}>
           <img
-            src="/icons/signin.png"
+            src="/icons/login.png"
             alt="Hero Image"
             className={styles.heroImage}
           />

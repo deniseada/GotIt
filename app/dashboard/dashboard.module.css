@@ -1,6 +1,6 @@
 /* NAV BAR CSS */
 .navBar {
-  max-width: 1200px;
+  max-width: 80%;
   margin: 0 auto;
   padding: 2em 20px 20px 20px;
   display: flex;
@@ -63,13 +63,14 @@
   background-color: #522a7040;
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 100%;
   height: 250px;
   border-radius: 13px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-}
+  margin-bottom: 2rem;
+} 
 
 .uploadButton {
   background-color: #522a70;
@@ -183,13 +184,15 @@
 }
 
 .filterInner {
-  padding: 12px;
+  padding: 10px;
 }
 
 .filterOption {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: white;
+  border: white;
   padding: 5px 6px;
 }
 
@@ -233,7 +236,7 @@
 }
 
 .filterEmotionIcons {
-  width: 35px;
+  width: 40px;
   display: block;
 }
 
@@ -248,9 +251,8 @@
 }
 
 .contentWrap {
-  max-width: 1200px;
+  max-width: 1150px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 /* Modal styles for upload dialog */
@@ -353,4 +355,20 @@
     width: 100%;
     padding: 12px 18px;
   }
+}
+
+/* Card CSS */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap: 3rem;
+  padding: 1rem;
+}
+
+.emptyState {
+  font-size: 14px;
+}
+
+.br {
+  color: black;
 }
