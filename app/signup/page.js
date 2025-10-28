@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import styles from "./login.module.css";
+import styles from "./signup.module.css";
 
 export default function SignUpPage() {
     return (
@@ -9,12 +9,22 @@ export default function SignUpPage() {
             {/* LEFT SIDE */}
             <div className={styles.authFormSection}>
                 <div className={styles.authFormWrapper}>
-                    <h1 className={styles.title}>Welcome back!</h1>
+                    <h1 className={styles.title}>Welcome!</h1>
                     <p className={styles.subtitle}>
                         Start your learning journey in the trades today!
                     </p>
 
                     <form>
+                        <label htmlFor='name' className={styles.label}>
+                            Name
+                        </label>
+                        <input
+                            type='text'
+                            id='name'
+                            placeholder='Enter your name'
+                            className={styles.input}
+                        />
+
                         <label htmlFor='email' className={styles.label}>
                             Email
                         </label>
@@ -39,7 +49,7 @@ export default function SignUpPage() {
                         </div>
 
                         <button type='submit' className={styles.btnPrimary}>
-                            Login
+                            Sign Up
                         </button>
 
                         <div className={styles.divider}>
@@ -55,7 +65,7 @@ export default function SignUpPage() {
                         </button>
 
                         <p className={styles.signinText}>
-                            Not a member? <a href='/login'>Sign Up</a>
+                            Already a member? <a href='/login'>Log in</a>
                         </p>
                     </form>
                 </div>
