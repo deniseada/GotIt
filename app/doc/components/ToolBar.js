@@ -255,25 +255,6 @@ export default function ToolBar({
                     </button>
                   ))}
                 </div>
-                <div className={styles.thicknessTitle}>Thickness</div>
-                <div className={styles.thicknessRow}>
-                  <div
-                    className={styles.smallCircle}
-                    style={{ background: "#5e35b1" }}
-                  />
-                  <input
-                    type="range"
-                    min={1}
-                    max={8}
-                    value={thickness}
-                    onChange={(e) => setThickness(Number(e.target.value))}
-                    className={styles.thicknessSlider}
-                  />
-                  <div
-                    className={styles.bigCircle}
-                    style={{ background: "#5e35b1" }}
-                  />
-                </div>
               </div>,
               document.body
             )}
@@ -341,6 +322,20 @@ export default function ToolBar({
                     A+
                   </button>
                 </div>
+                <div className={styles.thicknessTitle}>Letter Spacing</div>
+                <div className={styles.thicknessRow}>
+                  <div className={styles.smallCircle}>A</div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={8}
+                    value={thickness}
+                    onChange={(e) => setThickness(Number(e.target.value))}
+                    className={styles.thicknessSlider}
+                  />
+                  <div className={styles.bigCircle}>A</div>
+                </div>
+
                 <div className={styles.textTitle} style={{ marginTop: 12 }}>
                   Bold and Italic
                 </div>
