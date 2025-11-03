@@ -21,6 +21,28 @@ export default function SettingsOverlay({ open, onClose }) {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
+  // Account Settings Modals
+  const [changeEmailModalOpen, setChangeEmailModalOpen] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [twoFactorModalOpen, setTwoFactorModalOpen] = useState(false);
+
+  // Change Email Form State
+  const [changeEmailData, setChangeEmailData] = useState({
+    currentEmail: "",
+    newEmail: "",
+    verificationCode: "",
+  });
+  const [resendTimer, setResendTimer] = useState(0);
+
+  // Change Password Form State
+  const [changePasswordData, setChangePasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+  });
+
+  // Two-Factor Authentication State
+  const [selectedTwoFactor, setSelectedTwoFactor] = useState("app");
+
   const languages = [
     "English",
     "Spanish",
@@ -246,7 +268,10 @@ export default function SettingsOverlay({ open, onClose }) {
                 <h2 className={styles.sectionTitle}>Account Settings</h2>
                 <div className={styles.settingsList}>
                   {/* Change E-mail */}
-                  <button className={styles.accountSettingItem}>
+                  <button
+                    className={styles.accountSettingItem}
+                    onClick={() => setChangeEmailModalOpen(true)}
+                  >
                     <span className={styles.settingLabel}>Change E-mail</span>
                     <svg
                       width="16"
@@ -267,7 +292,10 @@ export default function SettingsOverlay({ open, onClose }) {
                   </button>
 
                   {/* Change Password */}
-                  <button className={styles.accountSettingItem}>
+                  <button
+                    className={styles.accountSettingItem}
+                    onClick={() => setChangePasswordModalOpen(true)}
+                  >
                     <span className={styles.settingLabel}>Change Password</span>
                     <svg
                       width="16"
@@ -288,7 +316,10 @@ export default function SettingsOverlay({ open, onClose }) {
                   </button>
 
                   {/* Two-Factor Authenticator */}
-                  <button className={styles.accountSettingItem}>
+                  <button
+                    className={styles.accountSettingItem}
+                    onClick={() => setTwoFactorModalOpen(true)}
+                  >
                     <span className={styles.settingLabel}>Two-Factor Authenticator</span>
                     <svg
                       width="16"
@@ -371,6 +402,35 @@ export default function SettingsOverlay({ open, onClose }) {
           </main>
         </div>
       </div>
+
+      {/* Change Email Modal */}
+      {changeEmailModalOpen && (
+        <ChangeEmailModal
+          data={changeEmailData}
+          onChange={setChangeEmailData}
+          resendTimer={resendTimer}
+          setResendTimer={setResendTimer}
+          onClose={() => setChangeEmailModalOpen(false)}
+        />
+      )}
+
+      {/* Change Password Modal */}
+      {changePasswordModalOpen && (
+        <ChangePasswordModal
+          data={changePasswordData}
+          onChange={setChangePasswordData}
+          onClose={() => setChangePasswordModalOpen(false)}
+        />
+      )}
+
+      {/* Two-Factor Authenticator Modal */}
+      {twoFactorModalOpen && (
+        <TwoFactorModal
+          selected={selectedTwoFactor}
+          onChange={setSelectedTwoFactor}
+          onClose={() => setTwoFactorModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
@@ -467,6 +527,320 @@ function InfoField({
           />
         </svg>
       </button>
+    </div>
+  );
+}
+
+// Change Email Modal Component
+function ChangeEmailModal({ data, onChange, resendTimer, setResendTimer, onClose }) {
+  const handleChange = (field, value) => {
+    onChange({ ...data, [field]: value });
+  };
+
+  React.useEffect(() => {
+    let interval = null;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resendTimer]);
+
+  const handleResend = () => {
+    // Start timer (mock - 12 seconds)
+    setResendTimer(12);
+  };
+
+  return (
+    <div
+      className={styles.modalOverlay}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
+    >
+      <div
+        className={styles.formModal}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Change Email"
+      >
+        <button
+          className={styles.modalClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <h2 className={styles.formTitle}>Change Email</h2>
+        <form className={styles.formContainer}>
+          <div className={styles.formField}>
+            <label className={styles.formLabel}>
+              Current E-mail:
+              <span className={styles.required}>Required</span>
+            </label>
+            <input
+              type="email"
+              className={styles.formInput}
+              placeholder="Type your current email"
+              value={data.currentEmail}
+              onChange={(e) => handleChange("currentEmail", e.target.value)}
+            />
+          </div>
+          <div className={styles.formField}>
+            <label className={styles.formLabel}>
+              New-Email:
+              <span className={styles.required}>Required</span>
+            </label>
+            <input
+              type="email"
+              className={styles.formInput}
+              placeholder="Type new email"
+              value={data.newEmail}
+              onChange={(e) => handleChange("newEmail", e.target.value)}
+            />
+          </div>
+          <div className={styles.formField}>
+            <label className={styles.formLabel}>
+              Verification Code:
+              <span className={styles.required}>Required</span>
+            </label>
+            <input
+              type="text"
+              className={styles.formInput}
+              placeholder="Code"
+              value={data.verificationCode}
+              onChange={(e) => handleChange("verificationCode", e.target.value)}
+            />
+            <div className={styles.resendContainer}>
+              <button
+                type="button"
+                className={styles.resendButton}
+                onClick={handleResend}
+                disabled={resendTimer > 0}
+              >
+                Resend code
+              </button>
+              {resendTimer > 0 && (
+                <span className={styles.timer}>{resendTimer}sec</span>
+              )}
+            </div>
+          </div>
+          <button type="submit" className={styles.saveButton}>
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// Change Password Modal Component
+function ChangePasswordModal({ data, onChange, onClose }) {
+  const handleChange = (field, value) => {
+    onChange({ ...data, [field]: value });
+  };
+
+  return (
+    <div
+      className={styles.modalOverlay}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
+    >
+      <div
+        className={styles.formModal}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Change Password"
+      >
+        <button
+          className={styles.modalClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <h2 className={styles.formTitle}>Change Password</h2>
+        <form className={styles.formContainer}>
+          <div className={styles.formField}>
+            <label className={styles.formLabel}>
+              Current Password:
+              <span className={styles.required}>Required</span>
+            </label>
+            <input
+              type="password"
+              className={styles.formInput}
+              placeholder="Type your current password"
+              value={data.currentPassword}
+              onChange={(e) => handleChange("currentPassword", e.target.value)}
+            />
+          </div>
+          <div className={styles.formField}>
+            <label className={styles.formLabel}>
+              New Password:
+              <span className={styles.required}>Required</span>
+            </label>
+            <input
+              type="password"
+              className={styles.formInput}
+              placeholder="Type new password"
+              value={data.newPassword}
+              onChange={(e) => handleChange("newPassword", e.target.value)}
+            />
+          </div>
+          <button type="submit" className={styles.saveButton}>
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// Two-Factor Authenticator Modal Component
+function TwoFactorModal({ selected, onChange, onClose }) {
+  return (
+    <div
+      className={styles.modalOverlay}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
+    >
+      <div
+        className={styles.formModal}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Two-Factor Authentication"
+      >
+        <button
+          className={styles.modalClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <h2 className={styles.formTitle}>Two-Factor Authentication</h2>
+        <div className={styles.twoFactorContainer}>
+          <div className={styles.twoFactorOptions}>
+            <button
+              type="button"
+              className={`${styles.twoFactorOption} ${
+                selected === "app" ? styles.twoFactorOptionSelected : ""
+              }`}
+              onClick={() => onChange("app")}
+            >
+              <div className={styles.checkboxContainer}>
+                <div
+                  className={`${styles.checkbox} ${
+                    selected === "app" ? styles.checkboxChecked : ""
+                  }`}
+                >
+                  {selected === "app" && (
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2 6L5 9L10 3"
+                        stroke="#522a70"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={styles.twoFactorOptionContent}>
+                <div className={styles.twoFactorOptionHeader}>
+                  <span className={styles.twoFactorOptionTitle}>
+                    Authentication app
+                  </span>
+                  <span className={styles.recommendedBadge}>Recommended.</span>
+                </div>
+                <p className={styles.twoFactorOptionDescription}>
+                  We'll recommend an app to download if you don't have one. It will
+                  generate a code you'll enter when you log in.
+                </p>
+              </div>
+            </button>
+
+            <div className={styles.twoFactorDivider}></div>
+
+            <button
+              type="button"
+              className={`${styles.twoFactorOption} ${
+                selected === "sms" ? styles.twoFactorOptionSelected : ""
+              }`}
+              onClick={() => onChange("sms")}
+            >
+              <div className={styles.checkboxContainer}>
+                <div
+                  className={`${styles.checkbox} ${
+                    selected === "sms" ? styles.checkboxChecked : ""
+                  }`}
+                >
+                  {selected === "sms" && (
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2 6L5 9L10 3"
+                        stroke="#522a70"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div className={styles.twoFactorOptionContent}>
+                <span className={styles.twoFactorOptionTitle}>
+                  SMS or WhatsApp
+                </span>
+                <p className={styles.twoFactorOptionDescription}>
+                  We'll send a code to the mobile number you choose.
+                </p>
+              </div>
+            </button>
+          </div>
+          <button type="button" className={styles.saveButton}>
+            Save
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
