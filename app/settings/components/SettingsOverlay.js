@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../settings.module.css";
 
 export default function SettingsOverlay({ open, onClose }) {
@@ -467,7 +467,7 @@ function InfoField({
 }) {
   const [tempValue, setTempValue] = useState(value);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTempValue(value);
   }, [value]);
 
@@ -537,7 +537,7 @@ function ChangeEmailModal({ data, onChange, resendTimer, setResendTimer, onClose
     onChange({ ...data, [field]: value });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     let interval = null;
     if (resendTimer > 0) {
       interval = setInterval(() => {
