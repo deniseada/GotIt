@@ -786,8 +786,8 @@ function TwoFactorModal({ selected, onChange, onClose }) {
                   <span className={styles.recommendedBadge}>Recommended.</span>
                 </div>
                 <p className={styles.twoFactorOptionDescription}>
-                  We'll recommend an app to download if you don't have one. It will
-                  generate a code you'll enter when you log in.
+                  We&apos;ll recommend an app to download if you don&apos;t have one. It will
+                  generate a code you&apos;ll enter when you log in.
                 </p>
               </div>
             </button>
@@ -831,7 +831,7 @@ function TwoFactorModal({ selected, onChange, onClose }) {
                   SMS or WhatsApp
                 </span>
                 <p className={styles.twoFactorOptionDescription}>
-                  We'll send a code to the mobile number you choose.
+                  We&apos;ll send a code to the mobile number you choose.
                 </p>
               </div>
             </button>
