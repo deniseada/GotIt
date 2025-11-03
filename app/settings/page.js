@@ -8,9 +8,7 @@ export default function SettingsPage() {
   const settingsModal = useModal(true); // Open by default when navigating to settings
 
   return (
-    <>
-      <SettingsOverlay open={settingsModal.open} onClose={settingsModal.onClose} />
-    </>
+    <SettingsOverlay open={settingsModal.open} onClose={settingsModal.onClose} />
   );
 }
 
