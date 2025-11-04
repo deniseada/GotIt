@@ -27,6 +27,10 @@ const theme = createTheme({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={spaceGrotesk.variable}>
+      <head>
+        {/* Text to Speech API */}
+        <script src="https://js.puter.com/v2/"></script>
+      </head>
       <body
         style={
           {
