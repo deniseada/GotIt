@@ -7,7 +7,7 @@ export default function UploadButton({ onUpload, onNext }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState("upload");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const fileInputRef = useRef(null);
 
   const openModal = () => setOpen(true);
@@ -41,10 +41,15 @@ export default function UploadButton({ onUpload, onNext }) {
   };
 
   const handleBegin = () => {
-    if (onNext) onNext(selectedFile, selectedOption);
+    if (onNext)
+      onNext(
+        selectedFile,
+        // preserve backward-compat for single selection by sending a string when only one selected
+        selectedOptions.length === 1 ? selectedOptions[0] : selectedOptions
+      );
     else if (selectedFile && onUpload) onUpload(selectedFile);
     setSelectedFile(null);
-    setSelectedOption(null);
+    setSelectedOptions([]);
     setStep("upload");
     closeModal();
   };
@@ -61,40 +66,66 @@ export default function UploadButton({ onUpload, onNext }) {
           className={styles.modalOverlay}
           onClick={() => {
             setSelectedFile(null);
-            setSelectedOption(null);
+            setSelectedOptions([]);
             setStep("upload");
             closeModal();
           }}
         >
           <div
-            className={selectedFile ? `${styles.modal} ${styles.modalHasFile}` : styles.modal}
+            className={
+              selectedFile
+                ? `${styles.modal} ${styles.modalHasFile}`
+                : styles.modal
+            }
             role="dialog"
             aria-modal="true"
             aria-label="Upload dialog"
             onClick={(e) => e.stopPropagation()}
           >
-            <button className={styles.modalClose} aria-label="Close dialog" onClick={closeModal}>
+            <button
+              className={styles.modalClose}
+              aria-label="Close dialog"
+              onClick={() => {
+                setSelectedFile(null);
+                setSelectedOptions([]);
+                setStep("upload");
+                closeModal();
+              }}
+            >
               ×
             </button>
 
             {step === "upload" && (
               <>
-                <h2 className={styles.modalTitle}>Get started with accessible trade learning</h2>
+                <h2 className={styles.modalTitle}>
+                  Get started with accessible trade learning
+                </h2>
                 <p className={styles.modalSubtitle}>
-                  Upload your study materials such as your notes, study cards, and other learning materials
+                  Upload your study materials such as your notes, study cards,
+                  and other learning materials
                 </p>
 
                 <div className={styles.uploadBox}>
                   {selectedFile && (
                     <div className={styles.selectedFileRow}>
-                      <button className={styles.selectedFileRemove} aria-label="Remove file" onClick={removeSelectedFile}>
+                      <button
+                        className={styles.selectedFileRemove}
+                        aria-label="Remove file"
+                        onClick={removeSelectedFile}
+                      >
                         −
                       </button>
                       <span className={styles.selectedFileIcon}>📄</span>
-                      <a className={styles.selectedFileName} href="#" onClick={(e) => e.preventDefault()}>
+                      <a
+                        className={styles.selectedFileName}
+                        href="#"
+                        onClick={(e) => e.preventDefault()}
+                      >
                         {selectedFile.name}
                       </a>
-                      <span className={styles.selectedFileSize}>({formatBytes(selectedFile.size)})</span>
+                      <span className={styles.selectedFileSize}>
+                        ({formatBytes(selectedFile.size)})
+                      </span>
                     </div>
                   )}
 
@@ -102,17 +133,35 @@ export default function UploadButton({ onUpload, onNext }) {
                     <img src="/icons/downloadIcon.svg" alt="upload" />
                   </div>
 
-                  <h3 className={styles.uploadHeading}>Drag or tap to upload</h3>
-                  <p className={styles.uploadSupport}>Supports PDF, Word documents, images, and text files</p>
+                  <h3 className={styles.uploadHeading}>
+                    Drag or tap to upload
+                  </h3>
+                  <p className={styles.uploadSupport}>
+                    Supports PDF, Word documents, images, and text files
+                  </p>
 
-                  <button className={styles.modalUploadBtn} type="button" onClick={handleUploadClick}>
+                  <button
+                    className={styles.modalUploadBtn}
+                    type="button"
+                    onClick={handleUploadClick}
+                  >
                     Upload
                   </button>
-                  <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
                 </div>
 
                 <div style={{ marginTop: 24 }}>
-                  <button className={styles.nextStepBtn} type="button" onClick={goToOptions} disabled={!selectedFile}>
+                  <button
+                    className={styles.nextStepBtn}
+                    type="button"
+                    onClick={goToOptions}
+                    disabled={!selectedFile}
+                  >
                     Next Step
                   </button>
                 </div>
@@ -121,40 +170,112 @@ export default function UploadButton({ onUpload, onNext }) {
 
             {step === "options" && (
               <>
-                <h2 className={styles.modalTitle}>Choose how you'd like Got It to process your upload</h2>
+                <h2 className={styles.modalTitle}>
+                  Choose how you'd like Got It to process your upload
+                </h2>
                 {selectedFile && (
-                  <div className={styles.selectedFileRow} style={{ margin: "0 auto 24px auto" }}>
-                    <span className={styles.selectedFileIcon}>📄</span>
-                    <a className={styles.selectedFileName} href="#" onClick={(e) => e.preventDefault()}>
+                  <div
+                    className={styles.selectedFileRow}
+                    style={{ margin: "0 auto 24px auto" }}
+                  >
+                    <span className={styles.selectedFileIcon}>
+                      <img src="/icons/File.svg" alt="File" />
+                    </span>
+                    <a
+                      className={styles.selectedFileName}
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       {selectedFile.name}
                     </a>
-                    <span className={styles.selectedFileSize}>({formatBytes(selectedFile.size)})</span>
+                    <span className={styles.selectedFileSize}>
+                      ({formatBytes(selectedFile.size)})
+                    </span>
                   </div>
                 )}
 
                 <div className={styles.optionsGrid}>
                   {[
-                    { id: "simplify", title: "Text Simplification", desc: "Simplifies complex language and clarifies jargon without losing any important information." },
-                    { id: "summary", title: "Create Summary", desc: "Summarizes the document to help you understand key concepts in less time." },
-                    { id: "mindmap", title: "Mind-map", desc: "Visualizes the structure of your document to help you organize and see how everything connects." },
-                    { id: "all", title: "Apply All Features", desc: "Generates all features and organizes them into separate tabs" },
+                    {
+                      id: "simplify",
+                      title: "Text Simplification",
+                      desc: "Simplifies complex language and clarifies jargon without losing any important information.",
+                      icon: (
+                        <img src="/icons/Simplification.svg" alt="Simplify" />
+                      ),
+                    },
+                    {
+                      id: "summary",
+                      title: "Create Summary",
+                      desc: "Summarizes the document to help you understand key concepts in less time.",
+                      icon: <img src="/icons/Summary.svg" alt="Summary" />,
+                    },
+                    {
+                      id: "mindmap",
+                      title: "Mind-map",
+                      desc: "Visualizes the structure of your document to help you organize and see how everything connects.",
+                      icon: <img src="/icons/Mindmap.svg" alt="Mind-map" />,
+                    },
+                    {
+                      id: "all",
+                      title: "Apply All Features",
+                      desc: "Generates all features and organizes them into separate tabs",
+                      icon: <img src="/icons/aiLight.svg" alt="All Features" />,
+                    },
                   ].map((opt) => (
                     <button
                       key={opt.id}
                       type="button"
-                      className={`${styles.optionCard} ${selectedOption === opt.id ? styles.optionSelected : ""}`}
-                      onClick={() => setSelectedOption(opt.id)}
+                      className={`${styles.optionCard} ${
+                        selectedOptions.includes(opt.id)
+                          ? styles.optionSelected
+                          : ""
+                      }`}
+                      onClick={() => {
+                        // If 'all' is clicked, make it exclusive
+                        if (opt.id === "all") {
+                          setSelectedOptions(["all"]);
+                          return;
+                        }
+
+                        // If 'all' is currently selected and user selects another option,
+                        // remove 'all' and add the selected option
+                        if (selectedOptions.includes("all")) {
+                          setSelectedOptions([opt.id]);
+                          return;
+                        }
+
+                        // Toggle regular option
+                        if (selectedOptions.includes(opt.id)) {
+                          setSelectedOptions((prev) =>
+                            prev.filter((id) => id !== opt.id)
+                          );
+                        } else {
+                          setSelectedOptions((prev) => [...prev, opt.id]);
+                        }
+                      }}
                     >
-                      <div style={{ minHeight: 36 }}></div>
-                      <div style={{ fontWeight: 700, marginTop: 12 }}>{opt.title}</div>
-                      <div style={{ marginTop: 12, color: "#6b6b6b", textAlign: "left" }}>{opt.desc}</div>
+                      <div className={styles.optionIcon}>{opt.icon}</div>
+                      <div className={styles.optionTitle}>{opt.title}</div>
+                      <div className={styles.optionDesc}>{opt.desc}</div>
                     </button>
                   ))}
                 </div>
 
                 <div className={styles.bottomActions}>
-                  <button className={styles.backBtnSmall} onClick={() => setStep("upload")}>Back to Upload</button>
-                  <button className={styles.beginBtn} onClick={handleBegin} disabled={!selectedOption}>Begin Studying</button>
+                  <button
+                    className={styles.backBtnSmall}
+                    onClick={() => setStep("upload")}
+                  >
+                    Back to Upload
+                  </button>
+                  <button
+                    className={styles.beginBtn}
+                    onClick={handleBegin}
+                    disabled={selectedOptions.length === 0}
+                  >
+                    Begin Studying
+                  </button>
                 </div>
               </>
             )}
