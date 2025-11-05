@@ -115,7 +115,9 @@ export default function UploadButton({ onUpload, onNext }) {
                       >
                         −
                       </button>
-                      <span className={styles.selectedFileIcon}>📄</span>
+                      <span className={styles.selectedFileIcon}>
+                        <img src="/icons/document.svg" alt="File" />
+                      </span>
                       <a
                         className={styles.selectedFileName}
                         href="#"
@@ -155,7 +157,7 @@ export default function UploadButton({ onUpload, onNext }) {
                   />
                 </div>
 
-                <div style={{ marginTop: 24 }}>
+                <div className={styles.nextStepContainer}>
                   <button
                     className={styles.nextStepBtn}
                     type="button"
@@ -170,112 +172,113 @@ export default function UploadButton({ onUpload, onNext }) {
 
             {step === "options" && (
               <>
-                <h2 className={styles.modalTitle}>
-                  Choose how you'd like Got It to process your upload
-                </h2>
-                {selectedFile && (
-                  <div
-                    className={styles.selectedFileRow}
-                    style={{ margin: "0 auto 24px auto" }}
-                  >
-                    <span className={styles.selectedFileIcon}>
-                      <img src="/icons/File.svg" alt="File" />
-                    </span>
-                    <a
-                      className={styles.selectedFileName}
-                      href="#"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      {selectedFile.name}
-                    </a>
-                    <span className={styles.selectedFileSize}>
-                      ({formatBytes(selectedFile.size)})
-                    </span>
+                <div className={styles.nextStepContainer}>
+                  <h2 className={styles.modalTitle}>
+                    Choose how you'd like Got It to process your upload
+                  </h2>
+                  {selectedFile && (
+                    <div className={styles.selectedFileRowOptions}>
+                      <span className={styles.selectedFileIcon}>
+                        <img src="/icons/document.svg" alt="File" />
+                      </span>
+                      <a
+                        className={styles.selectedFileName}
+                        href="#"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        {selectedFile.name}
+                      </a>
+                      <span className={styles.selectedFileSize}>
+                        ({formatBytes(selectedFile.size)})
+                      </span>
+                    </div>
+                  )}
+
+                  <div className={styles.optionsGrid}>
+                    {[
+                      {
+                        id: "simplify",
+                        title: "Text Simplification",
+                        desc: "Simplifies complex language and clarifies jargon without losing any important information.",
+                        icon: (
+                          <img src="/icons/Simplification.svg" alt="Simplify" />
+                        ),
+                      },
+                      {
+                        id: "summary",
+                        title: "Create Summary",
+                        desc: "Summarizes the document to help you understand key concepts in less time.",
+                        icon: <img src="/icons/Summary.svg" alt="Summary" />,
+                      },
+                      {
+                        id: "mindmap",
+                        title: "Mind-map",
+                        desc: "Visualizes the structure of your document to help you organize and see how everything connects.",
+                        icon: <img src="/icons/Mindmap.svg" alt="Mind-map" />,
+                      },
+                      {
+                        id: "all",
+                        title: "Apply All Features",
+                        desc: "Generates all features and organizes them into separate tabs",
+                        icon: (
+                          <img src="/icons/aiLight.svg" alt="All Features" />
+                        ),
+                      },
+                    ].map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`${styles.optionCard} ${
+                          selectedOptions.includes(opt.id)
+                            ? styles.optionSelected
+                            : ""
+                        }`}
+                        onClick={() => {
+                          // If 'all' is clicked, make it exclusive
+                          if (opt.id === "all") {
+                            setSelectedOptions(["all"]);
+                            return;
+                          }
+
+                          // If 'all' is currently selected and user selects another option,
+                          // remove 'all' and add the selected option
+                          if (selectedOptions.includes("all")) {
+                            setSelectedOptions([opt.id]);
+                            return;
+                          }
+
+                          // Toggle regular option
+                          if (selectedOptions.includes(opt.id)) {
+                            setSelectedOptions((prev) =>
+                              prev.filter((id) => id !== opt.id)
+                            );
+                          } else {
+                            setSelectedOptions((prev) => [...prev, opt.id]);
+                          }
+                        }}
+                      >
+                        <div className={styles.optionIcon}>{opt.icon}</div>
+                        <div className={styles.optionTitle}>{opt.title}</div>
+                        <div className={styles.optionDesc}>{opt.desc}</div>
+                      </button>
+                    ))}
                   </div>
-                )}
 
-                <div className={styles.optionsGrid}>
-                  {[
-                    {
-                      id: "simplify",
-                      title: "Text Simplification",
-                      desc: "Simplifies complex language and clarifies jargon without losing any important information.",
-                      icon: (
-                        <img src="/icons/Simplification.svg" alt="Simplify" />
-                      ),
-                    },
-                    {
-                      id: "summary",
-                      title: "Create Summary",
-                      desc: "Summarizes the document to help you understand key concepts in less time.",
-                      icon: <img src="/icons/Summary.svg" alt="Summary" />,
-                    },
-                    {
-                      id: "mindmap",
-                      title: "Mind-map",
-                      desc: "Visualizes the structure of your document to help you organize and see how everything connects.",
-                      icon: <img src="/icons/Mindmap.svg" alt="Mind-map" />,
-                    },
-                    {
-                      id: "all",
-                      title: "Apply All Features",
-                      desc: "Generates all features and organizes them into separate tabs",
-                      icon: <img src="/icons/aiLight.svg" alt="All Features" />,
-                    },
-                  ].map((opt) => (
+                  <div className={styles.bottomActions}>
                     <button
-                      key={opt.id}
-                      type="button"
-                      className={`${styles.optionCard} ${
-                        selectedOptions.includes(opt.id)
-                          ? styles.optionSelected
-                          : ""
-                      }`}
-                      onClick={() => {
-                        // If 'all' is clicked, make it exclusive
-                        if (opt.id === "all") {
-                          setSelectedOptions(["all"]);
-                          return;
-                        }
-
-                        // If 'all' is currently selected and user selects another option,
-                        // remove 'all' and add the selected option
-                        if (selectedOptions.includes("all")) {
-                          setSelectedOptions([opt.id]);
-                          return;
-                        }
-
-                        // Toggle regular option
-                        if (selectedOptions.includes(opt.id)) {
-                          setSelectedOptions((prev) =>
-                            prev.filter((id) => id !== opt.id)
-                          );
-                        } else {
-                          setSelectedOptions((prev) => [...prev, opt.id]);
-                        }
-                      }}
+                      className={styles.backBtnSmall}
+                      onClick={() => setStep("upload")}
                     >
-                      <div className={styles.optionIcon}>{opt.icon}</div>
-                      <div className={styles.optionTitle}>{opt.title}</div>
-                      <div className={styles.optionDesc}>{opt.desc}</div>
+                      Back to Upload
                     </button>
-                  ))}
-                </div>
-
-                <div className={styles.bottomActions}>
-                  <button
-                    className={styles.backBtnSmall}
-                    onClick={() => setStep("upload")}
-                  >
-                    Back to Upload
-                  </button>
-                  <button
-                    className={styles.beginBtn}
-                    onClick={handleBegin}
-                    disabled={selectedOptions.length === 0}
-                  >
-                    Begin Studying
-                  </button>
+                    <button
+                      className={styles.beginBtn}
+                      onClick={handleBegin}
+                      disabled={selectedOptions.length === 0}
+                    >
+                      Begin Studying
+                    </button>
+                  </div>
                 </div>
               </>
             )}
