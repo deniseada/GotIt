@@ -554,19 +554,11 @@ body {
 /* divider removed - no vertical line between slider and circle */
 
 .smallCircle {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--button-color);
-  flex: 0 0 auto;
+  font-size: 14px;
 }
 
 .bigCircle {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--button-color);
-  flex: 0 0 auto;
+  font-size: 20px;
 }
 
 .aiToolLabel {
