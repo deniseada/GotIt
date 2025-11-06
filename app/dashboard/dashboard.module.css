@@ -20,7 +20,7 @@
   background: #fff;
   border: 1px solid #e9e9ea;
   padding: 0.5rem;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
   display: inline-flex;
   align-items: center;
@@ -359,6 +359,8 @@
   box-sizing: border-box;
 }
 
+/* Choosing AI */
+
 .selectedFileRow {
   display: inline-flex;
   align-items: center;
@@ -512,6 +514,8 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* Media Queries */
 
 @media (max-width: 960px) {
   .optionsGrid {

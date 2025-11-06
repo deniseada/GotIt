@@ -1,8 +1,12 @@
+"use client";
+import { useState } from "react";
 import { Search } from "@mui/icons-material";
 import styles from "../dashboard.module.css";
 import Link from "next/link";
+import SettingsOverlay from "../../settings/components/SettingsOverlay";
 
 export default function Nav() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
   return (
     <div className={styles.navBar}>
       <div className={styles.leftGroup}>
@@ -20,7 +24,11 @@ export default function Nav() {
       </div>
       <div className={styles.rightGroup}>
         <div className={styles.toolIcons}>
-          <button className={styles.settingsBtn}>
+          <button
+            className={styles.settingsBtn}
+            onClick={() => setSettingsOpen(true)}
+            type="button"
+          >
             <img
               src="/icons/gear.svg"
               alt="settings"
@@ -31,6 +39,11 @@ export default function Nav() {
             <span className={styles.settingsLabel}>Settings</span>
           </button>
         </div>
+        {/** Settings overlay renders here and handles its own backdrop */}
+        <SettingsOverlay
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+        />
       </div>
     </div>
   );
