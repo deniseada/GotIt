@@ -4,8 +4,7 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   border: 2px solid #d6d6d6;
   overflow: visible;
-  padding: 20px;
-  padding-top: 60px;
+  padding: 100px 20px 2px 20px !important;
   height: 100%;
   max-width: 280px;
   width: 100%;
