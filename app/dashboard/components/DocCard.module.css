@@ -5,6 +5,7 @@
   border: 2px solid #d6d6d6;
   overflow: visible;
   padding: 20px;
+  padding-top: 60px;
   height: 100%;
   max-width: 280px;
   width: 100%;
@@ -82,7 +83,7 @@
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 20px;
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .emotionBadge img {
