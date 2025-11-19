@@ -3,6 +3,9 @@
 import React from "react";
 import styles from "./signup.module.css";
 
+// Page linking
+import Link from "next/link";
+
 export default function SignUpPage() {
   return (
     <div className={styles.authContainer}>
@@ -48,24 +51,28 @@ export default function SignUpPage() {
               {/* <span className={styles.icon}>👁️</span> */}
             </div>
 
-            <button type="submit" className={styles.btnPrimary}>
-              Sign Up
-            </button>
+            <Link href="/dashboard">
+              <button type="submit" className={styles.btnPrimary}>
+                Sign Up
+              </button>
+            </Link>
 
             <div className={styles.divider}>
               <span>OR</span>
             </div>
 
-            <button type="button" className={styles.btnGoogle}>
-              <img
-                src="https://developers.google.com/identity/images/g-logo.png"
-                alt="Google logo"
-              />
-              Sign Up with Google
-            </button>
+            <Link href="/dashboard">
+              <button type="button" className={styles.btnGoogle}>
+                <img
+                  src="https://developers.google.com/identity/images/g-logo.png"
+                  alt="Google logo"
+                  />
+                Sign Up with Google
+              </button>
+            </Link>
 
             <p className={styles.signinText}>
-              Already a member? <a href="/login">Log in</a>
+              Already a member? <Link href="/login">Log in</Link>
             </p>
           </form>
         </div>

@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import styles from "../mvp.module.css";
+import Link from "next/link";
 
-export default function NavBar({ title }) {
+export default function NavBar({ title, backHref = "/dashboard" }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const toggleBookmark = () => {
@@ -15,20 +16,22 @@ export default function NavBar({ title }) {
       <div className={styles.navBar}>
         <div className={styles.leftGroup}>
           <div className={styles.brand}>
-            <img
-              src="/icons/Omega.svg"
-              className={styles.icon}
-              alt="Got It Logo"
-              width="200"
-              height="36"
-            />
+            <Link href="/dashboard">
+              <img
+                src="/icons/Omega.svg"
+                className={styles.icon}
+                alt="Got It Logo"
+                width="200"
+                height="36"
+              />
+            </Link>
             <span className={styles.brandText}>{title}</span>
             <button className={styles.bookmarkBtn} onClick={toggleBookmark}>
               <img
                 src={
                   isBookmarked
-                    ? "/icons/bookmarkTrue.svg"
-                    : "/icons/bookmarkFalse.svg"
+                    ? "/icons/bookMarkTrue.svg"
+                    : "/icons/bookMarkFalse.svg"
                 }
                 alt="bookmark"
                 className={styles.bookmarkImg}
@@ -54,14 +57,16 @@ export default function NavBar({ title }) {
           </div>
         </div>
       </div>
-      <button className={styles.backBtnContainer}>
-        <img
-          src="/icons/arrowDown.svg"
-          alt="back arrow"
-          className={styles.arrow}
-        />
-        <div> Go back</div>
-      </button>
+      <Link href={backHref} className="rounded px-3 py-1 border">
+        <button className={styles.backBtnContainer}>
+          <img
+            src="/icons/arrowDown.svg"
+            alt="back arrow"
+            className={styles.arrow}
+          />
+          <div>back</div>
+        </button>
+      </Link>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 import styles from "../mvp.module.css";
 import NavBar from "./NavBar";
+import Link from "next/link";
 
 // Components
 import SplitView from "./SplitView";
@@ -103,7 +104,7 @@ export default function DocScreen() {
         <Box
           sx={{
             width: `${Math.min(900, 700 * zoom)}px`,
-            height: "600px",
+            height: "100%",
             bgcolor: "common.white",
             borderRadius: 2,
             boxShadow: 4,
@@ -111,13 +112,90 @@ export default function DocScreen() {
             overflow: "auto",
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            {page}. Manual Circuits
+          <Typography variant="h5" gutterBottom>
+            {page}. Atomic Structure
           </Typography>
-          <Typography variant="body2" paragraph>
-            (Original document mock) A manual circuit is started/stopped by a
-            person...
+          <Typography variant="body3" paragraph>
+            Understanding electricity necessitates starting with the study of
+            atoms. The atom is the basic building block of the universe. All
+            matter is made from a combination of atoms. Matter is any substance
+            that has mass and occupies space. Matter can exist in any of three
+            states: solid, liquid, or gas. Water, for example, can exist as a
+            solid in the form of ice, as a liquid, or as a gas in the form of
+            steam (Figure 1–3). An element is a substance that cannot be
+            chemically divided into two or more simpler substances. A table
+            listing both natural and artificial elements is shown in Figure 1–4.
+            An atom is the smallest part of an element. The three principal
+            parts of an atom are the electron, the neutron, and the proton.
+            Although most atoms contain these three principal parts, the
+            smallest atom, hydrogen, does not contain a neutron (Figure 1–5).
+            Hydrogen contains one proton and one electron. The smallest atom
+            that contains neutrons is helium (Figure 1–6). Helium contains two
+            protons, two neutrons, and two electrons. It is theorized that
+            protons and neutrons are actually made of smaller particles called
+            quarks. Notice that the proton has a positive charge, the electron a
+            negative charge, and the neutron no charge. The neutrons and the
+            protons combine to form the nucleus of the atom. Since the neutron
+            has no charge, the nucleus has a net positive charge. The number of
+            protons in the nucleus determines what kind of element an atom is.
+            Oxygen, for example, contains 8 protons in its nucleus, and gold
+            contains 79. The atomic number of an element is the same as the
+            number of protons in the nucleus. The lines of force produced by the
+            positive charge of the proton extend outward in all directions
+            (Figure 1–7). The nucleus may or may not contain as many neutrons as
+            protons. For example, an atom of helium contains 2 protons and 2
+            neutrons in its nucleus, while an atom of copper contains 29 protons
+            and 35 neutrons (Figure 1–8).
           </Typography>
+          <Typography variant="body3" paragraph>
+            The electron orbits the outside of the nucleus. Notice in Figure 1–5
+            that the electron is shown to be larger than the proton. Actually,
+            an electron is about three times as large as a proton. The estimated
+            size of a proton is 0.07 trillionth of an inch in diameter, and the
+            estimated size of an electron is 0.22 trillionth of an inch in
+            diameter. Although the electron is larger in size, the proton weighs
+            about 1840 times more. Imagine comparing a soap bubble with a piece
+            of buckshot. Compared with the electron, the proton is a very
+            massive particle. Since the electron exhibits a negative charge, the
+            lines of force come in from all directions.
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            Law of Charges
+          </Typography>
+          <Typography variant="body3" paragraph>
+            Understanding atoms necessitates first understanding a basic law of
+            physics that states that opposite charges attract and like charges
+            repel. In Figure 1–10, which illustrates this principle, charged
+            balls are suspended from strings. Notice that the two balls that
+            contain opposite charges are attracted to each other. The two
+            positively charged balls and the two negatively charged balls repel
+            each other. The reason for this is that lines of force can never
+            cross each other. The outward-going lines of force of a positively
+            charged object combine with the inward-going lines of force of a
+            negatively charged object (Figure 1–11). This combining produces an
+            attraction between the two objects. If two objects with like charges
+            come close to each other, the lines of force repel (Figure 1–12).
+          </Typography>
+          <Typography variant="body3" paragraph>
+            Since the nucleus has a net positive charge and the electron has a
+            negative charge, the electron is attracted to the nucleus. Because
+            the nucleus of an atom is formed from the combination of protons and
+            neutrons, one may ask why the protons of the nucleus do not repel
+            each other since they all have the same charge. Two theories attempt
+            to explain this. The first theory asserted that the force of gravity
+            held the nucleus together. Neutrons, like protons, are extremely
+            massive particles. It was first theorized that the gravitational
+            attraction caused by their mass overcame the repelling force of the
+            positive charges. By the mid 1930s, however, it was known that the
+            force of gravity could not hold the nucleus together. According to
+            Coulomb’s law, the electromagnetic force in helium is about 1.1 1036
+            times greater than the gravitational force as determined by Newton’s
+            law. In 1947, the Japanese physicist Hideki Yukawa identified a
+            subatomic particle that acts as a mediator to hold the nucleus
+            together. The particle is a quark known as a gluon. The force of the
+            gluon is about 102 times stronger than the electromagnetic force.
+          </Typography>
+
           <Typography variant="caption" color="text.secondary">
             Zoom: {(zoom * 100).toFixed(0)}%
           </Typography>
@@ -140,15 +218,28 @@ export default function DocScreen() {
       >
         {mode === "simplified" && (
           <>
-            <Typography variant="h6" gutterBottom>
-              {page}. Manual Circuits — Simplified
+            <Typography variant="h5" gutterBottom>
+              {page}. Atoms
             </Typography>
             <ul style={{ marginTop: 0 }}>
-              <li>Manual = controlled by a person.</li>
+              <li>Everything is made of atoms.</li>
               <li>
-                Three-wire: Stop (NC), Start (NO), Motor Starter (with OLR).
+                Atoms have protons (+), neutrons (no charge), and electrons (–).
               </li>
-              <li>OLR protects the motor from overheating.</li>
+              <li>Protons + Neutrons = Nucleus (center of atom).</li>
+              <li>Electrons move around the nucleus.</li>
+              <li>The number of protons = the element (e.g., oxygen has 8).</li>
+            </ul>
+            <ul>
+              <Typography variant="h5" gutterBottom>
+                Law of Charges
+              </Typography>
+              <li>Opposites attract ( + & – ).</li>
+              <li>Likes repel ( + & + or – & – ).</li>
+              <li>
+                The nucleus stays together because of a strong force called the
+                gluon force.
+              </li>
             </ul>
             <Typography variant="caption" color="text.secondary">
               Zoom: {(zoom * 100).toFixed(0)}%
@@ -156,16 +247,28 @@ export default function DocScreen() {
           </>
         )}
         {mode === "summarized" && (
-          <Typography variant="body2">
-            Summary: Start/stop energizes a motor via a starter; overloads open
-            on high current.
+          <Typography variant="body6" gutterBottom>
+            Summary
+            <br></br>
+            This text explains that everything in the universe is made of atoms,
+            which are tiny particles containing protons, neutrons, and
+            electrons. Protons and neutrons form the nucleus at the center of
+            the atom, while electrons move around it. The number of protons
+            determines what element the atom is. Protons have a positive charge,
+            electrons a negative charge, and neutrons no charge. Because
+            opposite charges attract and like charges repel, electrons stay near
+            the positively charged nucleus. The nucleus itself stays together
+            because of a powerful force called the strong nuclear force, carried
+            by particles known as gluons.
           </Typography>
         )}
         {mode === "mindmap" && (
-          <Typography variant="body2">
-            Mind map: Manual → Inputs: Stop/Start → Output: Starter → Safety:
-            OLR → Behavior.
-          </Typography>
+          <img
+            src="/icons/Mind_Map_Example.png"
+            alt="mind-map"
+            height="700px"
+            width="700px"
+          />
         )}
       </Box>
     );
@@ -173,7 +276,7 @@ export default function DocScreen() {
 
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
-      <NavBar title={"Doc Title"} />
+      <NavBar title={"Delmar's Standard Textbook of Electricity"} />
       {/* Toolbar */}
       <ToolBar
         page={page}

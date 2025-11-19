@@ -1,0 +1,284 @@
+/* ===========================
+   Local font: Space Grotesk
+   =========================== */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ===========================
+   Page background + defaults
+   =========================== */
+.page {
+  min-height: 100vh;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  background-image: radial-gradient(
+      2285px 1235px at 50% -25%,
+      #7e57c2,
+      transparent 60%
+    ),
+    radial-gradient(900px 2514px at 40% 180%, #ad1057, transparent 60%),
+    linear-gradient(180deg, #0b0b0e 40%, #161317 100%);
+  font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+}
+
+/* ===========================
+   Top navigation
+   =========================== */
+.navbar {
+  position: absolute;
+  top: 3rem;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 3rem;
+  font-size: 1.25rem;
+  padding: 0 8rem; /* equal left/right margin for desktop */
+}
+
+.navLink {
+  color: #e5e7eb;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.navLink:hover {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* ===========================
+   Main layout (2 columns)
+   Left = text; Right = image
+   =========================== */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 8rem;
+
+  /* equal margin on both sides for large screen */
+  width: min(90%, 1280px);
+  margin-inline: auto;
+  padding-block: 8rem 5rem;
+  min-height: 100vh;
+}
+
+.leftCol {
+  max-width: 640px;
+}
+
+.rightCol {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* ===========================
+   Brand/hero text
+   =========================== */
+.tagline {
+  margin-top: 2rem;
+  font-size: clamp(1.8rem, 2.5vw + 1rem, 2.5rem);
+  max-width: 520px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/* ===========================
+   CTA button
+   =========================== */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background: #8e1149;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+  font-family: "Space Grotesk";
+  margin-top: 2rem;
+}
+
+.cta:hover {
+  background: #7e57c2;
+  box-shadow: 0 8px 32px #7e57c2;
+}
+
+/* ===========================
+   Hover image swap component
+   =========================== */
+.swap {
+  position: relative;
+  width: 690px;
+  height: 905px;
+  outline: none;
+}
+
+.img {
+  position: absolute;
+  inset: 0;
+  width: 690px;
+  height: 905px;
+  object-fit: cover;
+  border-radius: 24px;
+  transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
+  z-index: 1;
+}
+
+/* Front image (shown by default) */
+.front {
+  opacity: 1;
+  transform: rotate(-2deg) translate(-4px, -2px);
+}
+
+/* Back image (hidden by default) */
+.back {
+  opacity: 0;
+  transform: rotate(4deg) translate(8px, 6px);
+}
+
+/* Swap on hover (and keyboard focus) */
+.swap:hover .front,
+.swap:focus-visible .front {
+  opacity: 0;
+  transform: translate(-12px, -10px);
+  filter: blur(0.1px);
+}
+
+.swap:hover .back,
+.swap:focus-visible .back {
+  opacity: 1;
+  transform: rotate(2.12deg) translate(0, 0);
+}
+
+/* ===========================
+   Static background rectangle
+   =========================== */
+.swapBackground {
+  position: absolute;
+  width: 640px;
+  height: 880px;
+  border-radius: 24px;
+  background-color: rgba(142, 17, 73, 0.6);
+  top: 54%;
+  left: 54%;
+  transform: translate(-50%, -50%) rotate(-2.12deg);
+  z-index: 0;
+}
+
+/* ===========================
+   Responsive adjustments
+   =========================== */
+
+/* Tablet breakpoint */
+@media (max-width: 1200px) {
+  .container {
+    gap: 6rem;
+    width: min(92%, 1100px);
+    padding-block: 6rem 4rem;
+  }
+
+  .swap {
+    width: 560px;
+    height: 736px;
+  }
+
+  .img,
+  .swapBackground {
+    width: 560px;
+    height: 736px;
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    width: min(92%, 720px);
+    text-align: center;
+  }
+
+  .navbar {
+    justify-content: center;
+    gap: 2rem;
+    padding: 0 2rem;
+    font-size: 1rem;
+  }
+
+  .rightCol {
+    justify-content: center;
+  }
+
+  .swap {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 690 / 905;
+  }
+
+  .img,
+  .swapBackground {
+    width: 100%;
+    height: 100%;
+  }
+
+  .cta {
+    margin-inline: auto;
+  }
+}
+
+/* Small mobile breakpoint */
+@media (max-width: 600px) {
+  .tagline {
+    font-size: 1.75rem;
+  }
+
+  .cta {
+    font-size: 1rem;
+    padding: 0.9rem 1.6rem;
+  }
+
+  .navbar {
+    font-size: 0.95rem;
+    gap: 1.25rem;
+  }
+}
