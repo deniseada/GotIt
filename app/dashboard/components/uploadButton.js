@@ -25,6 +25,14 @@ export default function UploadButton({ onUpload, onNext }) {
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+    
+    // Validate that the file is a PDF
+    if (file.type !== "application/pdf") {
+      alert("Please upload a PDF file only.");
+      e.target.value = null;
+      return;
+    }
+    
     setSelectedFile(file);
     e.target.value = null;
   };
@@ -97,64 +105,67 @@ export default function UploadButton({ onUpload, onNext }) {
 
             {step === "upload" && (
               <>
-                <h2 className={styles.modalTitle}>
-                  Get started with accessible trade learning
-                </h2>
-                <p className={styles.modalSubtitle}>
-                  Upload your study materials such as your notes, study cards,
-                  and other learning materials
-                </p>
-
-                <div className={styles.uploadBox}>
-                  {selectedFile && (
-                    <div className={styles.selectedFileRow}>
-                      <button
-                        className={styles.selectedFileRemove}
-                        aria-label="Remove file"
-                        onClick={removeSelectedFile}
-                      >
-                        −
-                      </button>
-                      <span className={styles.selectedFileIcon}>
-                        <img src="/icons/document.svg" alt="File" />
-                      </span>
-                      <a
-                        className={styles.selectedFileName}
-                        href="#"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        {selectedFile.name}
-                      </a>
-                      <span className={styles.selectedFileSize}>
-                        ({formatBytes(selectedFile.size)})
-                      </span>
-                    </div>
-                  )}
-
-                  <div className={styles.uploadIconCircle}>
-                    <img src="/icons/downloadIcon.svg" alt="upload" />
-                  </div>
-
-                  <h3 className={styles.uploadHeading}>
-                    Drag or tap to upload
-                  </h3>
-                  <p className={styles.uploadSupport}>
-                    Supports PDF, Word documents, images, and text files
+                <div className={styles.uploadContent}>
+                  <h2 className={styles.modalTitle}>
+                    Get started with accessible trade learning
+                  </h2>
+                  <p className={styles.modalSubtitle}>
+                    Upload your study materials such as your notes, study cards,
+                    and other learning materials
                   </p>
 
-                  <button
-                    className={styles.modalUploadBtn}
-                    type="button"
-                    onClick={handleUploadClick}
-                  >
-                    Upload
-                  </button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
+                  <div className={styles.uploadBox}>
+                    {selectedFile && (
+                      <div className={styles.selectedFileRow}>
+                        <button
+                          className={styles.selectedFileRemove}
+                          aria-label="Remove file"
+                          onClick={removeSelectedFile}
+                        >
+                          −
+                        </button>
+                        <span className={styles.selectedFileIcon}>
+                          <img src="/icons/document.svg" alt="File" />
+                        </span>
+                        <a
+                          className={styles.selectedFileName}
+                          href="#"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          {selectedFile.name}
+                        </a>
+                        <span className={styles.selectedFileSize}>
+                          ({formatBytes(selectedFile.size)})
+                        </span>
+                      </div>
+                    )}
+
+                    <div className={styles.uploadIconCircle}>
+                      <img src="/icons/uploadIcon.svg" alt="upload" />
+                    </div>
+
+                    <h3 className={styles.uploadHeading}>
+                      Drag or tap to upload
+                    </h3>
+                    <p className={styles.uploadSupport}>
+                      Supports PDF, Word documents, images, and text files
+                    </p>
+
+                    <button
+                      className={styles.modalUploadBtn}
+                      type="button"
+                      onClick={handleUploadClick}
+                    >
+                      Upload
+                    </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      accept="application/pdf"
+                      onChange={handleFileChange}
+                    />
+                  </div>
                 </div>
 
                 <div className={styles.nextStepContainer}>
@@ -172,7 +183,7 @@ export default function UploadButton({ onUpload, onNext }) {
 
             {step === "options" && (
               <>
-                <div className={styles.nextStepContainer}>
+                <div className={styles.optionsContent}>
                   <h2 className={styles.modalTitle}>
                     Choose how you'd like Got It to process your upload
                   </h2>
@@ -221,7 +232,7 @@ export default function UploadButton({ onUpload, onNext }) {
                         title: "Apply All Features",
                         desc: "Generates all features and organizes them into separate tabs",
                         icon: (
-                          <img src="/icons/aiLight.svg" alt="All Features" />
+                          <img src="/icons/sparkles.svg" alt="All Features" />
                         ),
                       },
                     ].map((opt) => (
@@ -257,28 +268,55 @@ export default function UploadButton({ onUpload, onNext }) {
                           }
                         }}
                       >
+                        <div className={styles.optionCheckbox}>
+                          <div
+                            className={`${styles.checkbox} ${
+                              selectedOptions.includes(opt.id)
+                                ? styles.checkboxChecked
+                                : ""
+                            }`}
+                          >
+                            {selectedOptions.includes(opt.id) && (
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 12 12"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10 3L4.5 8.5L2 6"
+                                  stroke="white"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
                         <div className={styles.optionIcon}>{opt.icon}</div>
                         <div className={styles.optionTitle}>{opt.title}</div>
                         <div className={styles.optionDesc}>{opt.desc}</div>
                       </button>
                     ))}
                   </div>
+                </div>
 
-                  <div className={styles.bottomActions}>
-                    <button
-                      className={styles.backBtnSmall}
-                      onClick={() => setStep("upload")}
-                    >
-                      Back to Upload
-                    </button>
-                    <button
-                      className={styles.beginBtn}
-                      onClick={handleBegin}
-                      disabled={selectedOptions.length === 0}
-                    >
-                      Begin Studying
-                    </button>
-                  </div>
+                <div className={styles.bottomActions}>
+                  <button
+                    className={styles.backBtnSmall}
+                    onClick={() => setStep("upload")}
+                  >
+                    Back to Upload
+                  </button>
+                  <button
+                    className={styles.beginBtn}
+                    onClick={handleBegin}
+                    disabled={selectedOptions.length === 0}
+                  >
+                    Begin Studying
+                  </button>
                 </div>
               </>
             )}
