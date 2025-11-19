@@ -65,7 +65,7 @@
   background: rgba(230, 220, 240, 0.5);
   display: flex;
   flex-direction: row;
-  min-width: 100%;
+  min-width: 1135px;
   height: 80px;
   padding: 2rem 0;
   align-items: center;
@@ -74,10 +74,13 @@
   margin-bottom: 2rem;
   gap: 1rem;
   position: relative;
+  transition: box-shadow 0.2s ease;
 }
 
 .uploadButtonContainer:hover {
   border: 2px solid rgba(82, 42, 112, 0.50);
+  box-shadow: 0 4px 12px rgba(82, 42, 112, 0.25);
+
 }
 
 .uploadButton {
@@ -96,6 +99,7 @@
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(82, 42, 112, 0.25);
   flex-shrink: 0;
+
 }
 
 
