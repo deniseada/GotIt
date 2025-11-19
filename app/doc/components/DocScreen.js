@@ -18,6 +18,8 @@ import TimerPopover from "./TimerPopover";
 import AIModal from "./AIModal";
 import VocabModal from "./VocabModal";
 
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+
 export default function DocScreen() {
   const [split, setSplit] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -112,7 +114,10 @@ export default function DocScreen() {
             overflow: "auto",
           }}
         >
-          <Typography variant="h5" gutterBottom>
+          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+            <Viewer fileUrl="/selmarSection1.pdf" />;
+          </Worker>
+          {/* <Typography variant="h5" gutterBottom>
             {page}. Atomic Structure
           </Typography>
           <Typography variant="body3" paragraph>
@@ -198,7 +203,7 @@ export default function DocScreen() {
 
           <Typography variant="caption" color="text.secondary">
             Zoom: {(zoom * 100).toFixed(0)}%
-          </Typography>
+          </Typography> */}
         </Box>
       </Box>
     );
