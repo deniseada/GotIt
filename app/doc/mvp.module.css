@@ -16,7 +16,7 @@ body {
 .navBar {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2em 20px 0 20px;
+  padding: 1.5em 20px 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -622,4 +622,50 @@ body {
 .sideBarLink.active {
   background-color: #e0e0e1;
   font-weight: 500;
+}
+
+/* ModeTabs Styles - SplitView tabs */
+.modeTabsContainer {
+  border-bottom: 1px solid #e6e6e6;
+  background: #ffffff;
+  padding: 8px 12px 0 12px;
+}
+
+.modeTabs :global(.MuiTabs-root) {
+  min-height: 36px;
+}
+
+.modeTabs :global(.MuiTabs-flexContainer) {
+  gap: 8px;
+}
+
+.modeTabs :global(.MuiTabs-indicator) {
+  display: none;
+}
+
+.modeTabs :global(.MuiTab-root) {
+  text-transform: none;
+  min-width: auto;
+  min-height: 36px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--text-color);
+  background-color: #E4E4E4;
+  border-radius: 16px 16px 0 0;
+  position: relative;
+  margin-right: 0;
+  padding: 6px 20px 4px 20px;
+}
+
+.modeTabs :global(.MuiTab-root:hover) {
+  color: #522a70;
+  background-color: rgba(82, 42, 112, 0.08);
+}
+
+.modeTabs :global(.Mui-selected) {
+  color: var(--text-color) !important;
+  font-weight: 600;
+  background-color: #C2A3DA !important;
+  border: 2px solid var(--button-color);
+  border-bottom: none;
 }

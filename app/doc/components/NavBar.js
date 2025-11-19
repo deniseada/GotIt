@@ -64,7 +64,7 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
             alt="back arrow"
             className={styles.arrow}
           />
-          <div>back</div>
+          <div className={styles.backBtn}>Back</div>
         </button>
       </Link>
     </div>

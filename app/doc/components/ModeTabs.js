@@ -3,16 +3,17 @@
 'use client';
 import React from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
+import styles from '../mvp.module.css';
 
 
 export default function ModeTabs({ value, onChange }) {
     const handle = (_, v) => onChange(v);
     return (
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 1 }}>
-        <Tabs value={value} onChange={handle} variant="scrollable">
+        <Box className={styles.modeTabsContainer}>
+        <Tabs value={value} onChange={handle} variant="scrollable" className={styles.modeTabs}>
             <Tab value="simplified" label="Simplified" />
             <Tab value="summarized" label="Summarized" />
-            <Tab value="mindmap" label="Mind Map" />
+            <Tab value="mindmap" label="Mind-map" />
         </Tabs>
         </Box>
     );
