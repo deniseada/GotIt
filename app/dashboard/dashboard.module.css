@@ -60,21 +60,29 @@
 
 /* UPLOAD BUTTON CSS */
 .uploadButtonContainer {
-  background-color: #522a7040;
+  border-radius: 16px;
+  border: 2px dashed rgba(82, 42, 112, 0.50);
+  background: rgba(230, 220, 240, 0.5);
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 250px;
-  border-radius: 13px;
+  flex-direction: row;
+  min-width: 100%;
+  height: 80px;
+  padding: 2rem 0;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   margin-bottom: 2rem;
+  gap: 1rem;
+  position: relative;
+}
+
+.uploadButtonContainer:hover {
+  border: 2px solid rgba(82, 42, 112, 0.50);
 }
 
 .uploadButton {
   background-color: #522a70;
-  margin-top: 1rem;
+  margin: 0;
   color: white;
   border: none;
   width: 60px;
@@ -83,14 +91,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 45px;
+  font-size: 32px;
+  line-height: 1;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(82, 42, 112, 0.18);
+  box-shadow: 0 4px 12px rgba(82, 42, 112, 0.25);
+  flex-shrink: 0;
 }
 
 .uploadButtonText {
   color: #522a70;
-  margin-top: 0.75rem;
+  margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
 }
