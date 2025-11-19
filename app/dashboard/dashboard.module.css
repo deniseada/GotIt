@@ -103,11 +103,16 @@
 }
 
 
+
 .uploadButtonText {
   color: var(--button-color);
   margin-top: 0.75rem;
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+.uploadButtonText:hover {
+  font-weight: 700;
 }
 
 /* TAB BAR CSS */
@@ -546,6 +551,11 @@
     width: 100%;
     flex: none;
   }
+}
+
+.modalUploadBtn:hover {
+  border: 2px solid #7b498f;
+
 }
 
 @media (max-width: 520px) {
