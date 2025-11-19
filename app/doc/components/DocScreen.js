@@ -324,19 +324,7 @@ export default function DocScreen() {
             }
           />
         ) : (
-          <Box
-            sx={{
-              height: "100%",
-              borderRadius: 0,
-              bgcolor: "transparent",
-              boxShadow: "none",
-              overflow: "auto",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              p: 2,
-            }}
-          >
+          <Box>
             <MockOriginalPage page={page} zoom={zoom} />
           </Box>
         )}

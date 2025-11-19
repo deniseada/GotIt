@@ -366,9 +366,6 @@ export default function ToolBar({
           <button className={styles.toolButton}>
             <img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} />
           </button>
-          <button className={styles.toolButton}>
-            <img src="/icons/moreIcon.svg" className={styles.toolbarIcon} />
-          </button>
         </div>
       </div>
     </div>

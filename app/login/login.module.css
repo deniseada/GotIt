@@ -96,17 +96,17 @@
 }
 
 .btnGoogle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ccc;
-    background: white;
-    color: black;
-    padding: 0.8rem;
-    width: 100%;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  background: white;
+  color: black;
+  padding: 0.8rem;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 .btnGoogle img {
