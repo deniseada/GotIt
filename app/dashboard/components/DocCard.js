@@ -20,10 +20,12 @@ export default function DocCard({
   onMenu,
   bookmarked = false,
   onToggleBookmark,
-  onEditTitle, // New prop for edit callback
-  onDelete, // New prop for delete callback
+  onEditTitle, // Callback for edit
+  onDelete, // Callback for delete
+  onEmotionChange, // New prop for emotion change callback
 }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [showEmotionModal, setShowEmotionModal] = useState(false);
 
   // Select emoji filtering
   const e = EMOJI[emotion] ?? EMOJI.neutral;
@@ -45,6 +47,11 @@ export default function DocCard({
   const handleDeleteClick = () => {
     setShowMenu(false);
     onDelete?.();
+  };
+
+  const handleEmotionClick = (newEmotion) => {
+    setShowEmotionModal(false);
+    onEmotionChange?.(newEmotion);
   };
 
   return (
@@ -146,11 +153,78 @@ export default function DocCard({
           </>
         )}
 
-        {/* Emotion badge with icon and label */}
-        <div className={`${styles.emotionBadge} ${styles[emotion]}`}>
+        {/* Emotion badge with icon and label - clickable */}
+        <button
+          type="button"
+          className={`${styles.emotionBadge} ${styles[emotion]}`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowEmotionModal(!showEmotionModal);
+          }}
+        >
           <img src={e.icon} alt="" />
           <span>{e.label}</span>
-        </div>
+        </button>
+
+        {/* Emotion Selection Modal */}
+        {showEmotionModal && (
+          <>
+            {/* Backdrop to close modal when clicking outside */}
+            <div
+              className={styles.backdrop}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowEmotionModal(false);
+              }}
+            />
+
+            <div className={styles.emotionModal}>
+              {/* Confident Option */}
+              <button
+                type="button"
+                className={`${styles.emotionOption} ${styles.confident}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleEmotionClick("confident");
+                }}
+              >
+                <img src={EMOJI.confident.icon} alt="" />
+                <span>{EMOJI.confident.label}</span>
+              </button>
+
+              {/* In Review Option */}
+              <button
+                type="button"
+                className={`${styles.emotionOption} ${styles.needs}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleEmotionClick("needs");
+                }}
+              >
+                <img src={EMOJI.needs.icon} alt="" />
+                <span>{EMOJI.needs.label}</span>
+              </button>
+
+              {/* No Feeling Option */}
+              <button
+                type="button"
+                className={`${styles.emotionOption} ${styles.neutral}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleEmotionClick("neutral");
+                }}
+              >
+                <img src={EMOJI.neutral.icon} alt="" />
+                <span>Neutral</span>
+              </button>
+            </div>
+          </>
+        )}
 
         {/* Title */}
         <h3 className={styles.title}>{title}</h3>
@@ -175,4 +249,5 @@ DocCard.propTypes = {
   onToggleBookmark: PropTypes.func,
   onEditTitle: PropTypes.func,
   onDelete: PropTypes.func,
+  onEmotionChange: PropTypes.func,
 };
