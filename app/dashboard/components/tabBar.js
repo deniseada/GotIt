@@ -30,7 +30,7 @@ function a11yProps(index) {
 }
 
 export default function TabBar() {
-  const [value, setValue] = useState(0); // 0 All, 1 Recent, 2 Bookmarked, 3 Course Books, 4 Uploaded
+  const [value, setValue] = useState(0); // 0 All, 1 Recent, 2 Uploaded, 3 Bookmarked, 4 Course Books
   const [filterOpen, setFilterOpen] = useState(false);
   const [emotion, setEmotion] = useState("none"); // "none" | "confident" | "needs" | "neutral"
   const filterRef = useRef(null);
@@ -133,14 +133,14 @@ export default function TabBar() {
           (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
         );
         break;
-      case 2: // Bookmarked
+      case 2: // Uploaded
+        base = cardList.filter((c) => c.category === "Uploaded");
+        break;
+      case 3: // Bookmarked
         base = cardList.filter((c) => c.bookmarked);
         break;
-      case 3: // Course Books
+      case 4: // Course Books
         base = cardList.filter((c) => c.category === "Course Books");
-        break;
-      case 4: // Uploaded
-        base = cardList.filter((c) => c.category === "Uploaded");
         break;
       default: // All
         base = cardList;
@@ -190,9 +190,9 @@ export default function TabBar() {
           >
             <Tab label="All" {...a11yProps(0)} />
             <Tab label="Recent" {...a11yProps(1)} />
-            <Tab label="Bookmarked" {...a11yProps(2)} />
-            <Tab label="Course Books" {...a11yProps(3)} />
-            <Tab label="Uploaded" {...a11yProps(4)} />
+            <Tab label="Uploaded" {...a11yProps(2)} />
+            <Tab label="Bookmarked" {...a11yProps(3)} />
+            <Tab label="Course Books" {...a11yProps(4)} />
           </Tabs>
         </div>
 
