@@ -38,7 +38,7 @@ export default function TabBar() {
   const handleChange = (_e, newValue) => setValue(newValue);
 
   // --- Sample data (replace with real data later)
-  const cards = [
+  const initialCards = [
     {
       id: "1",
       title: "Electrical Codes and Regulations",
@@ -73,6 +73,39 @@ export default function TabBar() {
     },
   ];
 
+  // Load bookmarks from localStorage
+  const loadBookmarksFromStorage = () => {
+    if (typeof window === "undefined") return {};
+    try {
+      const stored = localStorage.getItem("got-it-bookmarks");
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.error("Error loading bookmarks from localStorage:", error);
+      return {};
+    }
+  };
+
+  // Save bookmarks to localStorage
+  const saveBookmarksToStorage = (bookmarks) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem("got-it-bookmarks", JSON.stringify(bookmarks));
+    } catch (error) {
+      console.error("Error saving bookmarks to localStorage:", error);
+    }
+  };
+
+  // Initialize cards with bookmarks from localStorage
+  const initializeCardsWithBookmarks = () => {
+    const storedBookmarks = loadBookmarksFromStorage();
+    return initialCards.map((card) => ({
+      ...card,
+      bookmarked: storedBookmarks[card.id] !== undefined 
+        ? storedBookmarks[card.id] 
+        : card.bookmarked,
+    }));
+  };
+
   const renderGrid = () => (
     <div className={styles.cardsGrid}>
       {filteredCards.length === 0 ? (
@@ -97,8 +130,17 @@ export default function TabBar() {
     </div>
   );
 
-  // Bookmark states
-  const [cardList, setCardList] = useState(cards);
+  // Bookmark states - initialize with bookmarks from localStorage
+  const [cardList, setCardList] = useState(() => initializeCardsWithBookmarks());
+
+  // Update localStorage whenever bookmarks change
+  useEffect(() => {
+    const bookmarksMap = {};
+    cardList.forEach((card) => {
+      bookmarksMap[card.id] = card.bookmarked;
+    });
+    saveBookmarksToStorage(bookmarksMap);
+  }, [cardList]);
 
   // Close filter menu on outside click or Escape key
   useEffect(() => {
