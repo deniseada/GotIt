@@ -1,59 +1,106 @@
-// "use client";
-// import React, { useState } from "react";
+"use client";
+import React, { useState } from "react";
 
-// export default function Simplification() {
+const SUMMARIZE_PROMPT = "Summarize Delmar - Section 1 into a concise summary. Only return the answer.";
 
-// const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+export default function Summarization() {
+  const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-// // NOTE: you must manually enter your API_KEY below using information retrieved from your IBM Cloud account (https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-authentication.html?context=wx)
-// const API_KEY = "<your API key>";
+  const cleanText = (text) => {
+    if (!text) return "";
+    let cleaned = text;
+    cleaned = cleaned.replace(/\+/g, "");
+    cleaned = cleaned.replace(/\bN\b/g, "");
+    cleaned = cleaned.replace(/(\n\s*){3,}/g, "\n\n");
+    return cleaned.trim();
+  };
 
-// const req = new XMLHttpRequest();
-// const oReq = new XMLHttpRequest();
+  const handleSummarize = async () => {
+    setLoading(true);
+    setError(null);
+    setSummary("");
 
-// function getToken(errorCallback, loadCallback) {
-// 	req.addEventListener("load", loadCallback);
-// 	req.addEventListener("error", errorCallback);
-// 	req.open("POST", "https://iam.cloud.ibm.com/identity/token");
-// 	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-// 	req.setRequestHeader("Accept", "application/json");
-// 	req.send("grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=" + API_KEY);
-// }
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: SUMMARIZE_PROMPT,
+        }),
+      });
 
-// function apiPost(scoring_url, token, payload, loadCallback, errorCallback) {
-// 	oReq.addEventListener("load", loadCallback);
-// 	oReq.addEventListener("error", errorCallback);
-// 	oReq.open("POST", scoring_url);
-// 	oReq.setRequestHeader("Accept", "application/json");
-// 	oReq.setRequestHeader("Authorization", "Bearer " + token);
-// 	oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-// 	oReq.send(payload);
-// }
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to summarize text";
+        const errorDetails = errorData.details ? `\n\nDetails: ${errorData.details}` : "";
+        throw new Error(errorMessage + errorDetails);
+      }
 
-// getToken((err) => console.log("An error occurred submitting the request."), () => {
-// 	let tokenResponse;
-// 	try {
-// 		tokenResponse = JSON.parse(req.responseText);
-// 	} catch(ex) {
-// 		console.log("An error occurred parsing the token response.");
-// 		return;
-// 	}
-// 	// NOTE:  manually define and pass the array(s) of values to be scored in the next line
-// 	const payload = `{"messages":[{"role":"","content":""}]}`;
+      const result = await response.json();
+      const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
+      const cleanedContent = cleanText(rawContent);
+      setSummary(cleanedContent);
+    } catch (err) {
+      setError(err.message);
+      console.error("Error summarizing text:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-// 	const scoring_url = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/c45f1dd3-9823-4ce6-9e24-c07b7010a33b/ai_service_stream?version=2021-05-01";
-// 	apiPost(scoring_url, tokenResponse.access_token, payload, function (resp) {
-// 		let parsedPostResponse;
-// 		try {
-// 			parsedPostResponse = JSON.parse(oReq.responseText);
-// 		} catch (ex) {
-// 			console.log("An error occurred parsing the scoring response.");
-// 			return;
-// 		}
-// 		console.log("Scoring response");
-// 		console.log(JSON.stringify(parsedPostResponse, null, "  "));
-// 	}, function (error) {
-// 		console.log(error);
-// 	});
-// });
-// }
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Summarization</h2>
+      <button
+        onClick={handleSummarize}
+        disabled={loading}
+        style={{
+          padding: "10px 20px",
+          fontSize: "16px",
+          backgroundColor: loading ? "#ccc" : "#0070f3",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: loading ? "not-allowed" : "pointer",
+        }}
+      >
+        {loading ? "Summarizing..." : "Summarize"}
+      </button>
+
+      {error && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "10px",
+            backgroundColor: "#fee",
+            color: "#c33",
+            borderRadius: "5px",
+          }}
+        >
+          Error: {error}
+        </div>
+      )}
+
+      {summary && (
+        <div style={{ marginTop: "20px" }}>
+          <h3>Summary:</h3>
+          <pre
+            style={{
+              padding: "15px",
+              backgroundColor: "#f5f5f5",
+              borderRadius: "5px",
+              overflow: "auto",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {summary}
+          </pre>
+        </div>
+      )}
+    </div>
+  );
+}
