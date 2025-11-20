@@ -548,7 +548,9 @@ export default function TabBar() {
         {/* FILTER */}
         <div className={styles.filterContainer} ref={filterRef}>
           <button
-            className={styles.filterPill}
+            className={`${styles.filterPill} ${
+              emotion !== "none" ? styles.filterPillSelected : ""
+            }`}
             onClick={toggleFilter}
             aria-haspopup="true"
             aria-expanded={filterOpen}
