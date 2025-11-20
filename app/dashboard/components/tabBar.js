@@ -264,6 +264,51 @@ export default function TabBar() {
     </div>
   );
 
+  // Render grid wrapped in section container for individual tabs
+  const renderGridWithSection = (sectionTitle, gridClass = styles.cardsGrid) => {
+    if (filteredCards.length === 0) {
+      return (
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
+          <p className={styles.emptyState}>No items match this filter.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.sectionContainer}>
+        <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
+        <div className={gridClass}>
+          {filteredCards.map((c) => (
+            <DocCard
+              key={c.id}
+              {...c}
+              lastOpened={c.updatedAt}
+              onToggleBookmark={() =>
+                setCardList((prev) =>
+                  prev.map((card) =>
+                    card.id === c.id
+                      ? { ...card, bookmarked: !card.bookmarked }
+                      : card
+                  )
+                )
+              }
+              onEmotionChange={(newEmotion) =>
+                setCardList((prev) =>
+                  prev.map((card) =>
+                    card.id === c.id
+                      ? { ...card, emotion: newEmotion }
+                      : card
+                  )
+                )
+              }
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // Render sections with headers for "All" tab
   const renderSections = () => {
     // Group cards by category
@@ -597,7 +642,7 @@ export default function TabBar() {
           <div className={styles.cardsGrid}>
             <UploadButton />
           </div>
-          {renderGrid()}
+          {renderGridWithSection("Recent")}
         </div>
       </CustomTabPanel>
 
@@ -606,7 +651,7 @@ export default function TabBar() {
           <div className={styles.cardsGrid}>
             <UploadButton />
           </div>
-          {renderGrid()}
+          {renderGridWithSection("Uploaded")}
         </div>
       </CustomTabPanel>
 
@@ -615,7 +660,7 @@ export default function TabBar() {
           <div className={styles.cardsGrid}>
             <UploadButton />
           </div>
-          {renderGrid()}
+          {renderGridWithSection("Bookmarked")}
         </div>
       </CustomTabPanel>
 
@@ -624,7 +669,7 @@ export default function TabBar() {
           <div className={styles.cardsGrid}>
             <UploadButton />
           </div>
-          {renderGrid()}
+          {renderGridWithSection("Course Book", styles.courseBookGrid)}
         </div>
       </CustomTabPanel>
     </Box>

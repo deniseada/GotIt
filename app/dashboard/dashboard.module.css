@@ -662,8 +662,9 @@
 /* Card CSS */
 .cardsGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(260px, 1fr));
-  padding: 1rem 0 2rem;
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  gap: 2rem;
+  padding: 0 4rem;
 }
 
 /* Center card links but not the upload button */
@@ -693,22 +694,25 @@
   margin-bottom: 3rem;
   background-color: #F7F6F9;
   border-radius: 1rem;
-  padding: 1rem 1rem 3rem;
+  padding: 1rem 1rem 4rem;
 }
 
 .sectionContainer:last-child {
   margin-bottom: 0;
 }
 
-.sectionContainer .cardsGrid,
+.sectionContainer .cardsGrid {
+  padding: 0.5rem 3rem;
+}
 .sectionContainer .courseBookGrid {
   padding: 0;
 }
 
 .sectionHeader {
-  font-size: 20px;
+  font-size: 1rem;
   font-weight: 700;
   color: #522A70;
+  padding: 1rem 0 0.5rem 0;
   margin: 0 0.5rem;
 }
 
