@@ -110,6 +110,10 @@
   font-weight: 600;
 }
 
+.uploadButtonText:hover {
+  font-weight: 700;
+}
+
 /* TAB BAR CSS */
 .TabBar {
   color: var(--button-color);
@@ -374,6 +378,7 @@
   box-sizing: border-box;
 }
 
+<<<<<<< HEAD
 .selectedFileRow {
   display: inline-flex;
   align-items: center;
@@ -546,6 +551,11 @@
     width: 100%;
     flex: none;
   }
+=======
+.modalUploadBtn:hover {
+  border: 2px solid #7b498f;
+
+>>>>>>> b78e6d0 (fixed css)
 }
 
 @media (max-width: 520px) {
