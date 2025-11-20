@@ -95,14 +95,40 @@ export default function TabBar() {
     }
   };
 
-  // Initialize cards with bookmarks from localStorage
+  // Load emotions from localStorage
+  const loadEmotionsFromStorage = () => {
+    if (typeof window === "undefined") return {};
+    try {
+      const stored = localStorage.getItem("got-it-emotions");
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.error("Error loading emotions from localStorage:", error);
+      return {};
+    }
+  };
+
+  // Save emotions to localStorage
+  const saveEmotionsToStorage = (emotions) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem("got-it-emotions", JSON.stringify(emotions));
+    } catch (error) {
+      console.error("Error saving emotions to localStorage:", error);
+    }
+  };
+
+  // Initialize cards with bookmarks and emotions from localStorage
   const initializeCardsWithBookmarks = () => {
     const storedBookmarks = loadBookmarksFromStorage();
+    const storedEmotions = loadEmotionsFromStorage();
     return initialCards.map((card) => ({
       ...card,
       bookmarked: storedBookmarks[card.id] !== undefined 
         ? storedBookmarks[card.id] 
         : card.bookmarked,
+      emotion: storedEmotions[card.id] !== undefined
+        ? storedEmotions[card.id]
+        : card.emotion,
     }));
   };
 
@@ -115,11 +141,21 @@ export default function TabBar() {
           <DocCard
             key={c.id}
             {...c}
+            lastOpened={c.updatedAt}
             onToggleBookmark={() =>
               setCardList((prev) =>
                 prev.map((card) =>
                   card.id === c.id
                     ? { ...card, bookmarked: !card.bookmarked }
+                    : card
+                )
+              )
+            }
+            onEmotionChange={(newEmotion) =>
+              setCardList((prev) =>
+                prev.map((card) =>
+                  card.id === c.id
+                    ? { ...card, emotion: newEmotion }
                     : card
                 )
               )
@@ -133,13 +169,16 @@ export default function TabBar() {
   // Bookmark states - initialize with bookmarks from localStorage
   const [cardList, setCardList] = useState(() => initializeCardsWithBookmarks());
 
-  // Update localStorage whenever bookmarks change
+  // Update localStorage whenever bookmarks or emotions change
   useEffect(() => {
     const bookmarksMap = {};
+    const emotionsMap = {};
     cardList.forEach((card) => {
       bookmarksMap[card.id] = card.bookmarked;
+      emotionsMap[card.id] = card.emotion;
     });
     saveBookmarksToStorage(bookmarksMap);
+    saveEmotionsToStorage(emotionsMap);
   }, [cardList]);
 
   // Close filter menu on outside click or Escape key
@@ -204,11 +243,21 @@ export default function TabBar() {
             <DocCard
               key={c.id}
               {...c}
+              lastOpened={c.updatedAt}
               onToggleBookmark={() =>
                 setCardList((prev) =>
                   prev.map((card) =>
                     card.id === c.id
                       ? { ...card, bookmarked: !card.bookmarked }
+                      : card
+                  )
+                )
+              }
+              onEmotionChange={(newEmotion) =>
+                setCardList((prev) =>
+                  prev.map((card) =>
+                    card.id === c.id
+                      ? { ...card, emotion: newEmotion }
                       : card
                   )
                 )
