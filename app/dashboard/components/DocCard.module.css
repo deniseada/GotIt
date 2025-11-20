@@ -61,23 +61,8 @@
   background-color: #ffe786;
   z-index: -1;
   border-radius: 11px 11px 0 0;
-  animation: borderPulse 0.3s ease-out;
 }
 
-@keyframes borderPulse {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 
 /* active/bookmarked - yellow */
 .ribbonActive {
@@ -399,7 +384,7 @@
 }
 
 .title {
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.25;
   font-weight: 700;
   color: #111827;
