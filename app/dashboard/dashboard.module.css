@@ -673,9 +673,8 @@
 
 .courseBookGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(260px, 1fr));
-  gap: 3rem;
-  padding: 1rem;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  padding: 1rem 0 2rem;
 }
 
 /* Center card links in course book grid */
@@ -694,7 +693,7 @@
   margin-bottom: 3rem;
   background-color: #F7F6F9;
   border-radius: 1rem;
-  padding: 1.5rem 1.5rem 3rem;
+  padding: 1.5rem 1.5rem 4rem;
 }
 
 .sectionContainer:last-child {
