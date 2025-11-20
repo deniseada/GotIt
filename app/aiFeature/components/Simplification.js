@@ -58,7 +58,7 @@ export default function Simplification() {
 
     return (
         <div style={{ padding: "20px" }}>
-        <h2>Simplification</h2>
+        <h2>Simplified</h2>
 
         <button
             onClick={handleSimplify}

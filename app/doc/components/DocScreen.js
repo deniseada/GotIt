@@ -11,6 +11,11 @@ import SplitView from "./SplitView";
 import ModeTabs from "./ModeTabs";
 import ToolBar from "./ToolBar";
 
+// AI Features Components
+import Simplification from "../../aiFeature/components/Simplification";
+import Summarization from "../../aiFeature/components/Summarization";
+import MindMap from "../../aiFeature/components/MindMap";
+
 // Right side modals and their buttons
 import RightDockButtons from "./rightSideModals/RightDockButtons";
 import useModal from "./useModal";
@@ -139,57 +144,18 @@ export default function DocScreen() {
       >
         {mode === "simplified" && (
           <>
-            <Typography variant="h5" gutterBottom>
-              {page}. Atoms
-            </Typography>
-            <ul style={{ marginTop: 0 }}>
-              <li>Everything is made of atoms.</li>
-              <li>
-                Atoms have protons (+), neutrons (no charge), and electrons (–).
-              </li>
-              <li>Protons + Neutrons = Nucleus (center of atom).</li>
-              <li>Electrons move around the nucleus.</li>
-              <li>The number of protons = the element (e.g., oxygen has 8).</li>
-            </ul>
-            <ul>
-              <Typography variant="h5" gutterBottom>
-                Law of Charges
-              </Typography>
-              <li>Opposites attract ( + & – ).</li>
-              <li>Likes repel ( + & + or – & – ).</li>
-              <li>
-                The nucleus stays together because of a strong force called the
-                gluon force.
-              </li>
-            </ul>
-            <Typography variant="caption" color="text.secondary">
-              Zoom: {(zoom * 100).toFixed(0)}%
-            </Typography>
+            <Simplification />
           </>
         )}
         {mode === "summarized" && (
-          <Typography variant="body6" gutterBottom>
-            Summary
-            <br></br>
-            This text explains that everything in the universe is made of atoms,
-            which are tiny particles containing protons, neutrons, and
-            electrons. Protons and neutrons form the nucleus at the center of
-            the atom, while electrons move around it. The number of protons
-            determines what element the atom is. Protons have a positive charge,
-            electrons a negative charge, and neutrons no charge. Because
-            opposite charges attract and like charges repel, electrons stay near
-            the positively charged nucleus. The nucleus itself stays together
-            because of a powerful force called the strong nuclear force, carried
-            by particles known as gluons.
-          </Typography>
+          <div>
+            <Summarization />
+          </div>
         )}
         {mode === "mindmap" && (
-          <img
-            src="/icons/Mind_Map_Example.png"
-            alt="mind-map"
-            height="700px"
-            width="700px"
-          />
+          <div>
+            <MindMap />
+          </div>
         )}
       </Box>
     );
