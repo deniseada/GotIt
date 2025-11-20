@@ -109,6 +109,16 @@
   bottom: 0;
   z-index: 12;
   background: transparent;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Menu Modal/Dropdown */
@@ -191,18 +201,31 @@
 /* Emotion Selection Modal */
 .emotionModal {
   position: absolute;
-  top: 120px;
-  left: 20px;
+  top: 160px;
+  left: 5px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid #e5e7eb;
-  padding: 12px;
-  min-width: 200px;
+  padding: 10px;
+  min-width: 130px;
   z-index: 20;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top left;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .emotionOption {
@@ -210,30 +233,63 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: 4px 12px;
   background: transparent;
-  border: 2px solid;
+  border: 1px solid;
   border-radius: 22px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
+  opacity: 0;
+  animation: optionFadeIn 0.3s ease-out forwards;
+  transform: translateX(-5px);
+}
+
+.emotionOption:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.emotionOption:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.emotionOption:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+@keyframes optionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .emotionOption:hover {
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(2px) scale(1.02);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  border-width: 1.5px;
 }
 
 .emotionOption:active {
-  transform: scale(0.98);
+  transform: translateX(0) scale(0.98);
+  transition: all 0.1s ease;
 }
 
 .emotionOption img {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotionOption:hover img {
+  transform: scale(1.1);
 }
 
 /* Emotion tints */
@@ -241,18 +297,36 @@
   background: #ecfdf5;
   border-color: #10b981;
   color: #059669;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.confident:hover {
+  background: #d1fae5;
+  border-color: #059669;
 }
 
 .needs {
   background: #fff7ed;
   border-color: #fb923c;
   color: #ea580c;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.needs:hover {
+  background: #ffedd5;
+  border-color: #ea580c;
 }
 
 .neutral {
   background: #f9fafb;
   border-color: #d1d5db;
   color: #6b7280;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.neutral:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
 }
 
 .title {
