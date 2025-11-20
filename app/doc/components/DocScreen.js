@@ -1,6 +1,6 @@
 "use client";
 import SideBar from "./sideBar";
-import React, { useState, useEffect, useRef, useMemo, memo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import styles from "../mvp.module.css";
@@ -46,8 +46,6 @@ export default function DocScreen() {
   // Right Side Buttons (AI/Vocab)
   const ai = useModal(false);
   const vocab = useModal(false);
-  const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
-  const aiBtnRef = useRef(null); // anchor for AI Popper
 
   // ===== TIMER (single source of truth) =====
   const timerBtnRef = useRef(null); // anchor for Popper
@@ -92,8 +90,14 @@ export default function DocScreen() {
     if (timerSeconds === 0 && timerRunning) setTimerRunning(false);
   }, [timerSeconds, timerRunning]);
 
-  // ===== MOCK CONTENT (unchanged) =====
-  const MockOriginalPage = memo(function MockOriginalPage({ page, zoom }) {
+
+  const aiBtnRef = useRef(null);
+  const vocabBtnRef = useRef(null);
+  const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
+  const [totalPages, setTotalPages] = useState(99);
+
+  // ===== MOCK CONTENT =====
+  function MockOriginalPage({ page, zoom, onDocumentLoad, onPageChange }) {
     return (
       <Box
         sx={{
@@ -121,12 +125,18 @@ export default function DocScreen() {
             <Viewer
               fileUrl="/delmarSection1.pdf"
               defaultScale={SpecialZoomLevel.PageWidth}
+              onDocumentLoad={onDocumentLoad}
+              onPageChange={(e) => {
+                if (onPageChange) {
+                  onPageChange(e.currentPage + 1);
+                }
+              }}
             />
           </Worker>
         </Box>
       </Box>
     );
-  });
+  }
 
   function MockRightPane({ mode, page, zoom }) {
     return (
@@ -213,6 +223,7 @@ export default function DocScreen() {
         onZoomOut={zoomOut}
         onZoomReset={zoomReset}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
+        totalPages={totalPages}
       />
 
       {/* Main content */}
@@ -233,7 +244,14 @@ export default function DocScreen() {
         {sidebarOpen && <SideBar />}
         {split ? (
           <SplitView
-            left={useMemo(() => <MockOriginalPage page={page} zoom={zoom} />, [page, zoom])}
+            left={
+              <MockOriginalPage 
+                page={page} 
+                zoom={zoom} 
+                onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
+                onPageChange={(newPage) => setPage(newPage)}
+              />
+            }
             right={
               <Box
                 sx={{
@@ -249,7 +267,12 @@ export default function DocScreen() {
           />
         ) : (
           <Box>
-            {useMemo(() => <MockOriginalPage page={page} zoom={zoom} />, [page, zoom])}
+            <MockOriginalPage 
+              page={page} 
+              zoom={zoom} 
+              onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
           </Box>
         )}
       </Box>
@@ -259,8 +282,10 @@ export default function DocScreen() {
         timerBtnRef={timerBtnRef}
         onOpenTimer={openTimer}
         aiBtnRef={aiBtnRef}
+        aiOpen={ai.open}
         onOpenB={() => (ai.open ? ai.onClose() : ai.onOpen())}
-        onOpenC={vocab.onOpen}
+        vocabBtnRef={vocabBtnRef}
+        onOpenC={() => (vocab.open ? vocab.onClose() : vocab.onOpen())}
       />
 
       {/* TIMER (persistent; hiding doesn't pause) */}
@@ -281,8 +306,14 @@ export default function DocScreen() {
         anchorEl={aiBtnRef.current}
         open={ai.open}
         onClose={ai.onClose}
+        onHide={ai.onClose}
       />
-      <VocabModal open={vocab.open} onClose={vocab.onClose} />
+      <VocabModal 
+        anchorEl={vocabBtnRef.current}
+        open={vocab.open}
+        onClose={vocab.onClose}
+        onHide={vocab.onClose}
+      />
 
       {/* Text-to-Speech Button */}
       <Box

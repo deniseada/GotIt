@@ -8,6 +8,7 @@ export default function RightDockButtons({
   aiBtnRef,
   onOpenA,
   onOpenB,
+  vocabBtnRef,
   onOpenC,
 }) {
   return (
@@ -56,6 +57,7 @@ export default function RightDockButtons({
       </Tooltip>
       <Tooltip title="Vocab">
         <IconButton
+          ref={vocabBtnRef}
           onClick={onOpenC}
           sx={{
             bgcolor: "background.paper",

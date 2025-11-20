@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
 import styles from "../mvp.module.css";
+
 export default function ToolBar({
   page,
   onPrev,
@@ -14,6 +14,7 @@ export default function ToolBar({
   onZoomOut,
   onZoomReset,
   onToggleSidebar,
+  totalPages,
 }) {
   const [highlightOpen, setHighlightOpen] = useState(false);
   const [highlightColor, setHighlightColor] = useState("#fff176");
@@ -47,11 +48,9 @@ export default function ToolBar({
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
-  // transient flash state for the A-/A+ pills (brief purple flash on click)
   const [pillFlash, setPillFlash] = useState(null);
   const pillTimeoutRef = useRef(null);
 
-  // compute text menu position when text button toggled on
   useLayoutEffect(() => {
     if (!activeButtons.text) return;
     const btn = textBtnRef.current;
@@ -76,8 +75,8 @@ export default function ToolBar({
 
   // four swatches: purple, yellow, green, red (in that order)
   const colorSwatches = ["#DDC3FE", "#FEF4C3", "#D0E6C1", "#F5C7A9"];
+
   return (
-    // {/* Secondary toolbar row */}
     <div className={`${styles.toolBar} ${styles.toolBarNoOffset}`}>
       <div className={styles.toolbarInner}>
         {/* Left Side */}
@@ -147,13 +146,12 @@ export default function ToolBar({
               document.body
             )}
           <button
-            className={styles.iconBtn}
+            className={`${styles.iconBtn} ${styles.pageNavBtnPrev}`}
             onClick={onPrev}
             aria-label="Previous page"
           >
-            ‹
+            <img src="/icons/arrowDown.svg" alt="Previous page" width="20" height="20" />
           </button>
-
           <input
             type="text"
             className={styles.pageInput}
@@ -161,20 +159,19 @@ export default function ToolBar({
             readOnly
             aria-label="Current page"
           />
-          <span className={styles.pageText}>of 99</span>
+          <span className={styles.pageText}>of {totalPages || 99}</span>
           <button
-            className={styles.iconBtn}
+            className={`${styles.iconBtn} ${styles.pageNavBtnNext}`}
             onClick={onNext}
             aria-label="Next page"
           >
-            ›
+            <img src="/icons/arrowDown.svg" alt="Next page" width="20" height="20" />
           </button>
           <div className={styles.toolbarDivider} />
         </div>
 
         {/* Center: zoom controls */}
         <div className={styles.toolbarCenter}>
-          {/* Zoom group */}
           <div
             className={styles.zoomGroup}
             role="group"
@@ -195,15 +192,20 @@ export default function ToolBar({
             >
               +
             </button>
+            <span className={styles.zoomText} style={{ marginRight: '4px' }}>
+              {zoom ? `${Math.round(zoom * 100)}%` : ""}
+            </span>
             <button
               className={styles.zoomDropdown}
-              title="Automatic Zoom"
+              onClick={onZoomReset}
+              title="Reset Zoom"
               aria-haspopup="true"
             >
-              Automatic Zoom
+              Reset
             </button>
           </div>
         </div>
+
         {/* Right Side */}
         <div className={styles.toolbarRight}>
           <button

@@ -41,7 +41,7 @@ export default function AIModal({
                     <div 
                         className={styles.aiHeaderIcon}
                         onClick={onClose}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', background: 'transparent', padding: '2px' }}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
@@ -51,7 +51,7 @@ export default function AIModal({
                             }
                         }}
                     >
-                        <img src="/icons/aiLight.svg" alt="AI" width="24" height="24" />
+                        <img src="/icons/aiDark.svg" alt="AI" width="32" height="32" />
                     </div>
                     <Typography className={styles.aiPanelTitle}>AI Study Tools</Typography>
                 </div>
