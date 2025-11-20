@@ -109,9 +109,13 @@ export default function DocScreen() {
   const SUMMARIZE_PROMPT = "Summarize Delmar - Section 1 into a concise summary. Only return the answer.";
   const MINDMAP_PROMPT = "topic: atoms, return the json formatted array of nodes and edges";
 
+
+  // Clean the text to remove unnecessary characters
   const cleanText = (text) => {
     if (!text) return "";
     let cleaned = text;
+    cleaned = cleaned.replace(/\*\*/g, ""); // Replace "**" with ""
+    cleaned = cleaned.replace(/\*/g, "-"); // Replace "*" with "-"
     cleaned = cleaned.replace(/\+/g, "");
     cleaned = cleaned.replace(/\bN\b/g, "");
     cleaned = cleaned.replace(/(\n\s*){3,}/g, "\n\n");

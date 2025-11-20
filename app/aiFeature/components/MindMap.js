@@ -4,7 +4,13 @@ import React from "react";
 export default function MindMap({ text, loading, error }) {
     return (
         <div style={{ padding: "20px" }}>
-        <h2>MindMap</h2>
+        <h2 style={{ 
+            fontFamily: "Amiri", 
+            fontSize: "24px", 
+            fontWeight: "bold" 
+        }}>
+            MindMap
+        </h2>
 
         {loading && (
             <div style={{ marginTop: "20px", padding: "10px" }}>
@@ -31,8 +37,8 @@ export default function MindMap({ text, loading, error }) {
             <pre
                 style={{
                 padding: "15px",
-                backgroundColor: "#f5f5f5",
-                borderRadius: "5px",
+                backgroundColor: "white",
+                borderRadius: "20px",
                 overflow: "auto",
                 whiteSpace: "pre-wrap",
                 }}

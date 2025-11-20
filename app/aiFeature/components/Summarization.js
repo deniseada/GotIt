@@ -4,7 +4,13 @@ import React from "react";
 export default function Summarization({ text, loading, error }) {
     return (
         <div style={{ padding: "20px" }}>
-            <h2>Summary</h2>
+            <h2 style={{ 
+            fontFamily: "Amiri", 
+            fontSize: "24px", 
+            fontWeight: "bold" 
+            }}>
+                Summary
+            </h2>
 
             {loading && (
                 <div style={{ marginTop: "20px", padding: "10px" }}>
@@ -30,11 +36,13 @@ export default function Summarization({ text, loading, error }) {
                 <div style={{ marginTop: "20px" }}>
                 <pre
                     style={{
-                    padding: "15px",
-                    backgroundColor: "#f5f5f5",
-                    borderRadius: "5px",
-                    overflow: "auto",
-                    whiteSpace: "pre-wrap",
+                        fontFamily: "Amiri",
+                        fontSize: "16px",
+                        padding: "15px",
+                        backgroundColor: "white",
+                        borderRadius: "5px",
+                        overflow: "auto",
+                        whiteSpace: "pre-wrap",
                     }}
                 >
                     {text}
