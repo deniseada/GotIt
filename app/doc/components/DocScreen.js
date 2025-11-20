@@ -54,6 +54,13 @@ export default function DocScreen() {
   const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
   const aiBtnRef = useRef(null); // anchor for AI Popper
 
+  // AI Feature States
+  const [simplifiedText, setSimplifiedText] = useState("");
+  const [summary, setSummary] = useState("");
+  const [mindmap, setMindmap] = useState("");
+  const [aiLoading, setAiLoading] = useState({ simplify: false, summarize: false, mindmap: false });
+  const [aiError, setAiError] = useState({ simplify: null, summarize: null, mindmap: null });
+
   // ===== TIMER (single source of truth) =====
   const timerBtnRef = useRef(null); // anchor for Popper
   const [timerOpen, setTimerOpen] = useState(false); // UI visibility (mini/presets)
@@ -96,6 +103,149 @@ export default function DocScreen() {
   useEffect(() => {
     if (timerSeconds === 0 && timerRunning) setTimerRunning(false);
   }, [timerSeconds, timerRunning]);
+
+  // AI Feature Handlers
+  const SIMPLIFY_PROMPT = "Simplify all parts of Delmar - Section 1 into: main points, key concepts, important definitions. Ignore any figures, images, and page numbers.";
+  const SUMMARIZE_PROMPT = "Summarize Delmar - Section 1 into a concise summary. Only return the answer.";
+  const MINDMAP_PROMPT = "topic: atoms, return the json formatted array of nodes and edges";
+
+  const cleanText = (text) => {
+    if (!text) return "";
+    let cleaned = text;
+    cleaned = cleaned.replace(/\+/g, "");
+    cleaned = cleaned.replace(/\bN\b/g, "");
+    cleaned = cleaned.replace(/(\n\s*){3,}/g, "\n\n");
+    return cleaned.trim();
+  };
+
+  const cleanMindMapText = (text) => {
+    if (!text) return "";
+    let cleaned = text;
+    cleaned = cleaned.replace(/\\/g, "");
+    cleaned = cleaned.replace(/"name"\s*:/g, "name:");
+    cleaned = cleaned.replace(/"category"\s*:/g, "category:");
+    cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
+    cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
+    cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
+    cleaned = cleaned.replace(/"{/g, "{");
+    cleaned = cleaned.replace(/"]}"/g, "]}");
+    cleaned = cleaned.replace(/}"/g, "}");
+    return cleaned.trim();
+  };
+
+  const handleSimplify = async () => {
+    setAiLoading(prev => ({ ...prev, simplify: true }));
+    setAiError(prev => ({ ...prev, simplify: null }));
+    setSimplifiedText("");
+    ai.onClose(); // Close the modal
+
+    try {
+      const response = await fetch("/api/simplify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: SIMPLIFY_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to simplify text";
+        const errorDetails = errorData.details ? `\n\nDetails: ${errorData.details}` : "";
+        throw new Error(errorMessage + errorDetails);
+      }
+
+      const result = await response.json();
+      const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
+      const simplifiedContent = cleanText(rawContent);
+      setSimplifiedText(simplifiedContent);
+      setMode("simplified");
+      if (!split) toggleSplit(); // Open split view if not already open
+    } catch (err) {
+      setAiError(prev => ({ ...prev, simplify: err.message }));
+      console.error("Error simplifying text:", err);
+    } finally {
+      setAiLoading(prev => ({ ...prev, simplify: false }));
+    }
+  };
+
+  const handleSummarize = async () => {
+    setAiLoading(prev => ({ ...prev, summarize: true }));
+    setAiError(prev => ({ ...prev, summarize: null }));
+    setSummary("");
+    ai.onClose(); // Close the modal
+
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: SUMMARIZE_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to summarize text";
+        const errorDetails = errorData.details ? `\n\nDetails: ${errorData.details}` : "";
+        throw new Error(errorMessage + errorDetails);
+      }
+
+      const result = await response.json();
+      const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
+      const cleanedContent = cleanText(rawContent);
+      setSummary(cleanedContent);
+      setMode("summarized");
+      if (!split) toggleSplit(); // Open split view if not already open
+    } catch (err) {
+      setAiError(prev => ({ ...prev, summarize: err.message }));
+      console.error("Error summarizing text:", err);
+    } finally {
+      setAiLoading(prev => ({ ...prev, summarize: false }));
+    }
+  };
+
+  const handleMindMap = async () => {
+    setAiLoading(prev => ({ ...prev, mindmap: true }));
+    setAiError(prev => ({ ...prev, mindmap: null }));
+    setMindmap("");
+    ai.onClose(); // Close the modal
+
+    try {
+      const response = await fetch("/api/mindmap", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: MINDMAP_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to generate mind map";
+        const errorDetails = errorData.details ? `\n\nDetails: ${errorData.details}` : "";
+        throw new Error(errorMessage + errorDetails);
+      }
+
+      const result = await response.json();
+      const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
+      const cleanedContent = cleanMindMapText(rawContent);
+      setMindmap(cleanedContent);
+      setMode("mindmap");
+      if (!split) toggleSplit(); // Open split view if not already open
+    } catch (err) {
+      setAiError(prev => ({ ...prev, mindmap: err.message }));
+      console.error("Error fetching mind map:", err);
+    } finally {
+      setAiLoading(prev => ({ ...prev, mindmap: false }));
+    }
+  };
 
   // ===== MOCK CONTENT (unchanged) =====
   const MockOriginalPage = memo(function MockOriginalPage({ page, zoom }) {
@@ -147,17 +297,29 @@ export default function DocScreen() {
       >
         {mode === "simplified" && (
           <>
-            <Simplification />
+            <Simplification 
+              text={simplifiedText}
+              loading={aiLoading.simplify}
+              error={aiError.simplify}
+            />
           </>
         )}
         {mode === "summarized" && (
           <div>
-            <Summarization />
+            <Summarization 
+              text={summary}
+              loading={aiLoading.summarize}
+              error={aiError.summarize}
+            />
           </div>
         )}
         {mode === "mindmap" && (
           <div>
-            <MindMap />
+            <MindMap 
+              text={mindmap}
+              loading={aiLoading.mindmap}
+              error={aiError.mindmap}
+            />
           </div>
         )}
       </Box>
@@ -247,6 +409,10 @@ export default function DocScreen() {
         anchorEl={aiBtnRef.current}
         open={ai.open}
         onClose={ai.onClose}
+        onSimplify={handleSimplify}
+        onSummarize={handleSummarize}
+        onMindMap={handleMindMap}
+        loading={aiLoading}
       />
       <VocabModal open={vocab.open} onClose={vocab.onClose} />
 
