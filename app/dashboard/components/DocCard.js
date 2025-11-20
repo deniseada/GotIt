@@ -23,6 +23,7 @@ export default function DocCard({
   onEditTitle, // Callback for edit
   onDelete, // Callback for delete
   onEmotionChange, // New prop for emotion change callback
+  category, // Category to identify course books
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showEmotionModal, setShowEmotionModal] = useState(false);
@@ -54,9 +55,11 @@ export default function DocCard({
     onEmotionChange?.(newEmotion);
   };
 
+  const isCourseBook = category === "Course Books";
+  
   return (
     <Link href="/doc" className={styles.cardLink}>
-      <article className={styles.card}>
+      <article className={isCourseBook ? styles.courseBookCard : styles.card}>
         {/* Bookmark Ribbon - floating ABOVE the card */}
         <button
           type="button"

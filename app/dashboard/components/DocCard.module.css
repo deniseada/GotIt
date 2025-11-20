@@ -428,3 +428,26 @@
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Course Book Card - hide ribbon, emotion badge, and meta */
+.courseBookCard {
+  background: #fff;
+  border-radius: 8px 28px 28px 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  border: 2px solid #d6d6d6;
+  overflow: visible;
+  padding: 14rem 1rem 0 1rem !important;
+  max-height: 308px;
+  height: 100%;
+  max-width: 230px;
+  width: 100%;
+  position: relative;
+  margin-top: 20px;
+}
+
+.courseBookCard .ribbonBtn,
+.courseBookCard .emotionBadge,
+.courseBookCard .meta,
+.courseBookCard .section {
+  display: none;
+}
