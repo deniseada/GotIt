@@ -167,9 +167,13 @@ export async function POST(request) {
             // Extract content from delta
             if (data.choices && data.choices[0] && data.choices[0].delta) {
               const delta = data.choices[0].delta;
+              // Skip tool outputs (RAG responses)
+              if (delta.role === 'tool' || delta.tool_calls) {
+                continue;
+              }
               if (delta.content) {
                 fullContent += delta.content;
-                deltas.push(delta);
+                deltas.push(delta.content);
               }
             }
           } catch (parseError) {
@@ -179,8 +183,8 @@ export async function POST(request) {
       }
       
       result = {
-        text: fullContent,
-        content: fullContent,
+        text: fullContent.trim(),
+        content: fullContent.trim(),
         deltas: deltas,
         format: 'sse',
         raw: responseText.substring(0, 1000) // Store first 1000 chars for debugging

@@ -42,8 +42,8 @@ export async function POST(request) {
 
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
-
     const trimmedPrompt = prompt.trim();
+
     const requestBody = {
       messages: [
         {
@@ -53,7 +53,7 @@ export async function POST(request) {
       ],
     };
 
-    const deploymentId = "c45f1dd3-9823-4ce6-9e24-c07b7010a33b";
+    const deploymentId = "5aa6ccdd-c87e-4e8c-ad65-47fea74723fa";
     const scoringUrl = `https://us-south.ml.cloud.ibm.com/ml/v4/deployments/${deploymentId}/ai_service_stream?version=2021-05-01`;
 
     const mlResponse = await fetch(scoringUrl, {
@@ -79,7 +79,7 @@ export async function POST(request) {
 
       return NextResponse.json(
         {
-          error: "Failed to get summarization from IBM ML service",
+          error: "Failed to get mind map from IBM ML service",
           details: process.env.NODE_ENV === "development" ? errorText : undefined,
           errorData,
         },
@@ -103,12 +103,13 @@ export async function POST(request) {
 
         if (!dataLine) continue;
 
-        const payload = dataLine.slice(6); // remove "data: "
+        const payload = dataLine.slice(6);
         try {
           const data = JSON.parse(payload);
           const choice = data.choices?.[0];
           const delta = choice?.delta;
 
+          // Skip tool responses (these contain raw PDF chunks)
           if (!delta || delta.role === "tool" || delta.tool_calls) {
             continue;
           }
@@ -141,7 +142,7 @@ export async function POST(request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error in summarize API:", error);
+    console.error("Error in mindmap API:", error);
     return NextResponse.json(
       {
         error: "Internal server error",
@@ -152,5 +153,4 @@ export async function POST(request) {
     );
   }
 }
-
 
