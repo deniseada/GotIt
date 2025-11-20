@@ -121,7 +121,9 @@
   cursor: pointer;
   z-index: 15;
   padding: 0;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .kebab:hover {
@@ -422,11 +424,7 @@
   text-decoration: none;
 }
 
-.card {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* optional hover feedback */
-.cardLink:hover .card {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+.cardLink:hover .kebab {
+  opacity: 1;
+  pointer-events: auto;
 }
