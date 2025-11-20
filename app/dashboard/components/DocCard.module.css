@@ -36,12 +36,10 @@
 /* Hover state - subtle lift and glow */
 .ribbonBtn:hover:not(.ribbonActive) {
   background-color: #9ca3af;
-  transform: translateY(-2px) scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .ribbonBtn:hover.ribbonActive {
-  transform: translateY(-2px) scale(1.05);
   box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
   filter: brightness(1.1);
 }
@@ -49,7 +47,6 @@
 /* Intermediate state when clicking - shows yellow with lighter border effect */
 .ribbonBtn:active:not(.ribbonActive) {
   background-color: #fbbf24;
-  transform: translateY(0) scale(0.95);
   transition: all 0.15s ease;
 }
 
@@ -117,7 +114,7 @@
   right: -2px;
   bottom: -2px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
-  background-color: #f9dd71;
+  background-color: #fdf2c6;
   z-index: -1;
   border-radius: 11px 11px 0 0;
   animation: borderPulse 0.3s ease-out;
@@ -237,15 +234,6 @@
   margin-bottom: 10px;
   margin-top: 0;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.emotionBadge:hover {
-  transform: scale(1.05);
-}
-
-.emotionBadge:active {
-  transform: scale(0.98);
 }
 
 .emotionBadge img {
@@ -429,6 +417,5 @@
 
 /* optional hover feedback */
 .cardLink:hover .card {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
