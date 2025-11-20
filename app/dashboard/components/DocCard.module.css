@@ -1,11 +1,11 @@
 .card {
   background: #fff;
-  border-radius: 4px 28px 28px 4px;
+  border-radius: 8px 28px 28px 8px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   border: 2px solid #d6d6d6;
   overflow: visible;
   padding: 8rem 1rem 0 1rem !important;
-  max-height: 378px;
+  max-height: 308px;
   height: 100%;
   max-width: 230px;
   width: 100%;
@@ -39,7 +39,7 @@
 .kebab {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 12px;
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -240,9 +240,8 @@
   font-size: 16px;
   color: #111827;
   font-weight: 500;
-  padding-top: 12px;
+  padding: 10px 0 0 0;
   border-top: 1px solid #e5e7eb;
-  margin-bottom: 12px;
 }
 
 .meta {
