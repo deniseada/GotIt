@@ -3,11 +3,6 @@ import React, { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import styles from "../mvp.module.css";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import ZoomOutIcon from "@mui/icons-material/ZoomOut";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import ZoomControls from "./ZoomControls";
-
 export default function ToolBar({
   page,
   onPrev,
@@ -158,7 +153,15 @@ export default function ToolBar({
           >
             ‹
           </button>
-          <span className={styles.pageText}>{page} / 99</span>
+
+          <input
+            type="text"
+            className={styles.pageInput}
+            value={page}
+            readOnly
+            aria-label="Current page"
+          />
+          <span className={styles.pageText}>of 99</span>
           <button
             className={styles.iconBtn}
             onClick={onNext}
@@ -166,6 +169,7 @@ export default function ToolBar({
           >
             ›
           </button>
+          <div className={styles.toolbarDivider} />
         </div>
 
         {/* Center: zoom controls */}
@@ -176,30 +180,27 @@ export default function ToolBar({
             role="group"
             aria-label="Zoom controls"
           >
-            <span className={styles.zoomText}>{Math.round(zoom * 100)}%</span>
             <button
-              className={styles.toolButton}
+              className={styles.zoomButton}
               onClick={onZoomOut}
               title="Zoom out"
             >
-              <ZoomOutIcon className={styles.toolbarSvg} />
-              <span className={styles.srOnly}>Zoom out</span>
+              –
             </button>
+            <div className={styles.zoomSeparator} />
             <button
-              className={styles.toolButton}
-              onClick={onZoomReset}
-              title="Reset zoom"
-            >
-              <RestartAltIcon className={styles.toolbarSvg} />
-              <span className={styles.srOnly}>Reset zoom</span>
-            </button>
-            <button
-              className={styles.toolButton}
+              className={styles.zoomButton}
               onClick={onZoomIn}
               title="Zoom in"
             >
-              <ZoomInIcon className={styles.toolbarSvg} />
-              <span className={styles.srOnly}>Zoom in</span>
+              +
+            </button>
+            <button
+              className={styles.zoomDropdown}
+              title="Automatic Zoom"
+              aria-haspopup="true"
+            >
+              Automatic Zoom
             </button>
           </div>
         </div>
@@ -270,6 +271,7 @@ export default function ToolBar({
           >
             <img src="/icons/textIcon.svg" className={styles.toolbarIcon} />
           </button>
+          <div className={styles.toolbarDivider} />
           {typeof document !== "undefined" &&
             activeButtons.text &&
             createPortal(
@@ -361,10 +363,10 @@ export default function ToolBar({
               document.body
             )}
           <button className={styles.toolButton}>
-            <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />
+            <img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} />
           </button>
           <button className={styles.toolButton}>
-            <img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} />
+            <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />
           </button>
         </div>
       </div>

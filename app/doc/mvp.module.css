@@ -84,14 +84,14 @@ body {
   font-size: 0.95rem;
 }
 
+.backBtnLink {
+  display: inline-block;
+  margin: 1em;
+}
+
 .backBtnContainer {
-  max-width: 1200px;
-  margin-top: 20px;
-  margin-left: 130px;
-  margin-bottom: 20px;
   padding: 0 20px;
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
   align-items: center;
   font-size: 1rem;
   color: var(--button-color);
@@ -208,8 +208,89 @@ body {
   text-align: right;
 }
 
-.zoomGroup .toolButton {
-  padding: 4px;
+/* Page navigation buttons */
+.iconBtn {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #522a70;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.iconBtn:hover {
+  background: rgba(82, 42, 112, 0.06);
+}
+
+.pageInput {
+  width: 40px;
+  padding: 4px 8px;
+  border: 1px solid #dcd4e2;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  background: white;
+  color: #522a70;
+}
+
+.pageText {
+  font-size: 14px;
+  color: #522a70;
+  margin: 0 4px;
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 24px;
+  background: #dcd4e2;
+  margin: 0 4px;
+}
+
+.zoomButton {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #522a70;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+}
+
+.zoomButton:hover {
+  background: rgba(82, 42, 112, 0.06);
+}
+
+.zoomSeparator {
+  width: 1px;
+  height: 20px;
+  background: #dcd4e2;
+  margin: 0 2px;
+}
+
+.zoomDropdown {
+  background: transparent;
+  border: 1px solid #dcd4e2;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #522a70;
+  margin-left: 8px;
+}
+
+.zoomDropdown:hover {
+  background: rgba(82, 42, 112, 0.06);
 }
 
 /* Active look for the split button */
@@ -220,28 +301,6 @@ body {
 }
 
 /* Screen-reader-only text */
-.srOnly {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ToolBar Functionality */
-
-/* active look when split is ON */
-.toolButtonActive {
-  background: rgba(25, 118, 210, 0.12);
-  outline: 2px solid #1976d2;
-  outline-offset: 0;
-}
-
-/* screen-reader only text */
 .srOnly {
   position: absolute !important;
   width: 1px;
@@ -362,10 +421,7 @@ body {
   color: #333;
 }
 
-.aiToolButton:hover {
-  border-color: #5e35b1;
-  background-color: #f9f8ff;
-}
+
 
 /* Highlight menu */
 .highlightMenu {

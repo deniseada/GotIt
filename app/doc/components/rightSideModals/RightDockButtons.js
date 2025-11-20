@@ -5,6 +5,7 @@ import { Tooltip, IconButton, Box } from "@mui/material";
 export default function RightDockButtons({
   timerBtnRef,
   onOpenTimer,
+  aiBtnRef,
   onOpenA,
   onOpenB,
   onOpenC,
@@ -28,7 +29,7 @@ export default function RightDockButtons({
           sx={{
             bgcolor: "background.paper",
             boxShadow: 2,
-            "&:hover": { boxShadow: 2 },
+
             width: 48,
             height: 48,
             borderRadius: "14px",
@@ -39,11 +40,12 @@ export default function RightDockButtons({
       </Tooltip>
       <Tooltip title="AI">
         <IconButton
+          ref={aiBtnRef}
           onClick={onOpenB}
           sx={{
             bgcolor: "background.paper",
             boxShadow: 2,
-            "&:hover": { boxShadow: 2 },
+
             width: 48,
             height: 48,
             borderRadius: "14px",
@@ -58,7 +60,7 @@ export default function RightDockButtons({
           sx={{
             bgcolor: "background.paper",
             boxShadow: 2,
-            "&:hover": { boxShadow: 2 },
+
             width: 48,
             height: 48,
             borderRadius: "14px",
