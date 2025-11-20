@@ -1,7 +1,8 @@
 "use client";
 import SideBar from "./sideBar";
 import React, { useState, useEffect, useRef, useMemo, memo } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import PauseIcon from "@mui/icons-material/Pause";
 import styles from "../mvp.module.css";
 import NavBar from "./NavBar";
 import Link from "next/link";
@@ -45,6 +46,8 @@ export default function DocScreen() {
   // Right Side Buttons (AI/Vocab)
   const ai = useModal(false);
   const vocab = useModal(false);
+  const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
+  const aiBtnRef = useRef(null); // anchor for AI Popper
 
   // ===== TIMER (single source of truth) =====
   const timerBtnRef = useRef(null); // anchor for Popper
@@ -255,6 +258,7 @@ export default function DocScreen() {
       <RightDockButtons
         timerBtnRef={timerBtnRef}
         onOpenTimer={openTimer}
+        aiBtnRef={aiBtnRef}
         onOpenB={() => (ai.open ? ai.onClose() : ai.onOpen())}
         onOpenC={vocab.onOpen}
       />
@@ -273,8 +277,43 @@ export default function DocScreen() {
       />
 
       {/* Other modals */}
-      <AIModal open={ai.open} onClose={ai.onClose} />
+      <AIModal 
+        anchorEl={aiBtnRef.current}
+        open={ai.open}
+        onClose={ai.onClose}
+      />
       <VocabModal open={vocab.open} onClose={vocab.onClose} />
+
+      {/* Text-to-Speech Button */}
+      <Box
+        sx={{
+          position: "fixed",
+          right: 16,
+          bottom: 16,
+          zIndex: 1200,
+        }}
+      >
+        <Tooltip title={textToSpeechPlaying ? "Pause" : "Text to Speech"}>
+          <IconButton
+            onClick={() => setTextToSpeechPlaying(!textToSpeechPlaying)}
+            sx={{
+              bgcolor: "background.paper",
+              boxShadow: 2,
+              "&:hover": { boxShadow: 2 },
+              width: 48,
+              height: 48,
+              borderRadius: "14px",
+              border: "1px solid #dcd4e2",
+            }}
+          >
+            {textToSpeechPlaying ? (
+              <PauseIcon sx={{ color: "#522A70", fontSize: 28 }} />
+            ) : (
+              <img src="/icons/speaking-head.svg" alt="Text to Speech" width="35" height="35" />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Box>
     </Box>
   );
 }
