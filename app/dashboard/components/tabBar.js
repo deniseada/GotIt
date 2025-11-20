@@ -630,45 +630,35 @@ export default function TabBar() {
       {/* Rendering Cards */}
       <CustomTabPanel value={value} index={0}>
         <div className={styles.contentWrap}>
-          <div className={styles.cardsGrid}>
-            <UploadButton />
-          </div>
+          <UploadButton />
           {renderSections()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
         <div className={styles.contentWrap}>
-          <div className={styles.cardsGrid}>
-            <UploadButton />
-          </div>
+          <UploadButton />
           {renderGridWithSection("Recent")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>
         <div className={styles.contentWrap}>
-          <div className={styles.cardsGrid}>
-            <UploadButton />
-          </div>
+          <UploadButton />
           {renderGridWithSection("Uploaded")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
         <div className={styles.contentWrap}>
-          <div className={styles.cardsGrid}>
-            <UploadButton />
-          </div>
+          <UploadButton />
           {renderGridWithSection("Bookmarked")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={4}>
         <div className={styles.contentWrap}>
-          <div className={styles.cardsGrid}>
-            <UploadButton />
-          </div>
+          <UploadButton />
           {renderGridWithSection("Course Book", styles.courseBookGrid)}
         </div>
       </CustomTabPanel>
