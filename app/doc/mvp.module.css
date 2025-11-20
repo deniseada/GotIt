@@ -230,7 +230,8 @@ body {
 
 .pageNavBtnPrev img {
   transform: rotate(180deg);
-  filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(1);
+  filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%)
+    hue-rotate(0deg) brightness(1);
 }
 
 .pageNavBtnNext img {
@@ -429,8 +430,6 @@ body {
   font-size: 0.875rem;
   color: #333;
 }
-
-
 
 /* Highlight menu */
 .highlightMenu {
@@ -715,7 +714,7 @@ body {
   font-weight: 500;
   font-size: 0.9375rem;
   color: var(--text-color);
-  background-color: #E4E4E4;
+  background-color: #e4e4e4;
   border-radius: 16px 16px 0 0;
   position: relative;
   margin-right: 0;
@@ -730,7 +729,7 @@ body {
 .modeTabs :global(.Mui-selected) {
   color: var(--text-color) !important;
   font-weight: 600;
-  background-color: #C2A3DA !important;
+  background-color: #c2a3da !important;
   border: 2px solid var(--button-color);
   border-bottom: none;
 }
@@ -740,7 +739,7 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #522A70;
+  background: #522a70;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -779,10 +778,9 @@ body {
 }
 
 .vocabTerm {
-  font-weight: 600;
+  font-weight: 700 !important;
   font-size: 0.75rem !important;
   color: #1a1a1a;
-  margin-bottom: 0.2rem;
 }
 
 .vocabDefinition {
@@ -792,13 +790,13 @@ body {
 }
 
 .vocabRemoveBtn {
-  width: 20px !important;
-  height: 20px !important;
-  min-width: 20px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-  background: #F5C7A9 !important;
-  color: white !important;
+  width: 15px !important;
+  height: 15px !important;
+  min-width: 15px !important;
+  padding: 0;
+  border-radius: 50%;
+  background: #f19597 !important;
+  color: white;
 }
 
 .vocabRemoveBtn:hover {

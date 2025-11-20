@@ -19,20 +19,116 @@ import TimerPopover from "./TimerPopover";
 import AIModal from "./AIModal";
 import VocabModal from "./VocabModal";
 
-import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
+import {
+  Worker,
+  Viewer,
+  SpecialZoomLevel,
+  createStore,
+} from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
 
 export default function DocScreen() {
+  // create plugin instances once so Viewer and ToolBar share them
+
   const [split, setSplit] = useState(false);
-  const [zoom, setZoom] = useState(1);
+
+  // Replace the old zoom plugin with a small custom plugin that exposes
+  // a `zoomTo(scale)` method so we can programmatically zoom from outside
+  // the Viewer (matches the react-pdf-viewer example).
+  const createCustomZoomPlugin = () => {
+    const store = createStore();
+
+    // lightweight event emitter for scale changes
+    let currentScale = 1;
+    const listeners = new Set();
+    const notify = (s) => {
+      currentScale = s;
+      listeners.forEach((l) => l(s));
+    };
+
+    const subscribe = (l) => {
+      listeners.add(l);
+      return () => listeners.delete(l);
+    };
+
+    return {
+      install: (pluginFunctions) => {
+        // store original functions but wrap them so we can capture scale
+        const originalZoom = pluginFunctions.zoom;
+        store.update("zoom", (scale) => {
+          originalZoom(scale);
+          // try to read numeric scale if available
+          const s =
+            typeof pluginFunctions.getCurrentScale === "function"
+              ? pluginFunctions.getCurrentScale()
+              : null;
+          if (s !== null && s !== undefined) notify(s);
+        });
+
+        if (typeof pluginFunctions.zoomIn === "function") {
+          store.update("zoomIn", () => {
+            pluginFunctions.zoomIn();
+            const s =
+              typeof pluginFunctions.getCurrentScale === "function"
+                ? pluginFunctions.getCurrentScale()
+                : null;
+            if (s !== null && s !== undefined) notify(s);
+          });
+        }
+
+        if (typeof pluginFunctions.zoomOut === "function") {
+          store.update("zoomOut", () => {
+            pluginFunctions.zoomOut();
+            const s =
+              typeof pluginFunctions.getCurrentScale === "function"
+                ? pluginFunctions.getCurrentScale()
+                : null;
+            if (s !== null && s !== undefined) notify(s);
+          });
+        }
+
+        // initialize scale if available
+        if (typeof pluginFunctions.getCurrentScale === "function") {
+          try {
+            const s = pluginFunctions.getCurrentScale();
+            if (s !== null && s !== undefined) notify(s);
+          } catch (e) {
+            // ignore
+          }
+        }
+      },
+
+      zoomTo: (scale) => {
+        const fn = store.get("zoom");
+        if (fn) fn(scale);
+      },
+      zoomIn: () => {
+        const fn = store.get("zoomIn");
+        if (fn) fn();
+      },
+      zoomOut: () => {
+        const fn = store.get("zoomOut");
+        if (fn) fn();
+      },
+
+      // React component matching the zoom plugin API so ToolBar can render it
+      CurrentScale: ({ children }) => {
+        const [scale, setScale] = React.useState(currentScale || 1);
+        React.useEffect(() => {
+          const unsub = subscribe(setScale);
+          return () => unsub();
+        }, []);
+        return children({ scale });
+      },
+    };
+  };
+
+  const [zoomPluginInstance] = useState(() => createCustomZoomPlugin());
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Split view + zoom
   const toggleSplit = () => setSplit((s) => !s);
-  const zoomIn = () => setZoom((z) => Math.min(3, +(z + 0.1).toFixed(2)));
-  const zoomOut = () => setZoom((z) => Math.max(0.5, +(z - 0.1).toFixed(2)));
-  const zoomReset = () => setZoom(1);
 
   // Press 'S' to toggle split view
   useEffect(() => {
@@ -90,14 +186,13 @@ export default function DocScreen() {
     if (timerSeconds === 0 && timerRunning) setTimerRunning(false);
   }, [timerSeconds, timerRunning]);
 
-
   const aiBtnRef = useRef(null);
   const vocabBtnRef = useRef(null);
   const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
   const [totalPages, setTotalPages] = useState(99);
 
   // ===== MOCK CONTENT =====
-  function MockOriginalPage({ page, zoom, onDocumentLoad, onPageChange }) {
+  function MockOriginalPage({ page, onDocumentLoad, onPageChange }) {
     return (
       <Box
         sx={{
@@ -113,7 +208,7 @@ export default function DocScreen() {
         <Box
           sx={{
             width: "100%",
-            maxWidth: `${Math.min(1200, 900 * zoom)}px`,
+
             height: "100vh",
             maxHeight: "100vh",
             bgcolor: "common.white",
@@ -124,7 +219,7 @@ export default function DocScreen() {
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <Viewer
               fileUrl="/delmarSection1.pdf"
-              defaultScale={SpecialZoomLevel.PageWidth}
+              plugins={[zoomPluginInstance].filter(Boolean)}
               onDocumentLoad={onDocumentLoad}
               onPageChange={(e) => {
                 if (onPageChange) {
@@ -138,7 +233,7 @@ export default function DocScreen() {
     );
   }
 
-  function MockRightPane({ mode, page, zoom }) {
+  function MockRightPane({ mode, page }) {
     return (
       <Box
         sx={{
@@ -175,9 +270,6 @@ export default function DocScreen() {
                 gluon force.
               </li>
             </ul>
-            <Typography variant="caption" color="text.secondary">
-              Zoom: {(zoom * 100).toFixed(0)}%
-            </Typography>
           </>
         )}
         {mode === "summarized" && (
@@ -218,12 +310,9 @@ export default function DocScreen() {
         onNext={() => setPage((p) => p + 1)}
         split={split}
         onToggleSplit={toggleSplit}
-        zoom={zoom}
-        onZoomIn={zoomIn}
-        onZoomOut={zoomOut}
-        onZoomReset={zoomReset}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
         totalPages={totalPages}
+        zoomPlugin={zoomPluginInstance}
       />
 
       {/* Main content */}
@@ -245,9 +334,8 @@ export default function DocScreen() {
         {split ? (
           <SplitView
             left={
-              <MockOriginalPage 
-                page={page} 
-                zoom={zoom} 
+              <MockOriginalPage
+                page={page}
                 onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
                 onPageChange={(newPage) => setPage(newPage)}
               />
@@ -261,15 +349,14 @@ export default function DocScreen() {
                 }}
               >
                 <ModeTabs value={mode} onChange={setMode} />
-                <MockRightPane mode={mode} page={page} zoom={zoom} />
+                <MockRightPane mode={mode} page={page} />
               </Box>
             }
           />
         ) : (
           <Box>
-            <MockOriginalPage 
-              page={page} 
-              zoom={zoom} 
+            <MockOriginalPage
+              page={page}
               onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
               onPageChange={(newPage) => setPage(newPage)}
             />
@@ -302,13 +389,13 @@ export default function DocScreen() {
       />
 
       {/* Other modals */}
-      <AIModal 
+      <AIModal
         anchorEl={aiBtnRef.current}
         open={ai.open}
         onClose={ai.onClose}
         onHide={ai.onClose}
       />
-      <VocabModal 
+      <VocabModal
         anchorEl={vocabBtnRef.current}
         open={vocab.open}
         onClose={vocab.onClose}
@@ -340,7 +427,12 @@ export default function DocScreen() {
             {textToSpeechPlaying ? (
               <PauseIcon sx={{ color: "#522A70", fontSize: 28 }} />
             ) : (
-              <img src="/icons/speaking-head.svg" alt="Text to Speech" width="35" height="35" />
+              <img
+                src="/icons/speaking-head.svg"
+                alt="Text to Speech"
+                width="35"
+                height="35"
+              />
             )}
           </IconButton>
         </Tooltip>

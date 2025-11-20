@@ -2,6 +2,7 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "../mvp.module.css";
+import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 
 export default function ToolBar({
   page,
@@ -9,12 +10,11 @@ export default function ToolBar({
   onNext,
   split,
   onToggleSplit,
-  zoom,
-  onZoomIn,
-  onZoomOut,
-  onZoomReset,
+
   onToggleSidebar,
   totalPages,
+  toolbarPlugin,
+  zoomPlugin,
 }) {
   const [highlightOpen, setHighlightOpen] = useState(false);
   const [highlightColor, setHighlightColor] = useState("#fff176");
@@ -75,6 +75,9 @@ export default function ToolBar({
 
   // four swatches: purple, yellow, green, red (in that order)
   const colorSwatches = ["#DDC3FE", "#FEF4C3", "#D0E6C1", "#F5C7A9"];
+
+  // toolbar plugin rendering (if provided)
+  const { Toolbar } = toolbarPlugin || {};
 
   return (
     <div className={`${styles.toolBar} ${styles.toolBarNoOffset}`}>
@@ -150,7 +153,12 @@ export default function ToolBar({
             onClick={onPrev}
             aria-label="Previous page"
           >
-            <img src="/icons/arrowDown.svg" alt="Previous page" width="20" height="20" />
+            <img
+              src="/icons/arrowDown.svg"
+              alt="Previous page"
+              width="20"
+              height="20"
+            />
           </button>
           <input
             type="text"
@@ -159,47 +167,74 @@ export default function ToolBar({
             readOnly
             aria-label="Current page"
           />
-          <span className={styles.pageText}>of {totalPages || 99}</span>
+          <span className={styles.pageText}>of {totalPages || ""}</span>
           <button
             className={`${styles.iconBtn} ${styles.pageNavBtnNext}`}
             onClick={onNext}
             aria-label="Next page"
           >
-            <img src="/icons/arrowDown.svg" alt="Next page" width="20" height="20" />
+            <img
+              src="/icons/arrowDown.svg"
+              alt="Next page"
+              width="20"
+              height="20"
+            />
           </button>
           <div className={styles.toolbarDivider} />
         </div>
 
         {/* Center: zoom controls */}
         <div className={styles.toolbarCenter}>
+          {/* Integrated PDF toolbar (if provided) */}
+          {Toolbar && (
+            <div style={{ marginRight: 8 }}>
+              <Toolbar />
+            </div>
+          )}
+
           <div
             className={styles.zoomGroup}
             role="group"
             aria-label="Zoom controls"
           >
-            <button
-              className={styles.zoomButton}
-              onClick={onZoomOut}
-              title="Zoom out"
-            >
-              –
-            </button>
-            <div className={styles.zoomSeparator} />
-            <button
-              className={styles.zoomButton}
-              onClick={onZoomIn}
-              title="Zoom in"
-            >
-              +
-            </button>
-            <span className={styles.zoomText} style={{ marginRight: '4px' }}>
-              {zoom ? `${Math.round(zoom * 100)}%` : ""}
-            </span>
+            <div style={{ display: "flex", gap: 6, marginLeft: 8 }}>
+              <button
+                className={styles.zoomButton}
+                onClick={() => {
+                  zoomPlugin.zoomTo((z) =>
+                    Math.max(0.5, +(z - 0.1).toFixed(2))
+                  );
+                }}
+              >
+                -
+              </button>
+              <div className={styles.zoomSeparator} />
+              <button
+                className={styles.zoomButton}
+                onClick={() => {
+                  if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                    zoomPlugin.zoomTo((z) =>
+                      Math.min(3, +(z + 0.1).toFixed(2))
+                    );
+                  }
+                }}
+              >
+                +
+              </button>
+            </div>
             <button
               className={styles.zoomDropdown}
-              onClick={onZoomReset}
-              title="Reset Zoom"
-              aria-haspopup="true"
+              onClick={() => {
+                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                  // reset to 100%
+                  zoomPlugin.zoomTo(1);
+                } else if (
+                  zoomPlugin &&
+                  typeof zoomPlugin.zoomTo === "function"
+                ) {
+                  zoomPlugin.zoomTo(SpecialZoomLevel.PageWidth);
+                }
+              }}
             >
               Reset
             </button>
