@@ -389,7 +389,9 @@
   font-size: 14px; 
 }
 
-<<<<<<< HEAD
+.modalUploadBtn:hover {
+  border: 2px solid #7b498f;
+}
 .selectedFileRow {
   display: inline-flex;
   align-items: center;
@@ -641,21 +643,11 @@
     width: 100%;
     flex: none;
   }
-=======
-.modalUploadBtn:hover {
-  border: 2px solid #7b498f;
-
->>>>>>> b78e6d0 (fixed css)
-}
-
-@media (max-width: 520px) {
   .modal {
-    width: 67.5rem;
-    padding: 3.5rem 4.125rem;
+    padding: 20px;
   }
   .modalHasFile {
-    width: 67.5rem;
-    padding: 3.5rem 4.125rem;
+    padding: 20px;
   }
   .uploadBox {
     padding: 20px;
