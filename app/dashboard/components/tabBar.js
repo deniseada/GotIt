@@ -386,8 +386,17 @@ export default function TabBar() {
     return (
       <div className={styles.sectionsWrapper}>
         {renderCardSection(recentCards, "Recent")}
+        {recentCards.length > 0 && uploadedCards.length > 0 && (
+          <div className={styles.sectionDivider}></div>
+        )}
         {renderCardSection(uploadedCards, "Uploaded")}
+        {uploadedCards.length > 0 && bookmarkedCards.length > 0 && (
+          <div className={styles.sectionDivider}></div>
+        )}
         {renderCardSection(bookmarkedCards, "Bookmarked")}
+        {bookmarkedCards.length > 0 && courseBookCards.length > 0 && (
+          <div className={styles.sectionDivider}></div>
+        )}
         {renderCardSection(courseBookCards, "Course Book", styles.courseBookGrid)}
       </div>
     );
@@ -652,35 +661,40 @@ export default function TabBar() {
       {/* Rendering Cards */}
       <CustomTabPanel value={value} index={0}>
         <div className={styles.contentWrap}>
-            <UploadButton />
+          <UploadButton />
+          <div className={styles.sectionDivider}></div>
           {renderSections()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
         <div className={styles.contentWrap}>
-            <UploadButton />
+          <UploadButton />
+          <div className={styles.sectionDivider}></div>
           {renderGridWithSection("Recent")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>
         <div className={styles.contentWrap}>
-            <UploadButton />
+          <UploadButton />
+          <div className={styles.sectionDivider}></div>
           {renderGridWithSection("Uploaded")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
         <div className={styles.contentWrap}>
-            <UploadButton />
+          <UploadButton />
+          <div className={styles.sectionDivider}></div>
           {renderGridWithSection("Bookmarked")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={4}>
         <div className={styles.contentWrap}>
-            <UploadButton />
+          <UploadButton />
+          <div className={styles.sectionDivider}></div>
           {renderGridWithSection("Course Book", styles.courseBookGrid)}
         </div>
       </CustomTabPanel>
