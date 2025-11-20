@@ -4,13 +4,13 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   border: 2px solid #d6d6d6;
   overflow: visible;
-  padding: 120px 20px 2px 20px !important;
+  padding: 8rem 1rem 0 1rem !important;
   max-height: 378px;
   height: 100%;
-  max-width: 260px;
+  max-width: 230px;
   width: 100%;
   position: relative;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 /* Bookmark ribbon - floating ABOVE the card */
@@ -228,7 +228,7 @@
 }
 
 .title {
-  font-size: 24px;
+  font-size: 1rem;
   line-height: 1.25;
   font-weight: 700;
   color: #111827;
@@ -245,7 +245,6 @@
   font-size: 16px;
   color: #111827;
   font-weight: 500;
-  margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #e5e7eb;
   margin-bottom: 12px;
