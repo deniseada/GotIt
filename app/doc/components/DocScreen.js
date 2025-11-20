@@ -114,8 +114,10 @@ export default function DocScreen() {
   const cleanText = (text) => {
     if (!text) return "";
     let cleaned = text;
-    cleaned = cleaned.replace(/\*\*/g, ""); // Replace "**" with ""
-    cleaned = cleaned.replace(/\*/g, "-"); // Replace "*" with "-"
+    // Remove **
+    cleaned = cleaned.replace(/\*\*/g, "");
+    // Replace * with -
+    cleaned = cleaned.replace(/\*/g, "-");
     cleaned = cleaned.replace(/\+/g, "");
     cleaned = cleaned.replace(/\bN\b/g, "");
     cleaned = cleaned.replace(/(\n\s*){3,}/g, "\n\n");
@@ -126,11 +128,12 @@ export default function DocScreen() {
     if (!text) return "";
     let cleaned = text;
     cleaned = cleaned.replace(/\\/g, "");
-    cleaned = cleaned.replace(/"name"\s*:/g, "name:");
-    cleaned = cleaned.replace(/"category"\s*:/g, "category:");
-    cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
-    cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
-    cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
+    // Commented these out for now
+    // cleaned = cleaned.replace(/"name"\s*:/g, "name:");
+    // cleaned = cleaned.replace(/"category"\s*:/g, "category:");
+    // cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
+    // cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
+    // cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
     cleaned = cleaned.replace(/"{/g, "{");
     cleaned = cleaned.replace(/"]}"/g, "]}");
     cleaned = cleaned.replace(/}"/g, "}");
