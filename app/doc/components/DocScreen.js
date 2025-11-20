@@ -138,6 +138,10 @@ export default function DocScreen() {
     setAiError(prev => ({ ...prev, simplify: null }));
     setSimplifiedText("");
     ai.onClose(); // Close the modal
+    
+    // Open split view and set mode immediately
+    setMode("simplified");
+    if (!split) setSplit(true);
 
     try {
       const response = await fetch("/api/simplify", {
@@ -161,8 +165,6 @@ export default function DocScreen() {
       const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
       const simplifiedContent = cleanText(rawContent);
       setSimplifiedText(simplifiedContent);
-      setMode("simplified");
-      if (!split) toggleSplit(); // Open split view if not already open
     } catch (err) {
       setAiError(prev => ({ ...prev, simplify: err.message }));
       console.error("Error simplifying text:", err);
@@ -176,6 +178,10 @@ export default function DocScreen() {
     setAiError(prev => ({ ...prev, summarize: null }));
     setSummary("");
     ai.onClose(); // Close the modal
+    
+    // Open split view and set mode immediately
+    setMode("summarized");
+    if (!split) setSplit(true);
 
     try {
       const response = await fetch("/api/summarize", {
@@ -199,8 +205,6 @@ export default function DocScreen() {
       const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
       const cleanedContent = cleanText(rawContent);
       setSummary(cleanedContent);
-      setMode("summarized");
-      if (!split) toggleSplit(); // Open split view if not already open
     } catch (err) {
       setAiError(prev => ({ ...prev, summarize: err.message }));
       console.error("Error summarizing text:", err);
@@ -214,6 +218,10 @@ export default function DocScreen() {
     setAiError(prev => ({ ...prev, mindmap: null }));
     setMindmap("");
     ai.onClose(); // Close the modal
+    
+    // Open split view and set mode immediately
+    setMode("mindmap");
+    if (!split) setSplit(true);
 
     try {
       const response = await fetch("/api/mindmap", {
@@ -237,8 +245,6 @@ export default function DocScreen() {
       const rawContent = result.text || result.content || JSON.stringify(result, null, 2);
       const cleanedContent = cleanMindMapText(rawContent);
       setMindmap(cleanedContent);
-      setMode("mindmap");
-      if (!split) toggleSplit(); // Open split view if not already open
     } catch (err) {
       setAiError(prev => ({ ...prev, mindmap: err.message }));
       console.error("Error fetching mind map:", err);
