@@ -39,36 +39,134 @@ export default function TabBar() {
 
   // --- Sample data (replace with real data later)
   const initialCards = [
+    // Recent section cards
     {
-      id: "1",
-      title: "Electrical Codes and Regulations",
-      category: "Course Books",
-      bookmarked: true,
-      updatedAt: "2025-10-20T18:12:00.000Z",
+      id: "recent-1",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 1",
+      category: "",
+      bookmarked: false,
+      updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "confident",
     },
     {
-      id: "2",
-      title: "Lecture Slides - Chp 3 to 6",
+      id: "recent-2",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 3",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "needs",
+    },
+    {
+      id: "recent-3",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 4",
+      category: "",
+      bookmarked: false,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "neutral",
+    },
+    // Uploaded section cards
+    {
+      id: "uploaded-1",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Uploaded",
       category: "Uploaded",
       bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "confident",
     },
     {
-      id: "3",
-      title: "Electrical Codes and Regulations",
-      category: "Course Books",
-      bookmarked: false,
+      id: "uploaded-2",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Uploaded",
+      category: "Uploaded",
+      bookmarked: true,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "needs",
     },
     {
-      id: "4",
-      title: "Lecture Slides - Chp 1 to 2",
+      id: "uploaded-3",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Uploaded",
+      category: "Uploaded",
+      bookmarked: false,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "neutral",
+    },
+    // Bookmarked section cards
+    {
+      id: "bookmarked-1",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 2",
       category: "",
       bookmarked: true,
       updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "needs",
+    },
+    {
+      id: "bookmarked-2",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 2",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "neutral",
+    },
+    {
+      id: "bookmarked-3",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 2",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "confident",
+    },
+    {
+      id: "bookmarked-4",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 2",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "confident",
+    },
+    {
+      id: "bookmarked-5",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 2",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "needs",
+    },
+    {
+      id: "bookmarked-6",
+      title: "Delmar's Standard Textbook for Electricity",
+      kind: "Section 2",
+      category: "",
+      bookmarked: true,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "neutral",
+    },
+    // Course Books section cards
+    {
+      id: "course-1",
+      title: "Electrical Codes and Regulations 2024",
+      kind: "",
+      category: "Course Books",
+      bookmarked: false,
+      updatedAt: "2025-10-20T18:12:00.000Z",
+      emotion: "neutral",
+    },
+    {
+      id: "course-2",
+      title: "Electrical Codes and Regulations 2021",
+      kind: "",
+      category: "Course Books",
+      bookmarked: false,
+      updatedAt: "2025-10-20T18:12:00.000Z",
       emotion: "neutral",
     },
   ];
@@ -165,6 +263,90 @@ export default function TabBar() {
       )}
     </div>
   );
+
+  // Render sections with headers for "All" tab
+  const renderSections = () => {
+    // Group cards by category
+    const recentCards = [...cardList]
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      .filter((c) => {
+        if (emotion !== "none") {
+          return (c.emotion || "neutral") === emotion;
+        }
+        return true;
+      })
+      .slice(0, 3); // Show only 3 most recent cards
+
+    const uploadedCards = cardList.filter((c) => {
+      if (c.category !== "Uploaded") return false;
+      if (emotion !== "none") {
+        return (c.emotion || "neutral") === emotion;
+      }
+      return true;
+    });
+
+    const bookmarkedCards = cardList.filter((c) => {
+      if (!c.bookmarked) return false;
+      if (emotion !== "none") {
+        return (c.emotion || "neutral") === emotion;
+      }
+      return true;
+    });
+
+    const courseBookCards = cardList.filter((c) => {
+      if (c.category !== "Course Books") return false;
+      if (emotion !== "none") {
+        return (c.emotion || "neutral") === emotion;
+      }
+      return true;
+    });
+
+    const renderCardSection = (cards, sectionTitle, gridClass = styles.cardsGrid) => {
+      if (cards.length === 0) return null;
+
+      return (
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
+          <div className={gridClass}>
+            {cards.map((c) => (
+              <DocCard
+                key={c.id}
+                {...c}
+                lastOpened={c.updatedAt}
+                onToggleBookmark={() =>
+                  setCardList((prev) =>
+                    prev.map((card) =>
+                      card.id === c.id
+                        ? { ...card, bookmarked: !card.bookmarked }
+                        : card
+                    )
+                  )
+                }
+                onEmotionChange={(newEmotion) =>
+                  setCardList((prev) =>
+                    prev.map((card) =>
+                      card.id === c.id
+                        ? { ...card, emotion: newEmotion }
+                        : card
+                    )
+                  )
+                }
+              />
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div className={styles.sectionsWrapper}>
+        {renderCardSection(recentCards, "Recent")}
+        {renderCardSection(uploadedCards, "Uploaded")}
+        {renderCardSection(bookmarkedCards, "Bookmarked")}
+        {renderCardSection(courseBookCards, "Course Book", styles.courseBookGrid)}
+      </div>
+    );
+  };
 
   // Bookmark states - initialize with bookmarks from localStorage
   const [cardList, setCardList] = useState(() => initializeCardsWithBookmarks());
@@ -406,7 +588,7 @@ export default function TabBar() {
           <div className={styles.cardsGrid}>
             <UploadButton />
           </div>
-          {renderGrid()}
+          {renderSections()}
         </div>
       </CustomTabPanel>
 

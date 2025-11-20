@@ -5,11 +5,12 @@
   border: 2px solid #d6d6d6;
   overflow: visible;
   padding: 120px 20px 2px 20px !important;
+  max-height: 378px;
   height: 100%;
-  max-width: 280px;
+  max-width: 260px;
   width: 100%;
   position: relative;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 /* Bookmark ribbon - floating ABOVE the card */
@@ -235,6 +236,7 @@
   padding-right: 35px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

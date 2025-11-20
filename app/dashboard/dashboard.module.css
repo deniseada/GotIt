@@ -663,8 +663,54 @@
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(260px, 1fr));
+  padding: 1rem 0 2rem;
+}
+
+/* Center card links but not the upload button */
+.cardsGrid > :global(a) {
+  justify-self: center;
+}
+
+.courseBookGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
   gap: 3rem;
   padding: 1rem;
+}
+
+/* Center card links in course book grid */
+.courseBookGrid > :global(a) {
+  justify-self: center;
+}
+
+/* Sections */
+.sectionsWrapper {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.sectionContainer {
+  margin-bottom: 3rem;
+  background-color: #F7F6F9;
+  border-radius: 1rem;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+.sectionContainer:last-child {
+  margin-bottom: 0;
+}
+
+.sectionContainer .cardsGrid,
+.sectionContainer .courseBookGrid {
+  padding: 0;
+}
+
+.sectionHeader {
+  font-size: 20px;
+  font-weight: 700;
+  color: #522A70;
+  margin: 0 0.5rem;
 }
 
 .emptyState {
@@ -673,4 +719,30 @@
 
 .br {
   color: black;
+}
+
+/* Responsive styles for sections */
+@media (max-width: 960px) {
+  .cardsGrid,
+  .courseBookGrid {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .cardsGrid,
+  .courseBookGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .sectionHeader {
+    margin-left: 0;
+    font-size: 18px;
+  }
+  
+  .sectionsWrapper {
+    padding: 0.5rem;
+  }
 }
