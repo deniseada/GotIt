@@ -82,9 +82,8 @@
 }
 
 .uploadButtonContainer:hover {
-  border: 2px solid rgba(82, 42, 112, 0.50);
-  box-shadow: 0 4px 12px rgba(82, 42, 112, 0.25);
-
+  box-shadow: 0 4px 12px rgba(56, 20, 84, 0.25);
+  background-color: #c5aed6;
 }
 
 .uploadButton {
@@ -109,14 +108,12 @@
 
 .uploadButtonText {
   color: var(--button-color);
-  margin-top: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
+  margin-top: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 550;
+  font-family: var(--font-lexend), sans-serif;
 }
 
-.uploadButtonText:hover {
-  font-weight: 700;
-}
 
 /* Divider between upload button and sections */
 .sectionDivider {
