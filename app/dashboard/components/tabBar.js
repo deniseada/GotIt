@@ -393,11 +393,33 @@ export default function TabBar() {
     );
   };
 
-  // Bookmark states - initialize with bookmarks from localStorage
-  const [cardList, setCardList] = useState(() => initializeCardsWithBookmarks());
+  // Bookmark states - initialize without localStorage to avoid hydration mismatch
+  const [cardList, setCardList] = useState(initialCards);
+  const [isClient, setIsClient] = useState(false);
+
+  // Load from localStorage after mount (client-side only)
+  useEffect(() => {
+    setIsClient(true);
+    const storedBookmarks = loadBookmarksFromStorage();
+    const storedEmotions = loadEmotionsFromStorage();
+    
+    setCardList((prevCards) =>
+      prevCards.map((card) => ({
+        ...card,
+        bookmarked: storedBookmarks[card.id] !== undefined 
+          ? storedBookmarks[card.id] 
+          : card.bookmarked,
+        emotion: storedEmotions[card.id] !== undefined
+          ? storedEmotions[card.id]
+          : card.emotion,
+      }))
+    );
+  }, []);
 
   // Update localStorage whenever bookmarks or emotions change
   useEffect(() => {
+    if (!isClient) return; // Don't save on initial mount
+    
     const bookmarksMap = {};
     const emotionsMap = {};
     cardList.forEach((card) => {
@@ -406,7 +428,7 @@ export default function TabBar() {
     });
     saveBookmarksToStorage(bookmarksMap);
     saveEmotionsToStorage(emotionsMap);
-  }, [cardList]);
+  }, [cardList, isClient]);
 
   // Close filter menu on outside click or Escape key
   useEffect(() => {
@@ -630,35 +652,35 @@ export default function TabBar() {
       {/* Rendering Cards */}
       <CustomTabPanel value={value} index={0}>
         <div className={styles.contentWrap}>
-          <UploadButton />
+            <UploadButton />
           {renderSections()}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
         <div className={styles.contentWrap}>
-          <UploadButton />
+            <UploadButton />
           {renderGridWithSection("Recent")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>
         <div className={styles.contentWrap}>
-          <UploadButton />
+            <UploadButton />
           {renderGridWithSection("Uploaded")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
         <div className={styles.contentWrap}>
-          <UploadButton />
+            <UploadButton />
           {renderGridWithSection("Bookmarked")}
         </div>
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={4}>
         <div className={styles.contentWrap}>
-          <UploadButton />
+            <UploadButton />
           {renderGridWithSection("Course Book", styles.courseBookGrid)}
         </div>
       </CustomTabPanel>
