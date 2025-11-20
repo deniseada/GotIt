@@ -166,10 +166,18 @@
   font-size: 1.5rem;
   color: #2b2b2b;
   font-family: var(--font-space-grotesk), sans-serif;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
 }
 
 .TabBar :global(.Mui-selected) {
   color: var(--button-color) !important;
+  background-color: #C0B2CB !important;
+}
+
+/* Hide the default underline indicator */
+.TabBar :global(.MuiTabs-indicator) {
+  display: none !important;
 }
 
 /* Filter styling */
