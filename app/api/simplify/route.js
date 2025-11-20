@@ -13,7 +13,7 @@ export async function POST(request) {
       );
     }
     
-    const { instructions, prompt } = requestData;
+    const { prompt } = requestData;
 
     if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
       return NextResponse.json(
@@ -23,8 +23,6 @@ export async function POST(request) {
     }
 
     const trimmedPrompt = prompt.trim();
-    const trimmedInstructions = instructions ? instructions.trim() : '';
-    console.log('Received instructions:', trimmedInstructions);
     console.log('Received prompt:', trimmedPrompt);
 
     // Get API key from environment variable (server-side only)
