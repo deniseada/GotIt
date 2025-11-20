@@ -28,11 +28,44 @@
   z-index: 10;
   padding: 0;
   border-radius: 4px 4px 0 0;
+  transition: background-color 0.4s ease;
+}
+
+/* Intermediate state when clicking - shows yellow with lighter border effect */
+.ribbonBtn:active:not(.ribbonActive) {
+  background-color: #fbbf24;
+}
+
+.ribbonBtn:active:not(.ribbonActive)::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+  background-color: #ffe786;
+  z-index: -1;
+  border-radius: 11px 11px 0 0;
 }
 
 /* active/bookmarked - yellow */
 .ribbonActive {
   background-color: #fbbf24;
+}
+
+/* Active state when clicking on already active ribbon */
+.ribbonActive:active::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+  background-color: #f9dd71;
+  z-index: -1;
+  border-radius: 11px 11px 0 0;
 }
 
 /* Kebab menu - top right */
