@@ -6,7 +6,7 @@ export default function SearchBar() {
       <input
         type="text"
         className={styles.searchInput}
-        placeholder="Search..."
+        placeholder="Search for books, sections, or sources"
       />
     </div>
   );

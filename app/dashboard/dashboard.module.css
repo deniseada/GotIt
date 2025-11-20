@@ -1,13 +1,13 @@
 /* NAV BAR CSS */
 .navBar {
-  max-width: 80%;
+  max-width: 65%;
   margin: 0 auto;
   padding: 2em 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  border-bottom: 2px solid #cdcdce;
+  border-bottom: 1px solid #393939;
 }
 
 .icon {
