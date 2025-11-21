@@ -774,6 +774,9 @@
   background-color: #F7F6F9;
   border-radius: 1rem;
   padding: 1rem 1rem 4rem;
+  min-height: 30rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .sectionContainer:last-child {

@@ -54,7 +54,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 3",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "needs",
     },
@@ -70,7 +70,7 @@ export default function TabBar() {
     // Uploaded section cards
     {
       id: "uploaded-1",
-      title: "Delmar's Standard Textbook for Electricity",
+      title: "Electrician Common Core Harmonized Level 1",
       kind: "Uploaded",
       category: "Uploaded",
       bookmarked: false,
@@ -79,16 +79,16 @@ export default function TabBar() {
     },
     {
       id: "uploaded-2",
-      title: "Delmar's Standard Textbook for Electricity",
+      title: "Electrician Common Core Harmonized Level 1",
       kind: "Uploaded",
       category: "Uploaded",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "needs",
     },
     {
       id: "uploaded-3",
-      title: "Delmar's Standard Textbook for Electricity",
+      title: "Electrician Common Core Harmonized Level 1",
       kind: "Uploaded",
       category: "Uploaded",
       bookmarked: false,
@@ -101,7 +101,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 2",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "needs",
     },
@@ -110,7 +110,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 2",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "neutral",
     },
@@ -119,7 +119,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 2",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "confident",
     },
@@ -128,7 +128,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 2",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "confident",
     },
@@ -137,7 +137,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 2",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "needs",
     },
@@ -146,7 +146,7 @@ export default function TabBar() {
       title: "Delmar's Standard Textbook for Electricity",
       kind: "Section 2",
       category: "",
-      bookmarked: true,
+      bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "neutral",
     },
@@ -162,7 +162,7 @@ export default function TabBar() {
     },
     {
       id: "course-2",
-      title: "Electrical Codes and Regulations 2021",
+      title: "Delmar's standard textbook for Electricity",
       kind: "",
       category: "Course Books",
       bookmarked: false,
@@ -347,38 +347,38 @@ export default function TabBar() {
     });
 
     const renderCardSection = (cards, sectionTitle, gridClass = styles.cardsGrid) => {
-      if (cards.length === 0) return null;
-
       return (
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
-          <div className={gridClass}>
-            {cards.map((c) => (
-              <DocCard
-                key={c.id}
-                {...c}
-                lastOpened={c.updatedAt}
-                onToggleBookmark={() =>
-                  setCardList((prev) =>
-                    prev.map((card) =>
-                      card.id === c.id
-                        ? { ...card, bookmarked: !card.bookmarked }
-                        : card
+          {cards.length > 0 && (
+            <div className={gridClass}>
+              {cards.map((c) => (
+                <DocCard
+                  key={c.id}
+                  {...c}
+                  lastOpened={c.updatedAt}
+                  onToggleBookmark={() =>
+                    setCardList((prev) =>
+                      prev.map((card) =>
+                        card.id === c.id
+                          ? { ...card, bookmarked: !card.bookmarked }
+                          : card
+                      )
                     )
-                  )
-                }
-                onEmotionChange={(newEmotion) =>
-                  setCardList((prev) =>
-                    prev.map((card) =>
-                      card.id === c.id
-                        ? { ...card, emotion: newEmotion }
-                        : card
+                  }
+                  onEmotionChange={(newEmotion) =>
+                    setCardList((prev) =>
+                      prev.map((card) =>
+                        card.id === c.id
+                          ? { ...card, emotion: newEmotion }
+                          : card
+                      )
                     )
-                  )
-                }
-              />
-            ))}
-          </div>
+                  }
+                />
+              ))}
+            </div>
+          )}
         </div>
       );
     };
@@ -390,13 +390,9 @@ export default function TabBar() {
           <div className={styles.sectionDivider}></div>
         )}
         {renderCardSection(uploadedCards, "Uploaded")}
-        {uploadedCards.length > 0 && bookmarkedCards.length > 0 && (
-          <div className={styles.sectionDivider}></div>
-        )}
+        <div className={styles.sectionDivider}></div>
         {renderCardSection(bookmarkedCards, "Bookmarked")}
-        {bookmarkedCards.length > 0 && courseBookCards.length > 0 && (
-          <div className={styles.sectionDivider}></div>
-        )}
+        <div className={styles.sectionDivider}></div>
         {renderCardSection(courseBookCards, "Course Book", styles.courseBookGrid)}
       </div>
     );
