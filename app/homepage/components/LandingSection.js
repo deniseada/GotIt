@@ -9,7 +9,7 @@ export default function LandingSection() {
             {/* HERO SECTION */}
             <div className={styles.hero}>
                 <Image
-                    src=
+                    src='/images/worker-hero.jpg'
                     alt='Construction apprentice smiling'
                     width={1800}
                     height={900}
@@ -32,7 +32,7 @@ export default function LandingSection() {
             {/* LAPTOP MOCKUP */}
             <div className={styles.laptopSection}>
                 <Image
-                    src='/images/laptop-mock.png' // replace this with the laptop screenshot from your file
+                    src='/images/laptop-mock.png' 
                     alt='Got It Tool Demo on Laptop'
                     width={1400}
                     height={900}
@@ -47,7 +47,7 @@ export default function LandingSection() {
                 <div className={styles.featureRow}>
                     <div className={styles.feature}>
                         <Image
-                            src=
+                            src='/icons/star.svg'
                             width={40}
                             height={40}
                             alt='Text Simplification'
@@ -58,7 +58,7 @@ export default function LandingSection() {
 
                     <div className={styles.feature}>
                         <Image
-                            src=
+                            src='/icons/doc.svg'
                             width={40}
                             height={40}
                             alt='Summarization Tool'
@@ -69,7 +69,7 @@ export default function LandingSection() {
 
                     <div className={styles.feature}>
                         <Image
-                            src=
+                            src='/icons/map.svg'
                             width={40}
                             height={40}
                             alt='Mind-Map Generator'
