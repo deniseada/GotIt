@@ -1,6 +1,6 @@
 "use client";
 import SideBar from "./sideBar";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import styles from "../mvp.module.css";
@@ -26,6 +26,12 @@ import {
   createStore,
 } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
+import { pageNavigationPlugin } from "@react-pdf-viewer/page-navigation";
+import { searchPlugin } from "@react-pdf-viewer/search";
+import "@react-pdf-viewer/search/lib/styles/index.css";
+import { printPlugin } from "@react-pdf-viewer/print";
+import "@react-pdf-viewer/print/lib/styles/index.css";
+import { getFilePlugin } from "@react-pdf-viewer/get-file";
 
 export default function DocScreen() {
   // create plugin instances once so Viewer and ToolBar share them
@@ -39,7 +45,8 @@ export default function DocScreen() {
     const store = createStore();
 
     // lightweight event emitter for scale changes
-    let currentScale = 1;
+    // Start at 1.4 (which displays as 100%)
+    let currentScale = 1.4;
     const listeners = new Set();
     const notify = (s) => {
       currentScale = s;
@@ -51,39 +58,89 @@ export default function DocScreen() {
       return () => listeners.delete(l);
     };
 
+    // history stack to allow resetting to previous zoom level
+    const history = [];
+
     return {
       install: (pluginFunctions) => {
         // store original functions but wrap them so we can capture scale
         const originalZoom = pluginFunctions.zoom;
         store.update("zoom", (scale) => {
-          originalZoom(scale);
-          // try to read numeric scale if available
-          const s =
-            typeof pluginFunctions.getCurrentScale === "function"
-              ? pluginFunctions.getCurrentScale()
-              : null;
-          if (s !== null && s !== undefined) notify(s);
-        });
+          try {
+            // push previous scale so reset can restore it
+            if (typeof pluginFunctions.getCurrentScale === "function") {
+              const prev = pluginFunctions.getCurrentScale();
+              if (prev !== null && prev !== undefined) history.push(prev);
+            } else {
+              history.push(currentScale);
+            }
+          } catch (e) {
+            history.push(currentScale);
+          }
 
-        if (typeof pluginFunctions.zoomIn === "function") {
-          store.update("zoomIn", () => {
-            pluginFunctions.zoomIn();
+          originalZoom(scale);
+
+          // Update immediately with the scale we're setting (for responsive UI)
+          notify(scale);
+
+          // Then try to read the actual numeric scale from the viewer
+          // Use setTimeout to allow PDF viewer to update scale first
+          setTimeout(() => {
             const s =
               typeof pluginFunctions.getCurrentScale === "function"
                 ? pluginFunctions.getCurrentScale()
                 : null;
-            if (s !== null && s !== undefined) notify(s);
+            if (s !== null && s !== undefined && s !== scale) {
+              notify(s);
+            }
+          }, 50);
+        });
+
+        if (typeof pluginFunctions.zoomIn === "function") {
+          store.update("zoomIn", () => {
+            try {
+              const prev =
+                typeof pluginFunctions.getCurrentScale === "function"
+                  ? pluginFunctions.getCurrentScale()
+                  : currentScale;
+              history.push(prev);
+            } catch (e) {
+              history.push(currentScale);
+            }
+            pluginFunctions.zoomIn();
+            setTimeout(() => {
+              const s =
+                typeof pluginFunctions.getCurrentScale === "function"
+                  ? pluginFunctions.getCurrentScale()
+                  : null;
+              if (s !== null && s !== undefined) {
+                notify(s);
+              }
+            }, 0);
           });
         }
 
         if (typeof pluginFunctions.zoomOut === "function") {
           store.update("zoomOut", () => {
+            try {
+              const prev =
+                typeof pluginFunctions.getCurrentScale === "function"
+                  ? pluginFunctions.getCurrentScale()
+                  : currentScale;
+              history.push(prev);
+            } catch (e) {
+              history.push(currentScale);
+            }
             pluginFunctions.zoomOut();
-            const s =
-              typeof pluginFunctions.getCurrentScale === "function"
-                ? pluginFunctions.getCurrentScale()
-                : null;
-            if (s !== null && s !== undefined) notify(s);
+            setTimeout(() => {
+              const s =
+                typeof pluginFunctions.getCurrentScale === "function"
+                  ? pluginFunctions.getCurrentScale()
+                  : null;
+              if (s !== null && s !== undefined) {
+                notify(s);
+              }
+            }, 0);
           });
         }
 
@@ -98,9 +155,18 @@ export default function DocScreen() {
         }
       },
 
-      zoomTo: (scale) => {
+      zoomTo: (scaleOrFn) => {
         const fn = store.get("zoom");
-        if (fn) fn(scale);
+        if (!fn) return;
+        
+        // If a function is passed, get current scale and compute new scale
+        if (typeof scaleOrFn === "function") {
+          const current = currentScale;
+          const newScale = scaleOrFn(current);
+          fn(newScale);
+        } else {
+          fn(scaleOrFn);
+        }
       },
       zoomIn: () => {
         const fn = store.get("zoomIn");
@@ -111,9 +177,21 @@ export default function DocScreen() {
         if (fn) fn();
       },
 
+      // return current numeric zoom level (e.g. 1 = 100%)
+      getZoomLevel: () => currentScale,
+
+      // reset to 100% (scale of 1.4, which displays as 100%)
+      resetZoom: () => {
+        // Use zoomTo to reset to 1.4, which will handle all the updates
+        const fn = store.get("zoom");
+        if (fn) {
+          fn(1.4);
+        }
+      },
+
       // React component matching the zoom plugin API so ToolBar can render it
       CurrentScale: ({ children }) => {
-        const [scale, setScale] = React.useState(currentScale || 1);
+        const [scale, setScale] = React.useState(currentScale || 1.4);
         React.useEffect(() => {
           const unsub = subscribe(setScale);
           return () => unsub();
@@ -123,7 +201,13 @@ export default function DocScreen() {
     };
   };
 
-  const [zoomPluginInstance] = useState(() => createCustomZoomPlugin());
+  const zoomPluginInstance = useMemo(() => createCustomZoomPlugin(), []);
+  // Call pageNavigationPlugin at top level - if it uses hooks internally,
+  // this is required. We'll memoize the components we extract from it instead.
+  const pageNavigationPluginInstance = pageNavigationPlugin();
+  const searchPluginInstance = searchPlugin();
+  const printPluginInstance = printPlugin();
+  const getFilePluginInstance = getFilePlugin();
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -192,7 +276,7 @@ export default function DocScreen() {
   const [totalPages, setTotalPages] = useState(99);
 
   // ===== MOCK CONTENT =====
-  function MockOriginalPage({ page, onDocumentLoad, onPageChange }) {
+  function MockOriginalPage({ page }) {
     return (
       <Box
         sx={{
@@ -208,7 +292,7 @@ export default function DocScreen() {
         <Box
           sx={{
             width: "100%",
-
+            maxWidth: "800px",
             height: "100vh",
             maxHeight: "100vh",
             bgcolor: "common.white",
@@ -216,16 +300,11 @@ export default function DocScreen() {
             overflow: "auto",
           }}
         >
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <Viewer
               fileUrl="/delmarSection1.pdf"
-              plugins={[zoomPluginInstance].filter(Boolean)}
-              onDocumentLoad={onDocumentLoad}
-              onPageChange={(e) => {
-                if (onPageChange) {
-                  onPageChange(e.currentPage + 1);
-                }
-              }}
+              defaultScale={1.4}
+              plugins={[zoomPluginInstance, pageNavigationPluginInstance, searchPluginInstance, printPluginInstance, getFilePluginInstance].filter(Boolean)}
             />
           </Worker>
         </Box>
@@ -306,13 +385,14 @@ export default function DocScreen() {
       {/* Toolbar */}
       <ToolBar
         page={page}
-        onPrev={() => setPage((p) => Math.max(1, p - 1))}
-        onNext={() => setPage((p) => p + 1)}
         split={split}
         onToggleSplit={toggleSplit}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
-        totalPages={totalPages}
         zoomPlugin={zoomPluginInstance}
+        pageNavigationPlugin={pageNavigationPluginInstance}
+        searchPlugin={searchPluginInstance}
+        printPlugin={printPluginInstance}
+        getFilePlugin={getFilePluginInstance}
       />
 
       {/* Main content */}
@@ -389,17 +469,18 @@ export default function DocScreen() {
       />
 
       {/* Other modals */}
-      <AIModal
-        anchorEl={aiBtnRef.current}
-        open={ai.open}
-        onClose={ai.onClose}
-        onHide={ai.onClose}
-      />
       <VocabModal
         anchorEl={vocabBtnRef.current}
         open={vocab.open}
         onClose={vocab.onClose}
         onHide={vocab.onClose}
+      />
+      
+      <AIModal
+        anchorEl={aiBtnRef.current}
+        open={ai.open}
+        onClose={ai.onClose}
+        onHide={ai.onClose}
       />
 
       {/* Text-to-Speech Button */}

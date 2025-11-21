@@ -39,22 +39,6 @@ export default function RightDockButtons({
           <img src="/icons/timerLight.svg" alt="" width="40" height="40" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="AI">
-        <IconButton
-          ref={aiBtnRef}
-          onClick={onOpenB}
-          sx={{
-            bgcolor: "background.paper",
-            boxShadow: 2,
-
-            width: 48,
-            height: 48,
-            borderRadius: "14px",
-          }}
-        >
-          <img src="/icons/aiLight.svg" alt="ai" width="40" height="40" />
-        </IconButton>
-      </Tooltip>
       <Tooltip title="Vocab">
         <IconButton
           ref={vocabBtnRef}
@@ -69,6 +53,22 @@ export default function RightDockButtons({
           }}
         >
           <img src="/icons/Vocab.svg" alt="vocab" width="40" height="40" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="AI">
+        <IconButton
+          ref={aiBtnRef}
+          onClick={onOpenB}
+          sx={{
+            bgcolor: "background.paper",
+            boxShadow: 2,
+
+            width: 48,
+            height: 48,
+            borderRadius: "14px",
+          }}
+        >
+          <img src="/icons/aiLight.svg" alt="ai" width="40" height="40" />
         </IconButton>
       </Tooltip>
     </Box>

@@ -15,6 +15,10 @@ export default function ToolBar({
   totalPages,
   toolbarPlugin,
   zoomPlugin,
+  pageNavigationPlugin,
+  searchPlugin,
+  printPlugin,
+  getFilePlugin,
 }) {
   const [highlightOpen, setHighlightOpen] = useState(false);
   const [highlightColor, setHighlightColor] = useState("#fff176");
@@ -24,6 +28,9 @@ export default function ToolBar({
   const searchBtnRef = useRef(null);
   const [textMenuPos, setTextMenuPos] = useState({ left: 0, top: 0 });
   const [menuPos, setMenuPos] = useState({ left: 0, top: 0 });
+  const [zoomDropdownOpen, setZoomDropdownOpen] = useState(false);
+  const zoomDropdownRef = useRef(null);
+  const [zoomMenuPos, setZoomMenuPos] = useState({ left: 0, top: 0 });
 
   // compute position when opened (center under the highlight button)
   useLayoutEffect(() => {
@@ -35,6 +42,33 @@ export default function ToolBar({
     const top = Math.round(rect.bottom + 8);
     setMenuPos({ left, top });
   }, [highlightOpen]);
+
+  // compute position for zoom dropdown
+  useLayoutEffect(() => {
+    if (!zoomDropdownOpen) return;
+    const btn = zoomDropdownRef.current;
+    if (!btn || typeof window === "undefined") return;
+    const rect = btn.getBoundingClientRect();
+    const left = Math.round(rect.left);
+    const top = Math.round(rect.bottom + 4);
+    setZoomMenuPos({ left, top });
+  }, [zoomDropdownOpen]);
+
+  // Close zoom dropdown when clicking outside
+  useLayoutEffect(() => {
+    if (!zoomDropdownOpen) return;
+    const handleClickOutside = (e) => {
+      if (
+        zoomDropdownRef.current &&
+        !zoomDropdownRef.current.contains(e.target) &&
+        !e.target.closest(`.${styles.zoomDropdownMenu}`)
+      ) {
+        setZoomDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [zoomDropdownOpen]);
 
   const toggleHighlight = () => setHighlightOpen((v) => !v);
 
@@ -79,6 +113,27 @@ export default function ToolBar({
   // toolbar plugin rendering (if provided)
   const { Toolbar } = toolbarPlugin || {};
 
+  // page navigation plugin components (if provided)
+  const {
+    GoToFirstPage,
+    GoToLastPage,
+    GoToNextPage,
+    GoToPreviousPage,
+    CurrentPageLabel,
+  } = pageNavigationPlugin || {};
+
+  // zoom plugin components (if provided)
+  const CurrentScale = zoomPlugin?.CurrentScale;
+
+  // search plugin components (if provided)
+  const { ShowSearchPopover } = searchPlugin || {};
+
+  // print plugin components (if provided)
+  const { Print } = printPlugin || {};
+
+  // get-file plugin components (if provided)
+  const { Download } = getFilePlugin || {};
+
   return (
     <div className={`${styles.toolBar} ${styles.toolBarNoOffset}`}>
       <div className={styles.toolbarInner}>
@@ -112,74 +167,112 @@ export default function ToolBar({
               aria-hidden="true"
             />
           </button>
-          <button
-            ref={searchBtnRef}
-            className={`${styles.toolButton} ${
-              activeButtons.search ? styles.toolButtonActive : ""
-            }`}
-            onClick={() => toggleBtn("search")}
-            aria-haspopup="true"
-            aria-expanded={!!activeButtons.search}
-            title="Search"
-          >
-            <img src="/icons/searchIcon.svg" className={styles.toolbarIcon} />
-          </button>
-          {typeof document !== "undefined" &&
-            activeButtons.search &&
-            createPortal(
-              <div
-                className={styles.searchMenu}
-                style={{
-                  position: "fixed",
-                  left: searchMenuPos.left + "px",
-                  top: searchMenuPos.top + "px",
-                  transform: "translateX(-50%)",
-                }}
-                role="dialog"
-                aria-label="Document search"
-              >
-                <input
-                  className={styles.searchInputSmall}
-                  placeholder="Search in document..."
-                />
-                <button className={styles.searchHighlightBtn}>
-                  Highlight All
+          {ShowSearchPopover ? (
+            <ShowSearchPopover>
+              {(props) => (
+                <button
+                  ref={searchBtnRef}
+                  className={`${styles.toolButton} ${
+                    activeButtons.search ? styles.toolButtonActive : ""
+                  }`}
+                  onClick={() => {
+                    props.onClick();
+                    toggleBtn("search");
+                  }}
+                  aria-haspopup="true"
+                  aria-expanded={!!activeButtons.search}
+                  title="Search"
+                >
+                  <img src="/icons/searchIcon.svg" className={styles.toolbarIcon} />
                 </button>
-              </div>,
-              document.body
-            )}
-          <button
-            className={`${styles.iconBtn} ${styles.pageNavBtnPrev}`}
-            onClick={onPrev}
-            aria-label="Previous page"
-          >
-            <img
-              src="/icons/arrowDown.svg"
-              alt="Previous page"
-              width="20"
-              height="20"
-            />
-          </button>
-          <input
-            type="text"
-            className={styles.pageInput}
-            value={page}
-            readOnly
-            aria-label="Current page"
-          />
-          <span className={styles.pageText}>of {totalPages || ""}</span>
-          <button
-            className={`${styles.iconBtn} ${styles.pageNavBtnNext}`}
-            onClick={onNext}
-            aria-label="Next page"
-          >
-            <img
-              src="/icons/arrowDown.svg"
-              alt="Next page"
-              width="20"
-              height="20"
-            />
-          </button>
+              )}
+            </ShowSearchPopover>
+          ) : (
+            <button
+              ref={searchBtnRef}
+              className={`${styles.toolButton} ${
+                activeButtons.search ? styles.toolButtonActive : ""
+              }`}
+              onClick={() => toggleBtn("search")}
+              aria-haspopup="true"
+              aria-expanded={!!activeButtons.search}
+              title="Search"
+            >
+              <img src="/icons/searchIcon.svg" className={styles.toolbarIcon} />
+            </button>
+          )}
+
+          {/* PAGE NAVIGATION */}
+          {GoToPreviousPage && (
+            <GoToPreviousPage>
+              {(props) => (
+                <button
+                  className={`${styles.iconBtn} ${styles.pageNavBtnPrev}`}
+                  onClick={props.onClick}
+                  disabled={props.isDisabled}
+                  aria-label="Previous page"
+                  title="Previous page"
+                >
+                  <img
+                    src="/icons/arrowDown.svg"
+                    alt="Previous page"
+                    width="20"
+                    height="20"
+                  />
+                </button>
+              )}
+            </GoToPreviousPage>
+          )}
+         
+          {CurrentPageLabel ? (
+            <CurrentPageLabel>
+              {({ currentPage, numberOfPages }) => (
+                <>
+                  <input
+                    type="text"
+                    className={styles.pageInput}
+                    value={currentPage + 1}
+                    readOnly
+                    aria-label="Current page"
+                  />
+                  <span className={styles.pageText}>of {numberOfPages}</span>
+                </>
+              )}
+            </CurrentPageLabel>
+          ) : (
+            <>
+              <input
+                type="text"
+                className={styles.pageInput}
+                value={page}
+                readOnly
+                aria-label="Current page"
+              />
+              <span className={styles.pageText}>of {totalPages || ""}</span>
+            </>
+          )}
+         
+          {GoToNextPage && (
+            <GoToNextPage>
+              {(props) => (
+                <button
+                  className={`${styles.iconBtn} ${styles.pageNavBtnNext}`}
+                  onClick={props.onClick}
+                  disabled={props.isDisabled}
+                  aria-label="Next page"
+                  title="Next page"
+                >
+                  <img
+                    src="/icons/arrowDown.svg"
+                    alt="Next page"
+                    width="20"
+                    height="20"
+                    style={{ transform: "rotate(0deg)" }}
+                  />
+                </button>
+              )}
+            </GoToNextPage>
+          )}
           <div className={styles.toolbarDivider} />
         </div>
 
@@ -201,8 +294,10 @@ export default function ToolBar({
               <button
                 className={styles.zoomButton}
                 onClick={() => {
+                  // Decrease by 10% of displayed percentage (0.14 scale units = 10% of 1.4)
+                  // Min zoom: 50% displayed = 0.7 scale (0.5 * 1.4)
                   zoomPlugin.zoomTo((z) =>
-                    Math.max(0.5, +(z - 0.1).toFixed(2))
+                    Math.max(0.7, +(z - 0.14).toFixed(2))
                   );
                 }}
               >
@@ -212,32 +307,169 @@ export default function ToolBar({
               <button
                 className={styles.zoomButton}
                 onClick={() => {
-                  if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
-                    zoomPlugin.zoomTo((z) =>
-                      Math.min(3, +(z + 0.1).toFixed(2))
-                    );
-                  }
+                  // Increase by 10% of displayed percentage (0.14 scale units = 10% of 1.4)
+                  // Max zoom: 225% displayed = 3.15 scale (2.25 * 1.4)
+                  zoomPlugin.zoomTo((z) =>
+                    Math.min(3.15, +(z + 0.14).toFixed(2))
+                  );
                 }}
               >
                 +
               </button>
             </div>
-            <button
-              className={styles.zoomDropdown}
-              onClick={() => {
-                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
-                  // reset to 100%
-                  zoomPlugin.zoomTo(1);
-                } else if (
-                  zoomPlugin &&
-                  typeof zoomPlugin.zoomTo === "function"
-                ) {
-                  zoomPlugin.zoomTo(SpecialZoomLevel.PageWidth);
-                }
-              }}
-            >
-              Reset
-            </button>
+            {CurrentScale && (
+              <CurrentScale>
+                {({ scale }) => (
+                  <span
+                    style={{
+                      marginRight: 8,
+                      minWidth: "45px",
+                      textAlign: "right",
+                      fontSize: "14px",
+                      color: "#666",
+                    }}
+                  >
+                    {Math.round((scale / 1.4) * 100)}%
+                  </span>
+                )}
+              </CurrentScale>
+            )}
+
+            {CurrentScale ? (
+              <CurrentScale>
+                {({ scale }) => {
+                  const displayPercent = Math.round((scale / 1.4) * 100);
+                  const currentZoomLabel = displayPercent === 100 ? "Automatic Zoom" : `${displayPercent}%`;
+                  
+                  return (
+                    <>
+                      <button
+                        ref={zoomDropdownRef}
+                        className={styles.zoomDropdown}
+                        onClick={() => setZoomDropdownOpen((v) => !v)}
+                        aria-expanded={zoomDropdownOpen}
+                        aria-haspopup="true"
+                      >
+                        {currentZoomLabel}
+                        <img
+                          src="/icons/arrowDown.svg"
+                          alt=""
+                          style={{ marginLeft: "8px", width: "16px", height: "16px", verticalAlign: "middle" }}
+                        />
+                      </button>
+                      {typeof document !== "undefined" &&
+                        zoomDropdownOpen &&
+                        createPortal(
+                          <div
+                            className={styles.zoomDropdownMenu}
+                            style={{
+                              position: "fixed",
+                              left: zoomMenuPos.left + "px",
+                              top: zoomMenuPos.top + "px",
+                            }}
+                            role="menu"
+                          >
+                            <button
+                              className={`${styles.zoomMenuItem} ${
+                                displayPercent === 100 ? styles.zoomMenuItemSelected : ""
+                              }`}
+                              onClick={() => {
+                                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                                  zoomPlugin.zoomTo(1.4); // 100%
+                                }
+                                setZoomDropdownOpen(false);
+                              }}
+                            >
+                              Automatic Zoom
+                            </button>
+                            <button
+                              className={`${styles.zoomMenuItem} ${
+                                displayPercent === 50 ? styles.zoomMenuItemSelected : ""
+                              }`}
+                              onClick={() => {
+                                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                                  zoomPlugin.zoomTo(0.7); // 50% (0.7 / 1.4 = 0.5)
+                                }
+                                setZoomDropdownOpen(false);
+                              }}
+                            >
+                              50%
+                            </button>
+                            <button
+                              className={`${styles.zoomMenuItem} ${
+                                displayPercent === 75 ? styles.zoomMenuItemSelected : ""
+                              }`}
+                              onClick={() => {
+                                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                                  zoomPlugin.zoomTo(1.05); // 75% (1.05 / 1.4 = 0.75)
+                                }
+                                setZoomDropdownOpen(false);
+                              }}
+                            >
+                              75%
+                            </button>
+                            <button
+                              className={`${styles.zoomMenuItem} ${
+                                displayPercent === 100 ? styles.zoomMenuItemSelected : ""
+                              }`}
+                              onClick={() => {
+                                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                                  zoomPlugin.zoomTo(1.4); // 100%
+                                }
+                                setZoomDropdownOpen(false);
+                              }}
+                            >
+                              100%
+                            </button>
+                            <button
+                              className={`${styles.zoomMenuItem} ${
+                                displayPercent === 150 ? styles.zoomMenuItemSelected : ""
+                              }`}
+                              onClick={() => {
+                                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                                  zoomPlugin.zoomTo(2.1); // 150% (2.1 / 1.4 = 1.5)
+                                }
+                                setZoomDropdownOpen(false);
+                              }}
+                            >
+                              150%
+                            </button>
+                            <button
+                              className={`${styles.zoomMenuItem} ${
+                                displayPercent === 200 ? styles.zoomMenuItemSelected : ""
+                              }`}
+                              onClick={() => {
+                                if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
+                                  zoomPlugin.zoomTo(2.8); // 200% (2.8 / 1.4 = 2.0)
+                                }
+                                setZoomDropdownOpen(false);
+                              }}
+                            >
+                              200%
+                            </button>
+                          </div>,
+                          document.body
+                        )}
+                    </>
+                  );
+                }}
+              </CurrentScale>
+            ) : (
+              <button
+                ref={zoomDropdownRef}
+                className={styles.zoomDropdown}
+                onClick={() => setZoomDropdownOpen((v) => !v)}
+                aria-expanded={zoomDropdownOpen}
+                aria-haspopup="true"
+              >
+                Automatic Zoom
+                <img
+                  src="/icons/arrowDown.svg"
+                  alt=""
+                  style={{ marginLeft: "8px", width: "16px", height: "16px", verticalAlign: "middle" }}
+                />
+              </button>
+            )}
           </div>
         </div>
 
@@ -399,12 +631,40 @@ export default function ToolBar({
               </div>,
               document.body
             )}
-          <button className={styles.toolButton}>
-            <img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} />
-          </button>
-          <button className={styles.toolButton}>
-            <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />
-          </button>
+          {Download ? (
+            <Download>
+              {(props) => (
+                <button
+                  className={styles.toolButton}
+                  onClick={props.onClick}
+                  title="Download"
+                >
+                  <img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} />
+                </button>
+              )}
+            </Download>
+          ) : (
+            <button className={styles.toolButton} title="Download">
+              <img src="/icons/downloadIcon.svg" className={styles.toolbarIcon} />
+            </button>
+          )}
+          {Print ? (
+            <Print>
+              {(props) => (
+                <button
+                  className={styles.toolButton}
+                  onClick={props.onClick}
+                  title="Print"
+                >
+                  <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />
+                </button>
+              )}
+            </Print>
+          ) : (
+            <button className={styles.toolButton} title="Print">
+              <img src="/icons/printIcon.svg" className={styles.toolbarIcon} />
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -56,7 +56,7 @@ export default function TextToSpeechModal({
                             fontSize: '1.125rem',
                             fontWeight: 600,
                             color: '#522a70',
-                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                            fontFamily: 'var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif',
                         }}
                     >
                         Text to Speech

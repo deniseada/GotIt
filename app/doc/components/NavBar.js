@@ -57,16 +57,18 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
           </div>
         </div>
       </div>
-      <Link href={backHref} className="rounded px-3 py-1 border">
-        <button className={styles.backBtnContainer}>
-          <img
-            src="/icons/arrowDown.svg"
-            alt="back arrow"
-            className={styles.arrow}
-          />
-          <div className={styles.backBtn}>Back</div>
-        </button>
-      </Link>
+      <div className={styles.backBtnWrapper}>
+        <Link href={backHref} className={styles.backBtnLink}>
+          <button className={styles.backBtnContainer}>
+            <img
+              src="/icons/arrowDown.svg"
+              alt="back arrow"
+              className={styles.arrow}
+            />
+            <div className={styles.backBtn}>Go Back</div>
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }

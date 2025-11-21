@@ -1,6 +1,9 @@
-html,
-body {
+/* Use Space Grotesk from Google Fonts via Next.js font optimization */
+/* The CSS variable --font-space-grotesk is set by Next.js on the html element */
+:global(html),
+:global(body) {
   margin: 0;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif !important;
 }
 
 .title {
@@ -43,12 +46,13 @@ body {
   background: #fff;
   border: 1px solid #e9e9ea;
   padding: 0.45rem;
-  border-radius: 18px;
+  border-radius: 8px;
   box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
 }
 
 .bookmarkBtn {
@@ -82,15 +86,23 @@ body {
   margin-left: 0.5rem;
   color: #333;
   font-size: 0.95rem;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
+.backBtnWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px 0px 12px;
+
 }
 
 .backBtnLink {
   display: inline-block;
-  margin: 1em;
+  text-decoration: none;
 }
 
 .backBtnContainer {
-  padding: 0 20px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   font-size: 1rem;
@@ -98,6 +110,11 @@ body {
   background: transparent;
   border: none;
   cursor: pointer;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
+.backBtn {
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
 }
 
 .arrow {
@@ -297,10 +314,48 @@ body {
   font-size: 14px;
   color: #522a70;
   margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .zoomDropdown:hover {
   background: rgba(82, 42, 112, 0.06);
+}
+
+.zoomDropdownMenu {
+  background: #f5f0f9;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12);
+  border-radius: 8px;
+  padding: 4px 0;
+  z-index: 9999;
+  min-width: 160px;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
+.zoomMenuItem {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  transition: background-color 0.2s;
+}
+
+.zoomMenuItem:hover {
+  background: rgba(82, 42, 112, 0.08);
+}
+
+.zoomMenuItemSelected {
+  background: #1976d2;
+  color: #fff;
+  font-weight: 500;
 }
 
 /* Active look for the split button */

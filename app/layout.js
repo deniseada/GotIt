@@ -18,7 +18,7 @@ const theme = createTheme({
     secondary: { main: "#9c27b0" },
   },
   typography: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
   },
 });
 
