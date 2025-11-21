@@ -129,11 +129,11 @@ export default function DocScreen() {
     let cleaned = text;
     cleaned = cleaned.replace(/\\/g, "");
     // Commented these out for now
-    // cleaned = cleaned.replace(/"name"\s*:/g, "name:");
-    // cleaned = cleaned.replace(/"category"\s*:/g, "category:");
-    // cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
-    // cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
-    // cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
+    cleaned = cleaned.replace(/"name"\s*:/g, "name:");
+    cleaned = cleaned.replace(/"category"\s*:/g, "category:");
+    cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
+    cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
+    cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
     cleaned = cleaned.replace(/"{/g, "{");
     cleaned = cleaned.replace(/"]}"/g, "]}");
     cleaned = cleaned.replace(/}"/g, "}");

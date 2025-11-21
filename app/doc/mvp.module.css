@@ -725,3 +725,13 @@ body {
   border: 2px solid var(--button-color);
   border-bottom: none;
 }
+
+/* AI Mind Map Stuff */
+.react-flow__node-default {
+  white-space: pre-wrap; /* so \n shows as new lines */
+}
+
+.react-flow__node-default,
+.react-flow__node-root {
+  white-space: pre-wrap;
+}
