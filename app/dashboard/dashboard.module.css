@@ -114,7 +114,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(82, 42, 112, 0.25);
@@ -166,7 +166,7 @@
   min-width: auto;
   padding: 0 12px;
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #2b2b2b;
   font-family: var(--font-space-grotesk), sans-serif;
   border-radius: 8px;
@@ -239,7 +239,7 @@
   color: white;
   font-weight: 500;
   font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 
 /* Filter dropdown/menu */
@@ -291,7 +291,7 @@
   padding: 8px 12px;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
@@ -341,7 +341,7 @@
   padding: 8px 14px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -352,7 +352,7 @@
 
 .contentWrap {
   max-width: 68rem;
-  margin: 0 auto 20rem auto;
+  margin: 0 auto;
 }
 
 /* Modal styles for upload dialog */
@@ -404,7 +404,7 @@
   border: none;
   background: #F0E5F8;
   border-radius: 50%;
-  font-size: 40px;
+  font-size: 2.5rem;
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -422,7 +422,7 @@
 
 .modalTitle {
   color: var(--button-color);
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 700;
   margin: 0 0 10px 0;
   text-align: center;
@@ -433,7 +433,7 @@
   color: var(--button-color);
   margin: 0 0 20px 0;
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .uploadBox {
@@ -464,7 +464,7 @@
 }
 
 .uploadHeading {
-  font-size: 20px;
+  font-size: 1.25rem;
   margin: 8px 0 6px 0;
   color: #42515b;
   font-family: var(--font-space-grotesk), sans-serif;
@@ -485,7 +485,7 @@
   font-weight: 600;
   cursor: pointer;
   box-sizing: border-box;
-  font-size: 14px; 
+  font-size: 0.875rem; 
 }
 
 .modalUploadBtn:hover {
@@ -530,7 +530,7 @@
   position: absolute;
   top: -12px;
   left: -12px;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
   z-index: 10;
 }
@@ -586,7 +586,7 @@
   padding: 18px 20px;
   border-radius: 8px;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-family: var(--font-space-grotesk), sans-serif;
@@ -668,14 +668,14 @@
 
 .optionTitle {
   margin-top: 12px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--button-color);
   font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .optionDesc {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--button-color);
   font-family: var(--font-lexend), sans-serif;
 }
@@ -709,7 +709,7 @@
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: var(--font-space-grotesk), sans-serif;
 }
 
@@ -722,7 +722,7 @@
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: var(--font-space-grotesk), sans-serif;
 }
 
@@ -816,15 +816,16 @@
 }
 
 .sectionHeader {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #522A70;
+  font-family: var(--font-space-grotesk), sans-serif;
   padding: 1rem 0 0.5rem 0;
   margin: 0 0.5rem;
 }
 
 .emptyState {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .br {
@@ -870,7 +871,7 @@
   
   .sectionHeader {
     margin-left: 0;
-    font-size: 18px;
+    font-size: 1.125rem;
   }
   
   .sectionsWrapper {
