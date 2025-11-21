@@ -175,6 +175,7 @@
 .toolbarCenter {
   flex: 1 1 auto;
   justify-content: center;
+  margin-left: -80px;
 }
 .toolbarRight {
   flex: 0 0 auto;

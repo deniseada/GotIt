@@ -317,24 +317,6 @@ export default function ToolBar({
                 +
               </button>
             </div>
-            {CurrentScale && (
-              <CurrentScale>
-                {({ scale }) => (
-                  <span
-                    style={{
-                      marginRight: 8,
-                      minWidth: "45px",
-                      textAlign: "right",
-                      fontSize: "14px",
-                      color: "#666",
-                    }}
-                  >
-                    {Math.round((scale / 1.4) * 100)}%
-                  </span>
-                )}
-              </CurrentScale>
-            )}
-
             {CurrentScale ? (
               <CurrentScale>
                 {({ scale }) => {
@@ -409,9 +391,7 @@ export default function ToolBar({
                               75%
                             </button>
                             <button
-                              className={`${styles.zoomMenuItem} ${
-                                displayPercent === 100 ? styles.zoomMenuItemSelected : ""
-                              }`}
+                              className={styles.zoomMenuItem}
                               onClick={() => {
                                 if (zoomPlugin && typeof zoomPlugin.zoomTo === "function") {
                                   zoomPlugin.zoomTo(1.4); // 100%
