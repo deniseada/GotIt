@@ -9,7 +9,7 @@ export default function LandingSection() {
             {/* HERO SECTION */}
             <div className={styles.hero}>
                 <Image
-                    src='/images/worker-hero.jpg'
+                    src='/icons/landingPageSmile.jpg'
                     alt='Construction apprentice smiling'
                     width={1800}
                     height={900}
@@ -47,10 +47,11 @@ export default function LandingSection() {
                 <div className={styles.featureRow}>
                     <div className={styles.feature}>
                         <Image
-                            src='/icons/star.svg'
-                            width={40}
-                            height={40}
+                            src='/icons/LandingSimplification.svg'
+                            width={64}
+                            height={64}
                             alt='Text Simplification'
+                            className={styles.featureIcon}
                         />
                         <h4>Text Simplification</h4>
                         <p>Breaks down dense manuals into plain language.</p>
@@ -58,10 +59,11 @@ export default function LandingSection() {
 
                     <div className={styles.feature}>
                         <Image
-                            src='/icons/doc.svg'
-                            width={40}
-                            height={40}
+                            src='/icons/LandingSummary.svg'
+                            width={64}
+                            height={64}
                             alt='Summarization Tool'
+                            className={styles.featureIcon}
                         />
                         <h4>Summarization Tool</h4>
                         <p>Turns long readings into quick study notes.</p>
@@ -69,10 +71,11 @@ export default function LandingSection() {
 
                     <div className={styles.feature}>
                         <Image
-                            src='/icons/map.svg'
-                            width={40}
-                            height={40}
+                            src='/icons/LandingMindMap.svg'
+                            width={64}
+                            height={64}
                             alt='Mind-Map Generator'
+                            className={styles.featureIcon}
                         />
                         <h4>Mind-Map Generator</h4>
                         <p>Converts information into visual learning aids.</p>
