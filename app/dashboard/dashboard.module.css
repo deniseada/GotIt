@@ -402,9 +402,22 @@
   right: 16px;
   top: 16px;
   border: none;
-  background: transparent;
-  font-size: 20px;
+  background: #F0E5F8;
+  border-radius: 50%;
+  font-size: 40px;
   cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #522A70;
+  transition: background-color 0.2s ease;
+}
+
+.modalClose:hover {
+  background-color: #522A70;
+  color: #F0E5F8;
 }
 
 .modalTitle {
