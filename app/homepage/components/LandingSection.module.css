@@ -1,0 +1,117 @@
+.wrapper {
+    width: 100%;
+    margin-top: 8rem;
+    color: white;
+    overflow: hidden;
+  }
+  
+  /* HERO SECTION */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 600px;
+  }
+  
+  .heroImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55);
+  }
+  
+  .heroTextBox {
+    position: absolute;
+    top: 18%;
+    left: 8%;
+    background: rgba(96, 51, 143, 0.7);
+    padding: 2rem 2.5rem;
+    border-radius: 16px;
+    max-width: 460px;
+  }
+  
+  .heroTextBox h2 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  
+  .heroTextBox p {
+    margin-top: 0.75rem;
+    line-height: 1.4;
+    font-size: 1.05rem;
+  }
+  
+  .subtext {
+    opacity: 0.9;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  /* LAPTOP SECTION */
+  .laptopSection {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+  
+  .laptopImage {
+    max-width: 1000px;
+    width: 90%;
+    height: auto;
+    border-radius: 12px;
+  }
+  
+  /* FEATURES SECTION */
+  .features {
+    text-align: center;
+    margin-top: 5rem;
+    padding-bottom: 4rem;
+  }
+  
+  .features h3 {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    font-weight: 700;
+  }
+  
+  .featureRow {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+  
+  .feature {
+    max-width: 240px;
+    text-align: center;
+  }
+  
+  .feature h4 {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .feature p {
+    margin-top: 0.5rem;
+    opacity: 0.85;
+  }
+  
+  .andMore {
+    margin-top: 3rem;
+    font-size: 1.2rem;
+    opacity: 0.85;
+  }
+  
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .heroTextBox {
+      left: 5%;
+      right: 5%;
+      max-width: none;
+    }
+  
+    .featureRow {
+      gap: 2rem;
+    }
+  }
+  
