@@ -58,37 +58,37 @@ export default function TabBar() {
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "needs",
     },
+    // Uploaded section cards
     {
-      id: "recent-3",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 4",
-      category: "",
+      id: "uploaded-1",
+      title: "Apply Circuit Concepts",
+      kind: "Uploaded",
+      category: "Uploaded",
       bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
       emotion: "neutral",
     },
-    // Uploaded section cards
-    {
-      id: "uploaded-1",
-      title: "Electrician Common Core Harmonized Level 1",
-      kind: "Uploaded",
-      category: "Uploaded",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "confident",
-    },
     {
       id: "uploaded-2",
-      title: "Electrician Common Core Harmonized Level 1",
+      title: "Circuit Concept Module",
       kind: "Uploaded",
       category: "Uploaded",
       bookmarked: false,
       updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "needs",
+      emotion: "neutral",
     },
     {
       id: "uploaded-3",
-      title: "Electrician Common Core Harmonized Level 1",
+      title: "Installation and Maintenance",
+      kind: "Uploaded",
+      category: "Uploaded",
+      bookmarked: false,
+      updatedAt: "2025-10-25T15:00:00.000Z",
+      emotion: "neutral",
+    },
+    {
+      id: "uploaded-4",
+      title: "Perform Safety Related Functions",
       kind: "Uploaded",
       category: "Uploaded",
       bookmarked: false,
@@ -320,7 +320,7 @@ export default function TabBar() {
         }
         return true;
       })
-      .slice(0, 3); // Show only 3 most recent cards
+      .slice(0, 6); // Show only 3 most recent cards
 
     const uploadedCards = cardList.filter((c) => {
       if (c.category !== "Uploaded") return false;
@@ -408,8 +408,18 @@ export default function TabBar() {
     const storedBookmarks = loadBookmarksFromStorage();
     const storedEmotions = loadEmotionsFromStorage();
     
-    setCardList((prevCards) =>
-      prevCards.map((card) => ({
+    setCardList((prevCards) => {
+      // Remove duplicates by keeping only the first occurrence of each ID
+      const seenIds = new Set();
+      const uniqueCards = prevCards.filter((card) => {
+        if (seenIds.has(card.id)) {
+          return false;
+        }
+        seenIds.add(card.id);
+        return true;
+      });
+      
+      return uniqueCards.map((card) => ({
         ...card,
         bookmarked: storedBookmarks[card.id] !== undefined 
           ? storedBookmarks[card.id] 
@@ -417,8 +427,8 @@ export default function TabBar() {
         emotion: storedEmotions[card.id] !== undefined
           ? storedEmotions[card.id]
           : card.emotion,
-      }))
-    );
+      }));
+    });
   }, []);
 
   // Update localStorage whenever bookmarks or emotions change
