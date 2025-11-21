@@ -5,6 +5,7 @@ import styles from "./homepage.module.css";
 import Navbar from "./components/Navbar";
 import HoverSwap from "./components/HoverSwap";
 import Link from "next/link";
+import LandingSection from "./components/LandingSection";
 
 /**
  * Homepage: left column (logo + text + CTA),
@@ -47,6 +48,7 @@ export default function GotItHomepage() {
           />
         </section>
       </main>
+      <LandingSection />
     </div>
   );
 }
