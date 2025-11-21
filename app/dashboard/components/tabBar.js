@@ -320,7 +320,7 @@ export default function TabBar() {
         }
         return true;
       })
-      .slice(0, 6); // Show only 3 most recent cards
+      .slice(0, 6); // Show up to 6 most recent cards
 
     const uploadedCards = cardList.filter((c) => {
       if (c.category !== "Uploaded") return false;
