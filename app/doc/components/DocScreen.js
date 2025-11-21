@@ -390,6 +390,13 @@ export default function DocScreen() {
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
         zoomPlugin={zoomPluginInstance}
         pageNavigationPlugin={pageNavigationPluginInstance}
+        onNavigateToPage={(pageNum) => {
+          setPage(pageNum);
+          // Also use the plugin's jumpToPage if available
+          if (pageNavigationPluginInstance?.jumpToPage && typeof pageNavigationPluginInstance.jumpToPage === 'function') {
+            pageNavigationPluginInstance.jumpToPage(pageNum - 1);
+          }
+        }}
         searchPlugin={searchPluginInstance}
         printPlugin={printPluginInstance}
         getFilePlugin={getFilePluginInstance}

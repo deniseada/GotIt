@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "../mvp.module.css";
 import { SpecialZoomLevel } from "@react-pdf-viewer/core";
@@ -19,6 +19,7 @@ export default function ToolBar({
   searchPlugin,
   printPlugin,
   getFilePlugin,
+  onNavigateToPage,
 }) {
   const [highlightOpen, setHighlightOpen] = useState(false);
   const [highlightColor, setHighlightColor] = useState("#fff176");
@@ -120,6 +121,7 @@ export default function ToolBar({
     GoToNextPage,
     GoToPreviousPage,
     CurrentPageLabel,
+    CurrentPageInput,
   } = pageNavigationPlugin || {};
 
   // zoom plugin components (if provided)
@@ -224,7 +226,22 @@ export default function ToolBar({
             </GoToPreviousPage>
           )}
          
-          {CurrentPageLabel ? (
+          {CurrentPageInput ? (
+            <>
+              <div className={styles.pageInputWrapper}>
+                <CurrentPageInput />
+              </div>
+              {CurrentPageLabel ? (
+                <CurrentPageLabel>
+                  {({ numberOfPages }) => (
+                    <span className={styles.pageText}>of {numberOfPages}</span>
+                  )}
+                </CurrentPageLabel>
+              ) : (
+                <span className={styles.pageText}>of {totalPages || ""}</span>
+              )}
+            </>
+          ) : CurrentPageLabel ? (
             <CurrentPageLabel>
               {({ currentPage, numberOfPages }) => (
                 <>

@@ -267,6 +267,23 @@
   color: #522a70;
 }
 
+.pageInputWrapper {
+  display: inline-block;
+}
+
+/* Style the plugin's CurrentPageInput component */
+.pageInputWrapper :global(input) {
+  width: 40px;
+  padding: 4px 8px;
+  border: 1px solid #dcd4e2;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  background: white;
+  color: #522a70;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
 .pageText {
   font-size: 14px;
   color: #522a70;
