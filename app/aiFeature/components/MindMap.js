@@ -11,19 +11,19 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-// Optional: simple initial nodes/edges before API data arrives
+// Simple initial nodes/edges before API data
 const initialNodes = [
     {
         id: "n1",
         position: { x: 0, y: 0 },
         data: {
-            label: "Node 1",
-            name: "Node 1",
+            label: "Waiting for ai generation...",
+            name: "",
             relation: "",
             reason: "",
             expanded: false,
         },
-        type: "input",
+        type: "",
     },
 ];
 
@@ -37,7 +37,6 @@ function buildMindMapFromConcepts(concepts) {
     const center = concepts[0];
 
     const nodes = concepts.map((concept, index) => {
-        // position: centered tree layout
         let x, y;
         if (index === 0) {
             x = 0;
@@ -55,12 +54,11 @@ function buildMindMapFromConcepts(concepts) {
             id: concept.name || `node-${index}`,
             position: { x, y },
             data: {
-                label: concept.name,          // initial text
+                label: concept.name,
                 name: concept.name,
                 relation: concept.relation,
                 reason: concept.reason,
                 expanded: false,
-                parentId: index === 0 ? null : center.name, // 👈 parent info
                 subtopics: concept.subtopics,
                 category: concept.category,
             },
@@ -78,7 +76,6 @@ function buildMindMapFromConcepts(concepts) {
 
     return { nodes, edges };
 }
-
 
 export default function MindMap({ text, loading, error }) {
     const [nodes, setNodes] = useState(initialNodes);
@@ -98,8 +95,7 @@ export default function MindMap({ text, loading, error }) {
             } else if (typeof text === "string") {
                 let s = text.trim();
 
-                // Convert JS-like objects to valid JSON:
-                // [{name: "atoms", ...}] -> [{"name": "atoms", ...}]
+                // Convert 'text' to valid JSON:
                 s = s.replace(/([{,]\s*)(\w+)\s*:/g, '$1"$2":');
 
                 concepts = JSON.parse(s);
@@ -110,8 +106,8 @@ export default function MindMap({ text, loading, error }) {
                 return;
             }
 
-    const { nodes: newNodes, edges: newEdges } =
-        buildMindMapFromConcepts(concepts);
+            const { nodes: newNodes, edges: newEdges } =
+                buildMindMapFromConcepts(concepts);
 
             setNodes(newNodes);
             setEdges(newEdges);
@@ -141,66 +137,33 @@ export default function MindMap({ text, loading, error }) {
             setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
         []
     );
+
+    // Expand/collapse the clicked node data
     const onNodeClick = useCallback((event, node) => {
         setNodes((nodesSnapshot) =>
             nodesSnapshot.map((n) => {
-                // 1) Toggle the clicked node's expanded state + label
-                if (n.id === node.id) {
-                    const currentlyExpanded = !!n.data.expanded;
-    
-                    const newExpanded = !currentlyExpanded;
-                    const newLabel = newExpanded
-                        ? `${n.data.name}\n${n.data.relation}\n${n.data.reason}`
-                        : n.data.name;
-    
-                    return {
-                        ...n,
-                        data: {
-                            ...n.data,
-                            expanded: newExpanded,
-                            label: newLabel,
-                        },
-                    };
+                if (n.id !== node.id || !n.data) {
+                    return n;
                 }
-    
-                // 2) Show/hide direct children of the clicked node
-                if (n.data && n.data.parentId === node.id) {
-                    const clickedIsCurrentlyExpanded = !!node.data.expanded;
-                    // if it WAS expanded, we are collapsing -> hide children
-                    // if it WAS collapsed, we are expanding -> show children
-                    const hideChild = clickedIsCurrentlyExpanded;
-    
-                    return {
-                        ...n,
-                        hidden: hideChild,
-                    };
-                }
-    
-                return n;
-            })
-        );
-    
-        setEdges((edgesSnapshot) =>
-            edgesSnapshot.map((e) => {
-                // hide edges that connect to children of this node
-                const clickedIsCurrentlyExpanded = !!node.data.expanded;
-                const hideEdge = clickedIsCurrentlyExpanded && e.source === node.id;
-    
-                if (hideEdge) {
-                    return { ...e, hidden: true };
-                }
-    
-                // when expanding, show edges again
-                if (!clickedIsCurrentlyExpanded && e.source === node.id) {
-                    return { ...e, hidden: false };
-                }
-    
-                return e;
+
+                const currentlyExpanded = !!n.data.expanded;
+                const newExpanded = !currentlyExpanded;
+
+                const newLabel = newExpanded
+                    ? `${n.data.name}\n${n.data.relation}\n${n.data.reason}`
+                    : n.data.name;
+
+                return {
+                    ...n,
+                    data: {
+                        ...n.data,
+                        expanded: newExpanded,
+                        label: newLabel,
+                    },
+                };
             })
         );
     }, []);
-    
-
 
     return (
         <div style={{ padding: "20px" }}>
