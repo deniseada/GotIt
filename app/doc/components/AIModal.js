@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import {
-    Typography, Paper, Popper
+  Typography, Paper, Popper
 } from "@mui/material";
 import styles from "../mvp.module.css";
 
@@ -10,6 +10,10 @@ export default function AIModal({
     open,
     onClose,
     onHide,
+    onSimplify,
+    onSummarize,
+    onMindMap,
+    loading,
 }) {
     return (
         <Popper
@@ -56,32 +60,47 @@ export default function AIModal({
                     <Typography className={styles.aiPanelTitle}>AI Study Tools</Typography>
                 </div>
                 <div className={styles.aiPanelContent}>
-                    <button className={styles.aiToolButton}>
+                    <button 
+                        className={styles.aiToolButton}
+                        onClick={onSimplify}
+                        disabled={loading?.simplify}
+                        style={{ cursor: loading?.simplify ? 'not-allowed' : 'pointer', opacity: loading?.simplify ? 0.6 : 1 }}
+                    >
                         <div className={styles.aiIconWithStar}>
                             <img src="/icons/simpllificationIcon.svg" alt="" className={styles.aiToolIcon} />
                             <svg className={styles.iconStar} width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 0L4.5 2.5L7 3L4.5 3.5L4 6L3.5 3.5L1 3L3.5 2.5L4 0Z" fill="#522A70"/>
                             </svg>
                         </div>
-                        <span className={styles.aiToolLabel}>Text Simplification</span>
+                        <span className={styles.aiToolLabel}>{loading?.simplify ? "Simplifying..." : "SimplifyText"}</span>
                     </button>
-                    <button className={styles.aiToolButton}>
+                    <button 
+                        className={styles.aiToolButton}
+                        onClick={onSummarize}
+                        disabled={loading?.summarize}
+                        style={{ cursor: loading?.summarize ? 'not-allowed' : 'pointer', opacity: loading?.summarize ? 0.6 : 1 }}
+                    >
                         <div className={styles.aiIconWithStar}>
                             <img src="/icons/summaryIcon.svg" alt="" className={styles.aiToolIcon} />
                             <svg className={styles.iconStar} width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 0L4.5 2.5L7 3L4.5 3.5L4 6L3.5 3.5L1 3L3.5 2.5L4 0Z" fill="#522A70"/>
                             </svg>
                         </div>
-                        <span className={styles.aiToolLabel}>Create Summary</span>
+                        <span className={styles.aiToolLabel}>{loading?.summarize ? "Summarizing..." : "Summarize Text"}</span>
                     </button>
-                    <button className={styles.aiToolButton}>
+                    <button 
+                        className={styles.aiToolButton}
+                        onClick={onMindMap}
+                        disabled={loading?.mindmap}
+                        style={{ cursor: loading?.mindmap ? 'not-allowed' : 'pointer', opacity: loading?.mindmap ? 0.6 : 1 }}
+                    >
                         <div className={styles.aiIconWithStar}>
                             <img src="/icons/mindMapIcon.svg" alt="" className={styles.aiToolIcon} />
                             <svg className={styles.iconStar} width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 0L4.5 2.5L7 3L4.5 3.5L4 6L3.5 3.5L1 3L3.5 2.5L4 0Z" fill="#522A70"/>
                             </svg>
                         </div>
-                        <span className={styles.aiToolLabel}>Mind-map</span>
+                        <span className={styles.aiToolLabel}>{loading?.mindmap ? "Generating..." : "Mind-map"}</span>
                     </button>
                 </div>
             </Paper>

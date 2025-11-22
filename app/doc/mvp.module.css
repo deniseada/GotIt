@@ -896,3 +896,9 @@
 .vocabRemoveBtn:hover {
   background: #e0b095 !important;
 }
+/* AI Mind Map Stuff */
+.react-flow__node-default,
+.react-flow__node-input {
+  font-weight: bold;
+  white-space: pre-wrap; /* so \n works */
+}

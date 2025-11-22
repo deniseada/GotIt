@@ -12,6 +12,11 @@ import SplitView from "./SplitView";
 import ModeTabs from "./ModeTabs";
 import ToolBar from "./ToolBar";
 
+// AI Features Components
+import Simplification from "../../aiFeature/components/Simplification";
+import Summarization from "../../aiFeature/components/Summarization";
+import MindMap from "../../aiFeature/components/MindMap";
+
 // Right side modals and their buttons
 import RightDockButtons from "./rightSideModals/RightDockButtons";
 import useModal from "./useModal";
@@ -212,7 +217,7 @@ export default function DocScreen() {
   const searchPluginInstance = searchPlugin();
   const printPluginInstance = printPlugin();
   const getFilePluginInstance = getFilePlugin();
-  
+
   // Store ref to navigate function from GoToPage component
   const navigateToPageRef = useRef(null);
   const { GoToPage } = pageNavigationPluginInstance || {};
@@ -281,7 +286,7 @@ export default function DocScreen() {
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+
   // Navigate to page when page state changes
   useEffect(() => {
     if (navigateToPageRef.current) {
@@ -307,6 +312,21 @@ export default function DocScreen() {
   // Right Side Buttons (AI/Vocab)
   const ai = useModal(false);
   const vocab = useModal(false);
+
+  // AI Feature States
+  const [simplifiedText, setSimplifiedText] = useState("");
+  const [summary, setSummary] = useState("");
+  const [mindmap, setMindmap] = useState("");
+  const [aiLoading, setAiLoading] = useState({
+    simplify: false,
+    summarize: false,
+    mindmap: false,
+  });
+  const [aiError, setAiError] = useState({
+    simplify: null,
+    summarize: null,
+    mindmap: null,
+  });
 
   // ===== TIMER (single source of truth) =====
   const timerBtnRef = useRef(null); // anchor for Popper
@@ -350,6 +370,173 @@ export default function DocScreen() {
   useEffect(() => {
     if (timerSeconds === 0 && timerRunning) setTimerRunning(false);
   }, [timerSeconds, timerRunning]);
+
+  // AI Feature Handlers
+  const SIMPLIFY_PROMPT =
+    "Simplify all parts of Delmar - Section 1 into: main points, key concepts, important definitions. Ignore any figures, images, and page numbers.";
+  const SUMMARIZE_PROMPT =
+    "Summarize Delmar - Section 1 into a concise summary. Only return the answer.";
+  const MINDMAP_PROMPT =
+    "topic: atoms, return the json formatted array of nodes and edges";
+
+  // Clean the text to remove unnecessary characters
+  const cleanText = (text) => {
+    if (!text) return "";
+    let cleaned = text;
+    // Remove **
+    cleaned = cleaned.replace(/\*\*/g, "");
+    // Replace * with -
+    cleaned = cleaned.replace(/\*/g, "-");
+    cleaned = cleaned.replace(/\+/g, "");
+    cleaned = cleaned.replace(/\bN\b/g, "");
+    cleaned = cleaned.replace(/(\n\s*){3,}/g, "\n\n");
+    return cleaned.trim();
+  };
+
+  const cleanMindMapText = (text) => {
+    if (!text) return "";
+    let cleaned = text;
+    cleaned = cleaned.replace(/\\/g, "");
+    // Commented these out for now
+    cleaned = cleaned.replace(/"name"\s*:/g, "name:");
+    cleaned = cleaned.replace(/"category"\s*:/g, "category:");
+    cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
+    cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
+    cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
+    cleaned = cleaned.replace(/"{/g, "{");
+    cleaned = cleaned.replace(/"]}"/g, "]}");
+    cleaned = cleaned.replace(/}"/g, "}");
+    return cleaned.trim();
+  };
+
+  const handleSimplify = async () => {
+    setAiLoading((prev) => ({ ...prev, simplify: true }));
+    setAiError((prev) => ({ ...prev, simplify: null }));
+    setSimplifiedText("");
+    ai.onClose(); // Close the modal
+
+    // Open split view and set mode immediately
+    setMode("simplified");
+    if (!split) setSplit(true);
+
+    try {
+      const response = await fetch("/api/simplify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: SIMPLIFY_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to simplify text";
+        const errorDetails = errorData.details
+          ? `\n\nDetails: ${errorData.details}`
+          : "";
+        throw new Error(errorMessage + errorDetails);
+      }
+
+      const result = await response.json();
+      const rawContent =
+        result.text || result.content || JSON.stringify(result, null, 2);
+      const simplifiedContent = cleanText(rawContent);
+      setSimplifiedText(simplifiedContent);
+    } catch (err) {
+      setAiError((prev) => ({ ...prev, simplify: err.message }));
+      console.error("Error simplifying text:", err);
+    } finally {
+      setAiLoading((prev) => ({ ...prev, simplify: false }));
+    }
+  };
+
+  const handleSummarize = async () => {
+    setAiLoading((prev) => ({ ...prev, summarize: true }));
+    setAiError((prev) => ({ ...prev, summarize: null }));
+    setSummary("");
+    ai.onClose(); // Close the modal
+
+    // Open split view and set mode immediately
+    setMode("summarized");
+    if (!split) setSplit(true);
+
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: SUMMARIZE_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to summarize text";
+        const errorDetails = errorData.details
+          ? `\n\nDetails: ${errorData.details}`
+          : "";
+        throw new Error(errorMessage + errorDetails);
+      }
+
+      const result = await response.json();
+      const rawContent =
+        result.text || result.content || JSON.stringify(result, null, 2);
+      const cleanedContent = cleanText(rawContent);
+      setSummary(cleanedContent);
+    } catch (err) {
+      setAiError((prev) => ({ ...prev, summarize: err.message }));
+      console.error("Error summarizing text:", err);
+    } finally {
+      setAiLoading((prev) => ({ ...prev, summarize: false }));
+    }
+  };
+
+  const handleMindMap = async () => {
+    setAiLoading((prev) => ({ ...prev, mindmap: true }));
+    setAiError((prev) => ({ ...prev, mindmap: null }));
+    setMindmap("");
+    ai.onClose(); // Close the modal
+
+    // Open split view and set mode immediately
+    setMode("mindmap");
+    if (!split) setSplit(true);
+
+    try {
+      const response = await fetch("/api/mindmap", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: MINDMAP_PROMPT,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Failed to generate mind map";
+        const errorDetails = errorData.details
+          ? `\n\nDetails: ${errorData.details}`
+          : "";
+        throw new Error(errorMessage + errorDetails);
+      }
+
+      const result = await response.json();
+      const rawContent =
+        result.text || result.content || JSON.stringify(result, null, 2);
+      const cleanedContent = cleanMindMapText(rawContent);
+      setMindmap(cleanedContent);
+    } catch (err) {
+      setAiError((prev) => ({ ...prev, mindmap: err.message }));
+      console.error("Error fetching mind map:", err);
+    } finally {
+      setAiLoading((prev) => ({ ...prev, mindmap: false }));
+    }
+  };
 
   const aiBtnRef = useRef(null);
   const vocabBtnRef = useRef(null);
@@ -398,11 +585,14 @@ export default function DocScreen() {
             />
           </Worker>
           {GoToPage && (
-            <div style={{ display: 'none' }}>
+            <div style={{ display: "none" }}>
               <GoToPage>
                 {(props) => {
                   // Store the jumpToPage function in ref when available
-                  if (props.jumpToPage && navigateToPageRef.current !== props.jumpToPage) {
+                  if (
+                    props.jumpToPage &&
+                    navigateToPageRef.current !== props.jumpToPage
+                  ) {
                     navigateToPageRef.current = props.jumpToPage;
                   }
                   return null;
@@ -429,54 +619,30 @@ export default function DocScreen() {
       >
         {mode === "simplified" && (
           <>
-            <Typography variant="h5" gutterBottom>
-              {page}. Atoms
-            </Typography>
-            <ul style={{ marginTop: 0 }}>
-              <li>Everything is made of atoms.</li>
-              <li>
-                Atoms have protons (+), neutrons (no charge), and electrons (–).
-              </li>
-              <li>Protons + Neutrons = Nucleus (center of atom).</li>
-              <li>Electrons move around the nucleus.</li>
-              <li>The number of protons = the element (e.g., oxygen has 8).</li>
-            </ul>
-            <ul>
-              <Typography variant="h5" gutterBottom>
-                Law of Charges
-              </Typography>
-              <li>Opposites attract ( + & – ).</li>
-              <li>Likes repel ( + & + or – & – ).</li>
-              <li>
-                The nucleus stays together because of a strong force called the
-                gluon force.
-              </li>
-            </ul>
+            <Simplification
+              text={simplifiedText}
+              loading={aiLoading.simplify}
+              error={aiError.simplify}
+            />
           </>
         )}
         {mode === "summarized" && (
-          <Typography variant="body6" gutterBottom>
-            Summary
-            <br></br>
-            This text explains that everything in the universe is made of atoms,
-            which are tiny particles containing protons, neutrons, and
-            electrons. Protons and neutrons form the nucleus at the center of
-            the atom, while electrons move around it. The number of protons
-            determines what element the atom is. Protons have a positive charge,
-            electrons a negative charge, and neutrons no charge. Because
-            opposite charges attract and like charges repel, electrons stay near
-            the positively charged nucleus. The nucleus itself stays together
-            because of a powerful force called the strong nuclear force, carried
-            by particles known as gluons.
-          </Typography>
+          <div>
+            <Summarization
+              text={summary}
+              loading={aiLoading.summarize}
+              error={aiError.summarize}
+            />
+          </div>
         )}
         {mode === "mindmap" && (
-          <img
-            src="/icons/Mind_Map_Example.png"
-            alt="mind-map"
-            height="700px"
-            width="700px"
-          />
+          <div>
+            <MindMap
+              text={mindmap}
+              loading={aiLoading.mindmap}
+              error={aiError.mindmap}
+            />
+          </div>
         )}
       </Box>
     );
@@ -524,9 +690,11 @@ export default function DocScreen() {
         }}
       >
         {sidebarOpen && (
-          <SideBar onNavigateToPage={(pageNum) => {
-            setPage(pageNum);
-          }} />
+          <SideBar
+            onNavigateToPage={(pageNum) => {
+              setPage(pageNum);
+            }}
+          />
         )}
         {split ? (
           <SplitView
@@ -597,6 +765,10 @@ export default function DocScreen() {
         anchorEl={aiBtnRef.current}
         open={ai.open}
         onClose={ai.onClose}
+        onSimplify={handleSimplify}
+        onSummarize={handleSummarize}
+        onMindMap={handleMindMap}
+        loading={aiLoading}
         onHide={ai.onClose}
       />
 
