@@ -220,6 +220,19 @@
   align-items: center;
   gap: 6px;
   margin-right: 8px; /* space before other icons */
+  width: 260px; /* Fixed width to prevent shifting - accommodates buttons + longest dropdown text */
+  flex-shrink: 0;
+  justify-content: flex-start;
+}
+
+.zoomButtonsContainer {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: 8px;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
 }
 
 .zoomText {
@@ -339,6 +352,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .zoomDropdown:hover {

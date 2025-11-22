@@ -307,7 +307,7 @@ export default function ToolBar({
             role="group"
             aria-label="Zoom controls"
           >
-            <div style={{ display: "flex", gap: 6, marginLeft: 8 }}>
+            <div className={styles.zoomButtonsContainer}>
               <button
                 className={styles.zoomButton}
                 onClick={() => {
@@ -472,59 +472,7 @@ export default function ToolBar({
 
         {/* Right Side */}
         <div className={styles.toolbarRight}>
-          <button
-            ref={highlightBtnRef}
-            className={`${styles.toolButton} ${
-              activeButtons.highlight ? styles.toolButtonActive : ""
-            }`}
-            onClick={() => {
-              toggleHighlight();
-              toggleBtn("highlight");
-            }}
-            aria-expanded={highlightOpen}
-            aria-haspopup="true"
-            title="Highlight"
-          >
-            <img
-              src="/icons/highlightIcon.svg"
-              className={styles.toolbarIcon}
-            />
-          </button>
-          {typeof document !== "undefined" &&
-            highlightOpen &&
-            createPortal(
-              <div
-                className={styles.highlightMenu}
-                style={{
-                  position: "fixed",
-                  left: menuPos.left + "px",
-                  top: menuPos.top + "px",
-                  transform: "translateX(-50%)",
-                }}
-                role="menu"
-              >
-                <div className={styles.highlightTitle}>Highlight</div>
-                <div className={styles.swatchesRow}>
-                  {colorSwatches.map((c) => (
-                    <button
-                      key={c}
-                      className={`${styles.swatch} ${
-                        highlightColor === c ? styles.swatchSelected : ""
-                      }`}
-                      onClick={() =>
-                        setHighlightColor(highlightColor === c ? "" : c)
-                      }
-                      style={{ background: c }}
-                      aria-pressed={highlightColor === c}
-                      aria-label={`Select ${c} highlight`}
-                    >
-                      <span className={styles.swatchLabel}>A</span>
-                    </button>
-                  ))}
-                </div>
-              </div>,
-              document.body
-            )}
+          
           <button
             ref={textBtnRef}
             className={`${styles.toolButton} ${
