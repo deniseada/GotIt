@@ -3,7 +3,8 @@
 :global(html),
 :global(body) {
   margin: 0;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif !important;
 }
 
 .title {
@@ -52,7 +53,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .bookmarkBtn {
@@ -86,14 +88,14 @@
   margin-left: 0.5rem;
   color: #333;
   font-size: 0.95rem;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .backBtnWrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 10px 20px 0px 12px;
-
 }
 
 .backBtnLink {
@@ -110,11 +112,13 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .backBtn {
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .arrow {
@@ -175,7 +179,6 @@
 .toolbarCenter {
   flex: 1 1 auto;
   justify-content: center;
-  margin-left: -80px;
 }
 .toolbarRight {
   flex: 0 0 auto;
@@ -281,7 +284,8 @@
   font-size: 14px;
   background: white;
   color: #522a70;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .pageText {
@@ -349,7 +353,8 @@
   padding: 4px 0;
   z-index: 9999;
   min-width: 160px;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .zoomMenuItem {
@@ -362,7 +367,8 @@
   font-size: 14px;
   color: #333;
   cursor: pointer;
-  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
   transition: background-color 0.2s;
 }
 

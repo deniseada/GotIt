@@ -33,6 +33,9 @@ import { printPlugin } from "@react-pdf-viewer/print";
 import "@react-pdf-viewer/print/lib/styles/index.css";
 import { getFilePlugin } from "@react-pdf-viewer/get-file";
 
+import { highlightPlugin, Trigger } from "@react-pdf-viewer/highlight";
+import "@react-pdf-viewer/highlight/lib/styles/index.css";
+
 export default function DocScreen() {
   // create plugin instances once so Viewer and ToolBar share them
 
@@ -158,7 +161,7 @@ export default function DocScreen() {
       zoomTo: (scaleOrFn) => {
         const fn = store.get("zoom");
         if (!fn) return;
-        
+
         // If a function is passed, get current scale and compute new scale
         if (typeof scaleOrFn === "function") {
           const current = currentScale;
@@ -201,6 +204,7 @@ export default function DocScreen() {
     };
   };
 
+  const areas = React.useRef([]);
   const zoomPluginInstance = useMemo(() => createCustomZoomPlugin(), []);
   // Call pageNavigationPlugin at top level - if it uses hooks internally,
   // this is required. We'll memoize the components we extract from it instead.
@@ -208,9 +212,86 @@ export default function DocScreen() {
   const searchPluginInstance = searchPlugin();
   const printPluginInstance = printPlugin();
   const getFilePluginInstance = getFilePlugin();
+  
+  // Store ref to navigate function from GoToPage component
+  const navigateToPageRef = useRef(null);
+  const { GoToPage } = pageNavigationPluginInstance || {};
+
+  const renderHighlightTarget = (props) => {
+    if (!areas.current) return;
+    areas.current = [
+      ...areas.current,
+      {
+        left: props.selectionRegion.left,
+        top: props.selectionRegion.top,
+        width: props.selectionRegion.width,
+        height: props.selectionRegion.height,
+        pageIndex: props.pageIndex,
+      },
+    ];
+    // setAreas(_areas);
+    return (
+      <>
+        {areas.current.map((area, idx) => (
+          <div
+            key={idx}
+            style={{
+              background: "#d0ff00aa",
+              display: "flex",
+              position: "absolute",
+              left: `${area.left}%`,
+              top: `${area.top}%`,
+              width: `${area.width}%`,
+              height: `${area.height}%`,
+            }}
+          ></div>
+        ))}
+      </>
+    );
+  };
+
+  // const renderHighlights = (props) => (
+  //   <div>
+  //     {areas
+  //       .filter((area) => area.pageIndex === props.pageIndex)
+  //       .map((area, idx) => (
+  //         <div
+  //           key={idx}
+  //           className="highlight-area"
+  //           style={Object.assign(
+  //             {},
+  //             {
+  //               background: "yellow",
+  //               opacity: 0.4,
+  //             },
+  //             // Calculate the position
+  //             // to make the highlight area displayed at the desired position
+  //             // when users zoom or rotate the document
+  //             props.getCssProperties(area, props.rotation)
+  //           )}
+  //         />
+  //       ))}
+  //   </div>
+  // );
+
+  const highlightPluginInstance = highlightPlugin({
+    renderHighlightTarget,
+    trigger: Trigger.TextSelection,
+  });
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Navigate to page when page state changes
+  useEffect(() => {
+    if (navigateToPageRef.current) {
+      // jumpToPage expects 0-based index
+      navigateToPageRef.current(page - 1);
+    } else if (pageNavigationPluginInstance?.jumpToPage) {
+      // Fallback: try direct method if available
+      pageNavigationPluginInstance.jumpToPage(page - 1);
+    }
+  }, [page, pageNavigationPluginInstance]);
 
   const toggleSplit = () => setSplit((s) => !s);
 
@@ -300,13 +381,35 @@ export default function DocScreen() {
             overflow: "auto",
           }}
         >
-            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <Viewer
               fileUrl="/delmarSection1.pdf"
               defaultScale={1.4}
-              plugins={[zoomPluginInstance, pageNavigationPluginInstance, searchPluginInstance, printPluginInstance, getFilePluginInstance].filter(Boolean)}
+              initialPage={page - 1}
+              plugins={[
+                highlightPluginInstance,
+                zoomPluginInstance,
+                pageNavigationPluginInstance,
+                searchPluginInstance,
+                printPluginInstance,
+                getFilePluginInstance,
+              ].filter(Boolean)}
+              onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
             />
           </Worker>
+          {GoToPage && (
+            <div style={{ display: 'none' }}>
+              <GoToPage>
+                {(props) => {
+                  // Store the jumpToPage function in ref when available
+                  if (props.jumpToPage && navigateToPageRef.current !== props.jumpToPage) {
+                    navigateToPageRef.current = props.jumpToPage;
+                  }
+                  return null;
+                }}
+              </GoToPage>
+            </div>
+          )}
         </Box>
       </Box>
     );
@@ -393,7 +496,10 @@ export default function DocScreen() {
         onNavigateToPage={(pageNum) => {
           setPage(pageNum);
           // Also use the plugin's jumpToPage if available
-          if (pageNavigationPluginInstance?.jumpToPage && typeof pageNavigationPluginInstance.jumpToPage === 'function') {
+          if (
+            pageNavigationPluginInstance?.jumpToPage &&
+            typeof pageNavigationPluginInstance.jumpToPage === "function"
+          ) {
             pageNavigationPluginInstance.jumpToPage(pageNum - 1);
           }
         }}
@@ -417,7 +523,11 @@ export default function DocScreen() {
           pt: 0, // keep content flush to toolbar
         }}
       >
-        {sidebarOpen && <SideBar />}
+        {sidebarOpen && (
+          <SideBar onNavigateToPage={(pageNum) => {
+            setPage(pageNum);
+          }} />
+        )}
         {split ? (
           <SplitView
             left={
@@ -482,7 +592,7 @@ export default function DocScreen() {
         onClose={vocab.onClose}
         onHide={vocab.onClose}
       />
-      
+
       <AIModal
         anchorEl={aiBtnRef.current}
         open={ai.open}
