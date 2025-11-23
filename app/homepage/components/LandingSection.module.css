@@ -190,12 +190,24 @@
     align-items: center;
     justify-content: center;
     gap: 4rem;
-    margin-top: 5rem;
-    padding: 3rem 5%;
+    padding: 2rem 5% 0rem;
     max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 5rem 4rem 5rem  4rem;
+    border-radius: 48px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom:1px solid rgba(255, 255, 255, 0.11);
+    background: 
+        radial-gradient(
+            circle at 25% 90%, 
+            rgba(173, 16, 87, 1) 0%,   
+            transparent 45%              
+        ),
+        #1a1a1a; 
+    box-shadow: inset 0px 0px 0px 1px rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    overflow: hidden; 
 }
+
 
 .mobileImage {
     width: 399px;
