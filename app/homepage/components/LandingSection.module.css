@@ -85,35 +85,49 @@
     padding-bottom: 4rem;
 }
 
-.features h3 {
+.features h2 {
     font-size: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     font-weight: 700;
-    font-size: 64px;
     line-height: normal;
     letter-spacing: 2.56px;
+    
 }
 
 .featureRow {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    gap: 3rem;
-    flex-wrap: wrap;
+    gap: 0;
 }
 
 .feature {
+    flex: 1;
     max-width: 330px;
     text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0rem;
+    padding: 1%;
+    position: relative;
+    transition: transform 0.2s ease;
+    transition: color 0.25s ease;
+
 }
 
 .featureIcon {
     width: 64px;
     height: 64px;
-    margin-bottom: 0;
+    margin-bottom: 1rem;
+    transition: filter 0.25s ease, transform 0.25s ease, fill 0.2s ease;
+    
+}
+
+.feature:hover .featureIcon {
+    filter: drop-shadow(0 0 12px rgb(255, 255, 255));
+    transform: scale(1.05);
+    fill: white
+    
 }
 
 .feature + .feature {
@@ -126,13 +140,29 @@
     margin-top: 0.5rem;
     font-size: 1.3rem;
     font-weight: 600;
+    color: rgb(174, 174, 174);
+    margin-bottom: 0;
+    transition: fill 0.2s ease;
     
 }
 
 .feature p {
-    margin-top: 0.5rem;
+    margin-top: 0rem;
     opacity: 0.85;
+    transition: fill 0.2s ease;
 }
+
+.feature h4,
+.feature p {
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.feature:hover h4,
+.feature:hover p {
+    color: white;
+    opacity: 1;
+}
+
 
 .andMore {
     margin-top: 3rem;
