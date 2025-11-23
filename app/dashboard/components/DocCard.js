@@ -80,21 +80,23 @@ export default function DocCard({
           }}
         />
 
-        {/* Kebab menu - top right (three dots) */}
-        <button
-          type="button"
-          className={styles.kebab}
-          aria-label="Card menu"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowMenu(!showMenu);
-          }}
-        >
-          <span className={styles.kebabDot}></span>
-          <span className={styles.kebabDot}></span>
-          <span className={styles.kebabDot}></span>
-        </button>
+        {/* Kebab menu - top right (three dots) - hidden for course book cards */}
+        {!isCourseBook && (
+          <button
+            type="button"
+            className={styles.kebab}
+            aria-label="Card menu"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowMenu(!showMenu);
+            }}
+          >
+            <span className={styles.kebabDot}></span>
+            <span className={styles.kebabDot}></span>
+            <span className={styles.kebabDot}></span>
+          </button>
+        )}
 
         {/* Dropdown Menu Modal */}
         {showMenu && (
@@ -142,7 +144,7 @@ export default function DocCard({
                   handleDeleteClick();
                 }}
               >
-                <span>Delete</span>
+                <span>Remove</span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M2.5 5H4.16667H17.5"
