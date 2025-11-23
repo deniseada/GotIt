@@ -29,20 +29,13 @@ export default function LandingSection() {
                 </div>
             </div>
 
-            {/* LAPTOP MOCKUP */}
-            <div className={styles.laptopSection}>
-                <Image
-                    src='/images/laptop-mock.png' 
-                    alt='Got It Tool Demo on Laptop'
-                    width={1400}
-                    height={900}
-                    className={styles.laptopImage}
-                />
-            </div>
+
+
+
 
             {/* FEATURE ROW */}
             <div className={styles.features}>
-                <h3>Our Key Features</h3>
+                <h2>Our Key Features</h2>
 
                 <div className={styles.featureRow}>
                     <div className={styles.feature}>
@@ -83,7 +76,26 @@ export default function LandingSection() {
                 </div>
 
                 <p className={styles.andMore}>and much more!</p>
+                </div>
+
+
+
+
+
+
+                        {/* LAPTOP MOCKUP */}
+                        <div className={styles.laptopSection}>
+                <Image
+                    src='/images/laptop-mock.png' 
+                    alt='Got It Tool Demo on Laptop'
+                    width={1400}
+                    height={900}
+                    className={styles.laptopImage}
+                />
             </div>
+
         </section>
+        
+
     );
 }

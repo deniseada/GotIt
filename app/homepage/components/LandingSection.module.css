@@ -98,12 +98,12 @@
     display: flex;
     justify-content: center;
     align-items: stretch;
-    gap: 4rem;
+    gap: 3rem;
     flex-wrap: wrap;
 }
 
 .feature {
-    max-width: 240px;
+    max-width: 330px;
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -118,14 +118,15 @@
 
 .feature + .feature {
     border-left: 1px solid rgba(255, 255, 255, 0.3);
-    padding-left: 1rem;
+    padding-left: 2rem;
     margin-left: 0.5rem;
 }
 
 .feature h4 {
     margin-top: 0.5rem;
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: 600;
+    
 }
 
 .feature p {
