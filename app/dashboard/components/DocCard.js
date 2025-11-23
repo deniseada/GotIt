@@ -60,6 +60,13 @@ export default function DocCard({
   return (
     <Link href="/doc" className={styles.cardLink}>
       <article className={isCourseBook ? styles.courseBookCard : styles.card}>
+      {isCourseBook && (
+        <img 
+          src="/icons/Back-pages.svg" 
+          alt="" 
+          className={styles.backPages}
+        />
+      )}
         {/* Bookmark Ribbon - floating ABOVE the card */}
         <button
           type="button"

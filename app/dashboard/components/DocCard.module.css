@@ -432,6 +432,21 @@
   pointer-events: auto;
 }
 
+/* Back pages SVG behind course book card */
+.backPages {
+  position: absolute;
+  top: 50%;
+  left: 1000px;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: -1;
+  pointer-events: none;
+  max-width: 240px;
+  max-height: 320px;
+}
+
 /* Course Book Card - hide ribbon, emotion badge, and meta */
 .courseBookCard {
   background: #fff;
@@ -446,6 +461,7 @@
   width: 100%;
   position: relative;
   margin-top: 20px;
+  z-index: 1;
 }
 
 .courseBookCard .ribbonBtn,
