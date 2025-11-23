@@ -47,7 +47,6 @@ export default function GotItHomepage() {
             altBack="Manual Circuit — simplified bullets"
           />
         </section>
-        
       </main>
       <LandingSection />
     </div>

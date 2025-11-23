@@ -82,7 +82,7 @@ export default function LandingSection() {
 
 
 
-
+                
                         {/* LAPTOP MOCKUP */}
                         <div className={styles.laptopSection}>
                 <Image

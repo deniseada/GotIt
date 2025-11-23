@@ -83,6 +83,7 @@
     text-align: center;
     margin-top: 5rem;
     padding-bottom: 4rem;
+    fill: rgb(255, 255, 255);
 }
 
 .features h2 {
@@ -110,8 +111,7 @@
     gap: 0rem;
     padding: 1%;
     position: relative;
-    transition: transform 0.2s ease;
-    transition: color 0.25s ease;
+    transition: transform 0.2s ease, color 0.25s ease;
 
 }
 
@@ -119,14 +119,15 @@
     width: 64px;
     height: 64px;
     margin-bottom: 1rem;
+    scale: 1.4;
     transition: filter 0.25s ease, transform 0.25s ease, fill 0.2s ease;
     
 }
 
 .feature:hover .featureIcon {
-    filter: drop-shadow(0 0 12px rgb(255, 255, 255));
-    transform: scale(1.05);
-    fill: white
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.704));
+    transform: scale(1.1);
+    fill: rgba(255, 255, 255, 0.826)
     
 }
 
