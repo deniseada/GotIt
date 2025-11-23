@@ -29,10 +29,6 @@ export default function LandingSection() {
                 </div>
             </div>
 
-
-
-
-
             {/* FEATURE ROW */}
             <div className={styles.features}>
                 <h2>Our Key Features</h2>
@@ -76,17 +72,12 @@ export default function LandingSection() {
                 </div>
 
                 <p className={styles.andMore}>and much more!</p>
-                </div>
+            </div>
 
-
-
-
-
-                
-                        {/* LAPTOP MOCKUP */}
-                        <div className={styles.laptopSection}>
+            {/* LAPTOP MOCKUP */}
+            <div className={styles.laptopSection}>
                 <Image
-                    src='/images/laptop-mock.png' 
+                    src='/icons/openDoc.svg'
                     alt='Got It Tool Demo on Laptop'
                     width={1400}
                     height={900}
@@ -94,8 +85,18 @@ export default function LandingSection() {
                 />
             </div>
 
-        </section>
-        
 
+            <div className="styles.mobileSection">
+                <div>
+                    <h2>
+                        Got It values your learning wherever you are
+                    </h2>
+                    <p> Available in mobile device for easy access!</p>
+                    <p>Built for apprentices who learn in school, on the job, and on the move.</p>
+                </div>
+
+
+            </div>
+        </section>
     );
 }
