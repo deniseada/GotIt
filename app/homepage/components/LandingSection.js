@@ -85,17 +85,20 @@ export default function LandingSection() {
                 />
             </div>
 
-
-            <div className="styles.mobileSection">
-                <div>
-                    <h2>
-                        Got It values your learning wherever you are
-                    </h2>
-                    <p> Available in mobile device for easy access!</p>
-                    <p>Built for apprentices who learn in school, on the job, and on the move.</p>
+            {/* MOBILE SECTION */}
+            <div className={styles.mobileSection}>
+                <Image 
+                    src='/icons/mobileMockup.png'
+                    alt='Got It Mobile Mockup'
+                    width={399}
+                    height={600}
+                    className={styles.mobileImage}
+                />
+                <div className={styles.mobileText}>
+                    <h2>Got It values your learning wherever you are</h2>
+                    <p className={styles.mobileSubheading}>Available in mobile device for easy access!</p>
+                    <p className={styles.mobileDescription}>Built for apprentices who learn in school, on the job, and on the move.</p>
                 </div>
-
-
             </div>
         </section>
     );
