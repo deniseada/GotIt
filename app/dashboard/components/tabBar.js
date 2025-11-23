@@ -140,6 +140,14 @@ export default function TabBar() {
     );
   }, []);
 
+  const handleTitleEdit = useCallback((cardId, newTitle) => {
+    setCardList((prev) =>
+      prev.map((card) =>
+        card.id === cardId ? { ...card, title: newTitle } : card
+      )
+    );
+  }, []);
+
   // Initialize cards from localStorage
   useEffect(() => {
     setIsClient(true);
@@ -238,8 +246,9 @@ export default function TabBar() {
       lastOpened={card.updatedAt}
       onToggleBookmark={() => handleToggleBookmark(card.id)}
       onEmotionChange={(newEmotion) => handleEmotionChange(card.id, newEmotion)}
+      onEditTitle={(newTitle) => handleTitleEdit(card.id, newTitle)}
     />
-  ), [handleToggleBookmark, handleEmotionChange]);
+  ), [handleToggleBookmark, handleEmotionChange, handleTitleEdit]);
 
   // Render empty state
   const renderEmptyState = (message = "No items match this filter.") => (

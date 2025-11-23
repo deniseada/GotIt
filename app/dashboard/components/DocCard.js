@@ -1,7 +1,7 @@
 "use client";
 import PropTypes from "prop-types";
 import styles from "./DocCard.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 // Constants
@@ -54,12 +54,22 @@ export default function DocCard({
   onDelete,
   onEmotionChange,
   category,
+  id,
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showEmotionModal, setShowEmotionModal] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
 
   const isCourseBook = category === "Course Books";
   const emotionData = EMOJI[emotion] ?? EMOJI.neutral;
+
+  // Sync editedTitle when title prop changes
+  useEffect(() => {
+    if (!isEditingTitle) {
+      setEditedTitle(title);
+    }
+  }, [title, isEditingTitle]);
 
   // Format date helper
   const formatDate = (dateString) => {
@@ -85,8 +95,33 @@ export default function DocCard({
   const handleEditClick = (e) => {
     handleEvent(e, () => {
       setShowMenu(false);
-      onEditTitle?.();
+      setIsEditingTitle(true);
+      setEditedTitle(title);
     });
+  };
+
+  const handleSaveTitle = (e) => {
+    handleEvent(e, () => {
+      if (editedTitle.trim() && editedTitle !== title) {
+        onEditTitle?.(editedTitle.trim());
+      }
+      setIsEditingTitle(false);
+    });
+  };
+
+  const handleCancelEdit = (e) => {
+    handleEvent(e, () => {
+      setEditedTitle(title);
+      setIsEditingTitle(false);
+    });
+  };
+
+  const handleTitleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSaveTitle(e);
+    } else if (e.key === "Escape") {
+      handleCancelEdit(e);
+    }
   };
 
   const handleDeleteClick = (e) => {
@@ -212,7 +247,40 @@ export default function DocCard({
         )}
 
         {/* Card Content */}
-        <h3 className={styles.title}>{title}</h3>
+        {isEditingTitle && kind === "Uploaded" ? (
+          <div className={styles.titleEditContainer} onClick={(e) => e.stopPropagation()}>
+            <input
+              type="text"
+              className={styles.titleInput}
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              onKeyDown={handleTitleKeyDown}
+              onClick={(e) => e.stopPropagation()}
+              onFocus={(e) => e.stopPropagation()}
+              autoFocus
+            />
+            <div className={styles.titleEditActions}>
+              <button
+                type="button"
+                className={styles.titleSaveBtn}
+                onClick={handleSaveTitle}
+                aria-label="Save title"
+              >
+                ✓
+              </button>
+              <button
+                type="button"
+                className={styles.titleCancelBtn}
+                onClick={handleCancelEdit}
+                aria-label="Cancel editing"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        ) : (
+          <h3 className={styles.title}>{title}</h3>
+        )}
         <div className={styles.section}>{kind}</div>
         <div className={styles.meta}>Last opened: {formatDate(lastOpened)}</div>
       </article>
@@ -231,4 +299,5 @@ DocCard.propTypes = {
   onDelete: PropTypes.func,
   onEmotionChange: PropTypes.func,
   category: PropTypes.string,
+  id: PropTypes.string,
 };

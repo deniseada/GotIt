@@ -8,9 +8,11 @@
   max-height: 308px;
   height: 100%;
   max-width: 230px;
-  width: 100%;
+  width: 230px;
+  min-width: 230px;
   position: relative;
   margin-top: 20px;
+  box-sizing: border-box;
 }
 
 /* Bookmark ribbon - floating ABOVE the card */
@@ -400,6 +402,82 @@
   font-family: var(--font-lexend), sans-serif;
 }
 
+/* Title editing styles */
+.titleEditContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 5px 0;
+  padding-right: 35px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.titleInput {
+  font-size: 1.1rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #111827;
+  font-family: var(--font-lexend), sans-serif;
+  border: 2px solid #522A70;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.titleInput:focus {
+  border-color: #955EBF;
+  box-shadow: 0 0 0 3px rgba(82, 42, 112, 0.1);
+}
+
+.titleEditActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.titleSaveBtn,
+.titleCancelBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.titleSaveBtn {
+  background: #522A70;
+  color: white;
+}
+
+.titleSaveBtn:hover {
+  background: #955EBF;
+  transform: scale(1.05);
+}
+
+.titleCancelBtn {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.titleCancelBtn:hover {
+  background: #d1d5db;
+  transform: scale(1.05);
+}
+
 .section {
   font-size: 1rem;
   color: #111827;
@@ -476,7 +554,8 @@
   max-height: 308px;
   height: 100%;
   max-width: 230px;
-  width: 100%;
+  width: 230px;
+  min-width: 230px;
   position: relative;
   margin: 30px 0 0 0;
   z-index: 2;
