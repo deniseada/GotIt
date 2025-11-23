@@ -427,12 +427,12 @@
 /* First grey page behind courseBookCard */
 .courseBookPage1 {
   position: absolute;
-  top: 35px;
+  top: 45px;
   left: 20px;
   width: 210px;
   max-width: 210px;
-  height: 250px;
-  max-height: 250px;
+  height: 205px;
+  max-height: 205px;
   background: #D6D6D6;
   z-index: 1;
   pointer-events: none;
@@ -443,12 +443,12 @@
 /* Second grey page behind first page */
 .courseBookPage2 {
   position: absolute;
-  top: 45px;
+  top: 50px;
   left: 20px;
   width: 210px;
   max-width: 210px;
-  height: 250px;
-  max-height: 250px;
+  height: 210px;
+  max-height: 210px;
   background: #D6D6D6;
   z-index: 0;
   pointer-events: none;
@@ -478,7 +478,7 @@
   max-width: 230px;
   width: 100%;
   position: relative;
-  margin: 20px 0 0 0;
+  margin: 30px 0 0 0;
   z-index: 2;
   display: block;
   box-sizing: border-box;
