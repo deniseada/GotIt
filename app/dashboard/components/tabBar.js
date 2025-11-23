@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import styles from "../dashboard.module.css";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import UploadButton from "./uploadButton";
 import DocCard from "../components/DocCard";
 
+// Helper Components
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -29,222 +30,60 @@ function a11yProps(index) {
   };
 }
 
+// Constants
+const EMOTION_LABELS = {
+  none: "No Filter",
+  confident: "Confident",
+  needs: "Needs Review",
+  neutral: "Neutral",
+};
+
+const EMOTION_FILTERS = [
+  { value: "confident", label: "Confident", icon: "/icons/happyFilter.svg", pillClass: "optionPill" },
+  { value: "needs", label: "Needs Review", icon: "/icons/sadFilter.svg", pillClass: "optionPillNeeds" },
+  { value: "neutral", label: "Neutral", icon: "/icons/neutralFilter.svg", pillClass: "optionPillNeutral" },
+];
+
 export default function TabBar() {
-  const [value, setValue] = useState(0); // 0 All, 1 Recent, 2 Uploaded, 3 Bookmarked, 4 Course Books
+  const [value, setValue] = useState(0);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [emotion, setEmotion] = useState("none"); // "none" | "confident" | "needs" | "neutral"
+  const [emotion, setEmotion] = useState("none");
+  const [cardList, setCardList] = useState([]);
+  const [isClient, setIsClient] = useState(false);
   const filterRef = useRef(null);
 
-  const handleChange = (_e, newValue) => setValue(newValue);
-
-  // --- Sample data (replace with real data later)
+  // Initial card data
   const initialCards = [
     // Recent section cards
-    {
-      id: "recent-1",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 1",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "confident",
-    },
-    {
-      id: "recent-2",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 3",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "needs",
-    },
+    { id: "recent-1", title: "Delmar's Standard Textbook for Electricity", kind: "Section 1", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "confident" },
+    { id: "recent-2", title: "Delmar's Standard Textbook for Electricity", kind: "Section 3", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "needs" },
     // Uploaded section cards
-    {
-      id: "uploaded-1",
-      title: "Apply Circuit Concepts",
-      kind: "Uploaded",
-      category: "Uploaded",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "uploaded-2",
-      title: "Circuit Concept Module",
-      kind: "Uploaded",
-      category: "Uploaded",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "uploaded-3",
-      title: "Installation and Maintenance",
-      kind: "Uploaded",
-      category: "Uploaded",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "uploaded-4",
-      title: "Perform Safety Related Functions",
-      kind: "Uploaded",
-      category: "Uploaded",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "neutral",
-    },
+    { id: "uploaded-1", title: "Apply Circuit Concepts", kind: "Uploaded", category: "Uploaded", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "neutral" },
+    { id: "uploaded-2", title: "Circuit Concept Module", kind: "Uploaded", category: "Uploaded", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "neutral" },
+    { id: "uploaded-3", title: "Installation and Maintenance", kind: "Uploaded", category: "Uploaded", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "neutral" },
+    { id: "uploaded-4", title: "Perform Safety Related Functions", kind: "Uploaded", category: "Uploaded", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "neutral" },
     // Bookmarked section cards
-    {
-      id: "bookmarked-1",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 2",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "needs",
-    },
-    {
-      id: "bookmarked-2",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 2",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "bookmarked-3",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 2",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "confident",
-    },
-    {
-      id: "bookmarked-4",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 2",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "confident",
-    },
-    {
-      id: "bookmarked-5",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 2",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "needs",
-    },
-    {
-      id: "bookmarked-6",
-      title: "Delmar's Standard Textbook for Electricity",
-      kind: "Section 2",
-      category: "",
-      bookmarked: false,
-      updatedAt: "2025-10-25T15:00:00.000Z",
-      emotion: "neutral",
-    },
+    { id: "bookmarked-1", title: "Delmar's Standard Textbook for Electricity", kind: "Section 2", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "needs" },
+    { id: "bookmarked-2", title: "Delmar's Standard Textbook for Electricity", kind: "Section 2", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "neutral" },
+    { id: "bookmarked-3", title: "Delmar's Standard Textbook for Electricity", kind: "Section 2", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "confident" },
+    { id: "bookmarked-4", title: "Delmar's Standard Textbook for Electricity", kind: "Section 2", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "confident" },
+    { id: "bookmarked-5", title: "Delmar's Standard Textbook for Electricity", kind: "Section 2", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "needs" },
+    { id: "bookmarked-6", title: "Delmar's Standard Textbook for Electricity", kind: "Section 2", category: "", bookmarked: false, updatedAt: "2025-10-25T15:00:00.000Z", emotion: "neutral" },
     // Course Books section cards
-    {
-      id: "course-1",
-      title: "Electrical Codes and Regulations 2024",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-2",
-      title: "Delmar's standard textbook for Electricity",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-3",
-      title: "MindTap for Herman's Delmar's Standard Textbook of Electricity",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-4",
-      title: "Cengage Learning Electricity 3: Power Generation and Delivery",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-5",
-      title: "Cengage Learning Commercial Wiring",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-6",
-      title: "Cengage Learning Industrial Motor Control",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-7",
-      title: "American Technical Publishers Printreading",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-8",
-      title: "Stallcups Journeyman Electrician's Study Guide",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-9",
-      title: "NFPA NATIONAL FIRE ALARM AND SIGNALING CODE",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
-    {
-      id: "course-10",
-      title: "New Jersey Electrician Reference Manual",
-      kind: "",
-      category: "Course Books",
-      bookmarked: false,
-      updatedAt: "2025-10-20T18:12:00.000Z",
-      emotion: "neutral",
-    },
+    { id: "course-1", title: "Electrical Codes and Regulations 2024", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-2", title: "Delmar's standard textbook for Electricity", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-3", title: "MindTap for Herman's Delmar's Standard Textbook of Electricity", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-4", title: "Cengage Learning Electricity 3: Power Generation and Delivery", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-5", title: "Cengage Learning Commercial Wiring", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-6", title: "Cengage Learning Industrial Motor Control", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-7", title: "American Technical Publishers Printreading", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-8", title: "Stallcups Journeyman Electrician's Study Guide", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-9", title: "NFPA NATIONAL FIRE ALARM AND SIGNALING CODE", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
+    { id: "course-10", title: "New Jersey Electrician Reference Manual", kind: "", category: "Course Books", bookmarked: false, updatedAt: "2025-10-20T18:12:00.000Z", emotion: "neutral" },
   ];
 
-  // Load bookmarks from localStorage
-  const loadBookmarksFromStorage = () => {
+  // LocalStorage helpers
+  const loadBookmarksFromStorage = useCallback(() => {
     if (typeof window === "undefined") return {};
     try {
       const stored = localStorage.getItem("got-it-bookmarks");
@@ -253,20 +92,18 @@ export default function TabBar() {
       console.error("Error loading bookmarks from localStorage:", error);
       return {};
     }
-  };
+  }, []);
 
-  // Save bookmarks to localStorage
-  const saveBookmarksToStorage = (bookmarks) => {
+  const saveBookmarksToStorage = useCallback((bookmarks) => {
     if (typeof window === "undefined") return;
     try {
       localStorage.setItem("got-it-bookmarks", JSON.stringify(bookmarks));
     } catch (error) {
       console.error("Error saving bookmarks to localStorage:", error);
     }
-  };
+  }, []);
 
-  // Load emotions from localStorage
-  const loadEmotionsFromStorage = () => {
+  const loadEmotionsFromStorage = useCallback(() => {
     if (typeof window === "undefined") return {};
     try {
       const stored = localStorage.getItem("got-it-emotions");
@@ -275,237 +112,59 @@ export default function TabBar() {
       console.error("Error loading emotions from localStorage:", error);
       return {};
     }
-  };
+  }, []);
 
-  // Save emotions to localStorage
-  const saveEmotionsToStorage = (emotions) => {
+  const saveEmotionsToStorage = useCallback((emotions) => {
     if (typeof window === "undefined") return;
     try {
       localStorage.setItem("got-it-emotions", JSON.stringify(emotions));
     } catch (error) {
       console.error("Error saving emotions to localStorage:", error);
     }
-  };
+  }, []);
 
-  // Initialize cards with bookmarks and emotions from localStorage
-  const initializeCardsWithBookmarks = () => {
-    const storedBookmarks = loadBookmarksFromStorage();
-    const storedEmotions = loadEmotionsFromStorage();
-    return initialCards.map((card) => ({
-      ...card,
-      bookmarked: storedBookmarks[card.id] !== undefined 
-        ? storedBookmarks[card.id] 
-        : card.bookmarked,
-      emotion: storedEmotions[card.id] !== undefined
-        ? storedEmotions[card.id]
-        : card.emotion,
-    }));
-  };
-
-  const renderGrid = () => (
-    <div className={styles.cardsGrid}>
-      {filteredCards.length === 0 ? (
-        <p className={styles.emptyState}>No items match this filter.</p>
-      ) : (
-        filteredCards.map((c) => (
-          <DocCard
-            key={c.id}
-            {...c}
-            lastOpened={c.updatedAt}
-            onToggleBookmark={() =>
-              setCardList((prev) =>
-                prev.map((card) =>
-                  card.id === c.id
-                    ? { ...card, bookmarked: !card.bookmarked }
-                    : card
-                )
-              )
-            }
-            onEmotionChange={(newEmotion) =>
-              setCardList((prev) =>
-                prev.map((card) =>
-                  card.id === c.id
-                    ? { ...card, emotion: newEmotion }
-                    : card
-                )
-              )
-            }
-          />
-        ))
-      )}
-    </div>
-  );
-
-  // Render grid wrapped in section container for individual tabs
-  const renderGridWithSection = (sectionTitle, gridClass = styles.cardsGrid) => {
-    if (filteredCards.length === 0) {
-      return (
-        <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
-          <p className={styles.emptyState}>No items match this filter.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className={styles.sectionContainer}>
-        <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
-        <div className={gridClass}>
-          {filteredCards.map((c) => (
-            <DocCard
-              key={c.id}
-              {...c}
-              lastOpened={c.updatedAt}
-              onToggleBookmark={() =>
-                setCardList((prev) =>
-                  prev.map((card) =>
-                    card.id === c.id
-                      ? { ...card, bookmarked: !card.bookmarked }
-                      : card
-                  )
-                )
-              }
-              onEmotionChange={(newEmotion) =>
-                setCardList((prev) =>
-                  prev.map((card) =>
-                    card.id === c.id
-                      ? { ...card, emotion: newEmotion }
-                      : card
-                  )
-                )
-              }
-            />
-          ))}
-        </div>
-      </div>
+  // Card update handlers - extracted to reduce duplication
+  const handleToggleBookmark = useCallback((cardId) => {
+    setCardList((prev) =>
+      prev.map((card) =>
+        card.id === cardId ? { ...card, bookmarked: !card.bookmarked } : card
+      )
     );
-  };
+  }, []);
 
-  // Render sections with headers for "All" tab
-  const renderSections = () => {
-    // Group cards by category
-    const recentCards = [...cardList]
-      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-      .filter((c) => {
-        if (emotion !== "none") {
-          return (c.emotion || "neutral") === emotion;
-        }
-        return true;
-      })
-      .slice(0, 6); // Show up to 6 most recent cards
-
-    const uploadedCards = cardList.filter((c) => {
-      if (c.category !== "Uploaded") return false;
-      if (emotion !== "none") {
-        return (c.emotion || "neutral") === emotion;
-      }
-      return true;
-    });
-
-    const bookmarkedCards = cardList.filter((c) => {
-      if (!c.bookmarked) return false;
-      if (emotion !== "none") {
-        return (c.emotion || "neutral") === emotion;
-      }
-      return true;
-    });
-
-    const courseBookCards = cardList.filter((c) => {
-      if (c.category !== "Course Books") return false;
-      if (emotion !== "none") {
-        return (c.emotion || "neutral") === emotion;
-      }
-      return true;
-    });
-
-    const renderCardSection = (cards, sectionTitle, gridClass = styles.cardsGrid) => {
-      return (
-        <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
-          {cards.length > 0 && (
-            <div className={gridClass}>
-              {cards.map((c) => (
-                <DocCard
-                  key={c.id}
-                  {...c}
-                  lastOpened={c.updatedAt}
-                  onToggleBookmark={() =>
-                    setCardList((prev) =>
-                      prev.map((card) =>
-                        card.id === c.id
-                          ? { ...card, bookmarked: !card.bookmarked }
-                          : card
-                      )
-                    )
-                  }
-                  onEmotionChange={(newEmotion) =>
-                    setCardList((prev) =>
-                      prev.map((card) =>
-                        card.id === c.id
-                          ? { ...card, emotion: newEmotion }
-                          : card
-                      )
-                    )
-                  }
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    return (
-      <div className={styles.sectionsWrapper}>
-        {renderCardSection(recentCards, "Recent")}
-        {recentCards.length > 0 && uploadedCards.length > 0 && (
-          <div className={styles.sectionDivider}></div>
-        )}
-        {renderCardSection(uploadedCards, "Uploaded")}
-        <div className={styles.sectionDivider}></div>
-        {renderCardSection(bookmarkedCards, "Bookmarked")}
-        <div className={styles.sectionDivider}></div>
-        {renderCardSection(courseBookCards, "Course Book", styles.courseBookGrid)}
-      </div>
+  const handleEmotionChange = useCallback((cardId, newEmotion) => {
+    setCardList((prev) =>
+      prev.map((card) =>
+        card.id === cardId ? { ...card, emotion: newEmotion } : card
+      )
     );
-  };
+  }, []);
 
-  // Bookmark states - initialize without localStorage to avoid hydration mismatch
-  const [cardList, setCardList] = useState(initialCards);
-  const [isClient, setIsClient] = useState(false);
-
-  // Load from localStorage after mount (client-side only)
+  // Initialize cards from localStorage
   useEffect(() => {
     setIsClient(true);
     const storedBookmarks = loadBookmarksFromStorage();
     const storedEmotions = loadEmotionsFromStorage();
     
-    setCardList((prevCards) => {
-      // Remove duplicates by keeping only the first occurrence of each ID
+    setCardList(() => {
       const seenIds = new Set();
-      const uniqueCards = prevCards.filter((card) => {
-        if (seenIds.has(card.id)) {
-          return false;
-        }
+      const uniqueCards = initialCards.filter((card) => {
+        if (seenIds.has(card.id)) return false;
         seenIds.add(card.id);
         return true;
       });
       
       return uniqueCards.map((card) => ({
         ...card,
-        bookmarked: storedBookmarks[card.id] !== undefined 
-          ? storedBookmarks[card.id] 
-          : card.bookmarked,
-        emotion: storedEmotions[card.id] !== undefined
-          ? storedEmotions[card.id]
-          : card.emotion,
+        bookmarked: storedBookmarks[card.id] ?? card.bookmarked,
+        emotion: storedEmotions[card.id] ?? card.emotion,
       }));
     });
-  }, []);
+  }, [loadBookmarksFromStorage, loadEmotionsFromStorage]);
 
-  // Update localStorage whenever bookmarks or emotions change
+  // Save to localStorage when cards change
   useEffect(() => {
-    if (!isClient) return; // Don't save on initial mount
+    if (!isClient) return;
     
     const bookmarksMap = {};
     const emotionsMap = {};
@@ -515,32 +174,28 @@ export default function TabBar() {
     });
     saveBookmarksToStorage(bookmarksMap);
     saveEmotionsToStorage(emotionsMap);
-  }, [cardList, isClient]);
+  }, [cardList, isClient, saveBookmarksToStorage, saveEmotionsToStorage]);
 
   // Close filter menu on outside click or Escape key
   useEffect(() => {
-    function onDocClick(e) {
+    const handleClickOutside = (e) => {
       if (filterRef.current && !filterRef.current.contains(e.target)) {
         setFilterOpen(false);
       }
-    }
-    function onKey(e) {
+    };
+    const handleEscape = (e) => {
       if (e.key === "Escape") setFilterOpen(false);
-    }
-    document.addEventListener("click", onDocClick);
-    document.addEventListener("keydown", onKey);
+    };
+    
+    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
     return () => {
-      document.removeEventListener("click", onDocClick);
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, []);
 
-  const toggleFilter = (e) => {
-    e.stopPropagation();
-    setFilterOpen((s) => !s);
-  };
-
-  // Card Filtering
+  // Card filtering logic
   const filteredCards = useMemo(() => {
     let base = cardList;
 
@@ -562,46 +217,123 @@ export default function TabBar() {
       default: // All
         base = cardList;
     }
+
     if (emotion !== "none") {
       base = base.filter((c) => (c.emotion || "neutral") === emotion);
     }
     return base;
   }, [cardList, value, emotion]);
 
-  // Render once; content changes with filters
-  const Content = (
-    <div className={styles.contentWrap}>
-      {filteredCards.length === 0 ? (
-        <p className={styles.emptyState}>No items match this filter.</p>
-      ) : (
-        <div className={styles.cardsGrid}>
-          {filteredCards.map((c) => (
-            <DocCard
-              key={c.id}
-              {...c}
-              lastOpened={c.updatedAt}
-              onToggleBookmark={() =>
-                setCardList((prev) =>
-                  prev.map((card) =>
-                    card.id === c.id
-                      ? { ...card, bookmarked: !card.bookmarked }
-                      : card
-                  )
-                )
-              }
-              onEmotionChange={(newEmotion) =>
-                setCardList((prev) =>
-                  prev.map((card) =>
-                    card.id === c.id
-                      ? { ...card, emotion: newEmotion }
-                      : card
-                  )
-                )
-              }
-            />
-          ))}
+  // Filter cards by emotion
+  const filterByEmotion = useCallback((cards) => {
+    if (emotion === "none") return cards;
+    return cards.filter((c) => (c.emotion || "neutral") === emotion);
+  }, [emotion]);
+
+  // Render card with handlers
+  const renderCard = useCallback((card) => (
+    <DocCard
+      key={card.id}
+      {...card}
+      lastOpened={card.updatedAt}
+      onToggleBookmark={() => handleToggleBookmark(card.id)}
+      onEmotionChange={(newEmotion) => handleEmotionChange(card.id, newEmotion)}
+    />
+  ), [handleToggleBookmark, handleEmotionChange]);
+
+  // Render empty state
+  const renderEmptyState = (message = "No items match this filter.") => (
+    <p className={styles.emptyState}>{message}</p>
+  );
+
+  // Render grid
+  const renderGrid = (cards, gridClass = styles.cardsGrid) => {
+    if (cards.length === 0) return renderEmptyState();
+    return (
+      <div className={gridClass}>
+        {cards.map(renderCard)}
+      </div>
+    );
+  };
+
+  // Render grid with section container
+  const renderGridWithSection = (sectionTitle, gridClass = styles.cardsGrid) => {
+    if (filteredCards.length === 0) {
+      return (
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
+          {renderEmptyState()}
         </div>
-      )}
+      );
+    }
+
+    return (
+      <div className={styles.sectionContainer}>
+        <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
+        {renderGrid(filteredCards, gridClass)}
+      </div>
+    );
+  };
+
+  // Render sections for "All" tab
+  const renderSections = () => {
+    const recentCards = filterByEmotion(
+      [...cardList].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+    ).slice(0, 6);
+
+    const uploadedCards = filterByEmotion(
+      cardList.filter((c) => c.category === "Uploaded")
+    );
+
+    const bookmarkedCards = filterByEmotion(
+      cardList.filter((c) => c.bookmarked)
+    );
+
+    const courseBookCards = filterByEmotion(
+      cardList.filter((c) => c.category === "Course Books")
+    );
+
+    const renderCardSection = (cards, sectionTitle, gridClass = styles.cardsGrid) => (
+      <div className={styles.sectionContainer}>
+        <h2 className={styles.sectionHeader}>{sectionTitle}</h2>
+        {cards.length > 0 && renderGrid(cards, gridClass)}
+      </div>
+    );
+
+    return (
+      <div className={styles.sectionsWrapper}>
+        {renderCardSection(recentCards, "Recent")}
+        {recentCards.length > 0 && uploadedCards.length > 0 && (
+          <div className={styles.sectionDivider}></div>
+        )}
+        {renderCardSection(uploadedCards, "Uploaded")}
+        <div className={styles.sectionDivider}></div>
+        {renderCardSection(bookmarkedCards, "Bookmarked")}
+        <div className={styles.sectionDivider}></div>
+        {renderCardSection(courseBookCards, "Course Book", styles.courseBookGrid)}
+      </div>
+    );
+  };
+
+  // Filter handlers
+  const handleFilterChange = (newEmotion) => {
+    setEmotion(newEmotion);
+    setFilterOpen(false);
+  };
+
+  const toggleFilter = (e) => {
+    e.stopPropagation();
+    setFilterOpen((s) => !s);
+  };
+
+  const handleTabChange = (_e, newValue) => setValue(newValue);
+
+  // Render tab content wrapper
+  const renderTabContent = (children) => (
+    <div className={styles.contentWrap}>
+      <UploadButton />
+      <div className={styles.sectionDivider}></div>
+      {children}
     </div>
   );
 
@@ -611,7 +343,7 @@ export default function TabBar() {
         <div className={styles.tabsWrapper}>
           <Tabs
             value={value}
-            onChange={handleChange}
+            onChange={handleTabChange}
             aria-label="dashboard tabs"
             className={styles.TabBar}
           >
@@ -623,7 +355,7 @@ export default function TabBar() {
           </Tabs>
         </div>
 
-        {/* FILTER */}
+        {/* Filter */}
         <div className={styles.filterContainer} ref={filterRef}>
           <button
             className={`${styles.filterPill} ${
@@ -635,13 +367,7 @@ export default function TabBar() {
             type="button"
           >
             <span className={styles.filterText}>
-              {emotion === "none"
-                ? "No Filter"
-                : emotion === "confident"
-                ? "Confident"
-                : emotion === "needs"
-                ? "Needs Review"
-                : "Neutral"}
+              {EMOTION_LABELS[emotion]}
             </span>
           </button>
 
@@ -661,73 +387,31 @@ export default function TabBar() {
           {filterOpen && (
             <div className={styles.filterMenu} role="menu">
               <div className={styles.filterInner}>
-                <button
-                  className={styles.filterOption}
-                  role="menuitem"
-                  onClick={() => {
-                    setEmotion("confident");
-                    setFilterOpen(false);
-                  }}
-                >
-                  <span className={styles.optionPill}>Confident</span>
-                  <span className={styles.optionIcon} aria-hidden>
-                    <img
-                      src="/icons/happyFilter.svg"
-                      alt="Confident"
-                      className={styles.filterEmotionIcons}
-                    />
-                  </span>
-                </button>
+                {EMOTION_FILTERS.map((filter, index) => (
+                  <React.Fragment key={filter.value}>
+                    {index > 0 && <div className={styles.separator} />}
+                    <button
+                      className={styles.filterOption}
+                      role="menuitem"
+                      onClick={() => handleFilterChange(filter.value)}
+                    >
+                      <span className={styles[filter.pillClass]}>{filter.label}</span>
+                      <span className={styles.optionIcon} aria-hidden>
+                        <img
+                          src={filter.icon}
+                          alt={filter.label}
+                          className={styles.filterEmotionIcons}
+                        />
+                      </span>
+                    </button>
+                  </React.Fragment>
+                ))}
 
                 <div className={styles.separator} />
-
-                <button
-                  className={styles.filterOption}
-                  role="menuitem"
-                  onClick={() => {
-                    setEmotion("needs");
-                    setFilterOpen(false);
-                  }}
-                >
-                  <span className={styles.optionPillNeeds}>Needs Review</span>
-                  <span className={styles.optionIcon} aria-hidden>
-                    <img
-                      src="/icons/sadFilter.svg"
-                      alt="Needs review"
-                      className={styles.filterEmotionIcons}
-                    />
-                  </span>
-                </button>
-
-                <div className={styles.separator} />
-
-                <button
-                  className={styles.filterOption}
-                  role="menuitem"
-                  onClick={() => {
-                    setEmotion("neutral");
-                    setFilterOpen(false);
-                  }}
-                >
-                  <span className={styles.optionPillNeutral}>Neutral</span>
-                  <span className={styles.optionIcon} aria-hidden>
-                    <img
-                      src="/icons/neutralFilter.svg"
-                      alt="Neutral"
-                      className={styles.filterEmotionIcons}
-                    />
-                  </span>
-                </button>
-
-                <div className={styles.separator} />
-
                 <div className={styles.filterFooter}>
                   <button
                     className={styles.clearFilterBtn}
-                    onClick={() => {
-                      setEmotion("none");
-                      setFilterOpen(false);
-                    }}
+                    onClick={() => handleFilterChange("none")}
                   >
                     No Filter
                   </button>
@@ -738,45 +422,25 @@ export default function TabBar() {
         </div>
       </div>
 
-      {/* Rendering Cards */}
+      {/* Tab Panels */}
       <CustomTabPanel value={value} index={0}>
-        <div className={styles.contentWrap}>
-          <UploadButton />
-          <div className={styles.sectionDivider}></div>
-          {renderSections()}
-        </div>
+        {renderTabContent(renderSections())}
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-        <div className={styles.contentWrap}>
-          <UploadButton />
-          <div className={styles.sectionDivider}></div>
-          {renderGridWithSection("Recent")}
-        </div>
+        {renderTabContent(renderGridWithSection("Recent"))}
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={2}>
-        <div className={styles.contentWrap}>
-          <UploadButton />
-          <div className={styles.sectionDivider}></div>
-          {renderGridWithSection("Uploaded")}
-        </div>
+        {renderTabContent(renderGridWithSection("Uploaded"))}
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
-        <div className={styles.contentWrap}>
-          <UploadButton />
-          <div className={styles.sectionDivider}></div>
-          {renderGridWithSection("Bookmarked")}
-        </div>
+        {renderTabContent(renderGridWithSection("Bookmarked"))}
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={4}>
-        <div className={styles.contentWrap}>
-          <UploadButton />
-          <div className={styles.sectionDivider}></div>
-          {renderGridWithSection("Course Book", styles.courseBookGrid)}
-        </div>
+        {renderTabContent(renderGridWithSection("Course Book", styles.courseBookGrid))}
       </CustomTabPanel>
     </Box>
   );
