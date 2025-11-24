@@ -209,7 +209,11 @@ export default function DocScreen() {
     };
   };
 
-  const areas = React.useRef([]);
+  // Store highlights in state - each highlight has highlightAreas array and color
+  const [highlights, setHighlights] = useState([]);
+  const highlightIdRef = useRef(0);
+  // Store selected color for current highlight (using ref to avoid hook order issues)
+  const currentSelectionColorRef = useRef("#FFF9C4"); // Default yellow
   const zoomPluginInstance = useMemo(() => createCustomZoomPlugin(), []);
   // Call pageNavigationPlugin at top level - if it uses hooks internally,
   // this is required. We'll memoize the components we extract from it instead.
@@ -222,65 +226,219 @@ export default function DocScreen() {
   const navigateToPageRef = useRef(null);
   const { GoToPage } = pageNavigationPluginInstance || {};
 
-  const renderHighlightTarget = (props) => {
-    if (!areas.current) return;
-    areas.current = [
-      ...areas.current,
-      {
-        left: props.selectionRegion.left,
-        top: props.selectionRegion.top,
-        width: props.selectionRegion.width,
-        height: props.selectionRegion.height,
-        pageIndex: props.pageIndex,
-      },
+  // Color picker component that can use hooks properly
+  const ColorPickerMenu = React.memo(({ onDone, onCancel, initialColor }) => {
+    const [localSelectedColor, setLocalSelectedColor] = useState(initialColor);
+
+    // Color options matching the image
+    const colorOptions = [
+      { color: "#DDC3FE", label: "Purple" }, // Light purple
+      { color: "#FEF4C3", label: "Yellow" }, // Light yellow
+      { color: "#D0E6C1", label: "Green" }, // Light green
+      { color: "#F5C7A9", label: "Orange" }, // Light orange
     ];
-    // setAreas(_areas);
+
+    const handleDone = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      onDone(localSelectedColor);
+    };
+
+    const handleCancel = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      onCancel();
+    };
+
     return (
-      <>
-        {areas.current.map((area, idx) => (
-          <div
-            key={idx}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: "8px",
+          padding: "12px",
+          boxShadow: "0 6px 16px rgba(0,0,0,0.3)",
+          minWidth: "200px",
+          border: "1px solid #e0e0e0",
+        }}
+      >
+        {/* Title */}
+        <div
+          style={{
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "#333",
+            marginBottom: "12px",
+          }}
+        >
+          Highlight
+        </div>
+
+        {/* Color options */}
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginBottom: "12px",
+          }}
+        >
+          {colorOptions.map((option) => (
+            <button
+              key={option.color}
+              onClick={(e) => {
+                e.stopPropagation();
+                setLocalSelectedColor(option.color);
+              }}
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "6px",
+                border:
+                  localSelectedColor === option.color
+                    ? "2px solid #522A70"
+                    : "2px solid rgb(186, 186, 186)",
+                background: option.color,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "#333",
+              }}
+             
+            >
+              
+            </button>
+          ))}
+        </div>
+
+        {/* Done and Cancel buttons */}
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            justifyContent: "space-between",
+            
+          }}
+        >
+          <button
+            onClick={handleCancel}
             style={{
-              background: "#d0ff00aa",
-              display: "flex",
-              position: "absolute",
-              left: `${area.left}%`,
-              top: `${area.top}%`,
-              width: `${area.width}%`,
-              height: `${area.height}%`,
+              background: "var(--background)",
+              fontFamily: "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
+              color: "#333",
+              border: ".5px solid #ddd",
+              borderRadius: "6px",
+              padding: "6px 16px",
+              fontSize: "13px",
+              fontWeight: 500,
+              cursor: "pointer",
             }}
-          ></div>
-        ))}
-      </>
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#e0e0e0";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#f5f5f5";
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDone}
+            style={{
+              background: "#522A70",
+              color: "#fff",
+              fontFamily: "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
+              border: "none",
+              borderRadius: "6px",
+              padding: "6px 16px",
+              fontSize: "13px",
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#3d1f52";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#522A70";
+            }}
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  });
+
+  const renderHighlightTarget = (props) => {
+    const handleDone = (selectedColor) => {
+      // Add the highlight with selected color when Done is clicked
+      const newHighlight = {
+        id: highlightIdRef.current++,
+        highlightAreas: props.highlightAreas,
+        selectedText: props.selectedText,
+        color: selectedColor,
+      };
+      setHighlights((prev) => [...prev, newHighlight]);
+      props.cancel();
+    };
+
+    const handleCancel = () => {
+      props.cancel();
+    };
+
+    // Calculate position - ensure it's visible
+    const leftPos = Math.max(0, Math.min(props.selectionRegion.left, 85));
+    const topPos = props.selectionRegion.top + props.selectionRegion.height;
+
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left: `${leftPos}%`,
+          top: `${topPos}%`,
+          transform: "translate(0, 8px)",
+          zIndex: 99999,
+          pointerEvents: "auto",
+        }}
+      >
+        <ColorPickerMenu
+          onDone={handleDone}
+          onCancel={handleCancel}
+          initialColor={currentSelectionColorRef.current}
+        />
+      </div>
     );
   };
 
-  // const renderHighlights = (props) => (
-  //   <div>
-  //     {areas
-  //       .filter((area) => area.pageIndex === props.pageIndex)
-  //       .map((area, idx) => (
-  //         <div
-  //           key={idx}
-  //           className="highlight-area"
-  //           style={Object.assign(
-  //             {},
-  //             {
-  //               background: "yellow",
-  //               opacity: 0.4,
-  //             },
-  //             // Calculate the position
-  //             // to make the highlight area displayed at the desired position
-  //             // when users zoom or rotate the document
-  //             props.getCssProperties(area, props.rotation)
-  //           )}
-  //         />
-  //       ))}
-  //   </div>
-  // );
+  const renderHighlights = (props) => (
+    <div>
+      {highlights.map((highlight) => (
+        <React.Fragment key={highlight.id}>
+          {highlight.highlightAreas
+            // Filter all highlights on the current page
+            .filter((area) => area.pageIndex === props.pageIndex)
+            .map((area, idx) => (
+              <div
+                key={idx}
+                style={Object.assign(
+                  {},
+                  {
+                    background: highlight.color || "#d0ff00",
+                    opacity: 0.4,
+                  },
+                  props.getCssProperties(area, props.rotation)
+                )}
+              />
+            ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
 
   const highlightPluginInstance = highlightPlugin({
     renderHighlightTarget,
+    renderHighlights,
     trigger: Trigger.TextSelection,
   });
   const [page, setPage] = useState(1);
