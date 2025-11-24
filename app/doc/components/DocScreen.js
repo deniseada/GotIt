@@ -212,17 +212,12 @@ export default function DocScreen() {
   // Store highlights in state - each highlight has highlightAreas array and color
   const [highlights, setHighlights] = useState([]);
   const highlightIdRef = useRef(0);
-  // Store selected color for current highlight (using ref to avoid hook order issues)
   const currentSelectionColorRef = useRef("#FFF9C4"); // Default yellow
   const zoomPluginInstance = useMemo(() => createCustomZoomPlugin(), []);
-  // Call pageNavigationPlugin at top level - if it uses hooks internally,
-  // this is required. We'll memoize the components we extract from it instead.
   const pageNavigationPluginInstance = pageNavigationPlugin();
   const searchPluginInstance = searchPlugin();
   const printPluginInstance = printPlugin();
   const getFilePluginInstance = getFilePlugin();
-
-  // Store ref to navigate function from GoToPage component
   const navigateToPageRef = useRef(null);
   const { GoToPage } = pageNavigationPluginInstance || {};
 

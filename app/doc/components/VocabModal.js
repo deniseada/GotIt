@@ -8,20 +8,20 @@ import styles from "../mvp.module.css";
 
 const vocabItems = [
     {
-        term: "Manual Circuit",
-        definition: "a system controlled by a person"
+        term: "Atom",
+        definition: "The basic building block of the universe. All matter is made of atoms."
     },
     {
-        term: "Overload Protection",
-        definition: "a safety feature that stops electricity if current is too high"
+        term: "Attraction",
+        definition: "Opposite electrical charges pull toward each other."
     },
     {
-        term: "Stop-start Three-wire Circuit",
-        definition: "a simple control setup using stop and start buttons"
+        term: "Conductor",
+        definition: "A material that allows electrons to flow easily."
     },
     {
-        term: "Schematic Drawing",
-        definition: "a device that controls and protects an electric motor"
+        term: "Electricity",
+        definition: "A force known since ancient times; produced whenever charged materials attract or repel each other."
     }
 ];
 
@@ -43,9 +43,9 @@ export default function VocabModal({
             anchorEl={anchorEl}
             placement="top-end"
             modifiers={[
-                { name: 'offset', options: { offset: [0, -50] } },
-                { name: 'preventOverflow', options: { padding: 8 } },
-                { name: 'flip', options: { padding: 8 } },
+                { name: 'offset', options: { offset: [0, 8] } },
+                { name: 'preventOverflow', options: { padding: 16 } },
+                { name: 'flip', options: { padding: 16 } },
             ]}
             sx={{ zIndex: (t) => t.zIndex.modal + 1, pointerEvents: 'none' }}
         >
@@ -53,9 +53,10 @@ export default function VocabModal({
                 elevation={8}
                 sx={{ 
                     pointerEvents: 'auto', 
-                    borderRadius: 3, 
+                    borderRadius: '4px', 
                     width: 280,
-                    maxHeight: 400,
+                    height: 300,
+                    maxHeight: 'calc(100vh - 100px)',
                     overflow: 'hidden',
                     background: '#ffffff',
                     border: '1px solid #dcd4e2',
@@ -82,7 +83,14 @@ export default function VocabModal({
                     </div>
                     <Typography className={styles.aiPanelTitle}>Vocabulary</Typography>
                 </div>
-                <div className={styles.vocabPanelContent}>
+                <div 
+                    className={styles.vocabPanelContent}
+                    style={{
+                        overflowY: 'auto',
+                        flex: 1,
+                        minHeight: 0
+                    }}
+                >
                     {items.map((item, index) => (
                         <div key={index} className={styles.vocabItem}>
                             <div className={styles.vocabItemContent}>
