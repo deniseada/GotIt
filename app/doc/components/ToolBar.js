@@ -564,8 +564,8 @@ export default function ToolBar({
                   <div className={styles.smallCircle}>A</div>
                   <input
                     type="range"
-                    min={-2}
-                    max={5}
+                    min={-4}
+                    max={4}
                     step={0.1}
                     value={letterSpacing}
                     onChange={(e) => {
@@ -599,6 +599,21 @@ export default function ToolBar({
                     onClick={() => setIsItalic((i) => !i)}
                   >
                     <em>I</em>
+                  </button>
+                  <button
+                    className={styles.resetButton}
+                    onClick={() => {
+                      const defaultFontSize = 16;
+                      const defaultLetterSpacing = 0;
+                      setFontSize(defaultFontSize);
+                      setLetterSpacing(defaultLetterSpacing);
+                      if (onTextStyleChange) {
+                        onTextStyleChange({ fontSize: defaultFontSize, letterSpacing: defaultLetterSpacing });
+                      }
+                    }}
+                    title="Reset to defaults"
+                  >
+                    Reset
                   </button>
                 </div>
               </div>,

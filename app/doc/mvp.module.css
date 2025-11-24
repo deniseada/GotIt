@@ -663,6 +663,30 @@
   color: white;
 }
 
+.resetButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--button-color);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 0 0 4px 0;
+  margin-left: auto;
+}
+
+.resetButton:hover {
+  text-decoration: underline;
+}
+
 /* Search popup */
 .searchMenu {
   display: inline-flex;
