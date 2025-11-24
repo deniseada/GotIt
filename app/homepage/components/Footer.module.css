@@ -4,13 +4,15 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    background: linear-gradient(90deg, #0a0a0d 0%, #2b0a23 50%, #52002f 100%);
+    background: linear-gradient(180deg, #0a0a0d 0%, #2b0a23 50%, #52002f 100%);
     color: #ffffff;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .leftSection img {
     opacity: 0.95;
+    scale: 2;
+    padding-top: 1rem;
 }
 
 .divider {
@@ -24,13 +26,15 @@
 .rightSection h4 {
     font-size: 0.9rem;
     margin-bottom: 0.8rem;
-    font-weight: 500;
+    font-weight: 300;
+
 }
 
 .middleSection ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    font-weight: 700;
 }
 
 .middleSection li {

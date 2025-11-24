@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className={styles.footerWrapper}>
     <div className={styles.leftSection}>
     <Image
-    src="/logo.svg"
+    src="/icons/omegaWhite.svg"
     width={120}
     height={40}
     alt="Got It Logo"
