@@ -1,7 +1,48 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 
-export default function Summarization({ text, loading, error, fontSize = 16, letterSpacing = 0 }) {
+export default function Summarization({ 
+    text, 
+    loading, 
+    error, 
+    fontSize = 16, 
+    letterSpacing = 0,
+    formats = [],
+    onFormatsChange,
+    onApplyFormat
+}) {
+    const formattedText = useMemo(() => {
+        if (!text || formats.length === 0) return text;
+        
+        // Sort formats by start position
+        const sortedFormats = [...formats].sort((a, b) => a.start - b.start);
+        const parts = [];
+        let lastIndex = 0;
+        
+        sortedFormats.forEach(format => {
+            // Add text before format
+            if (format.start > lastIndex) {
+                parts.push({ text: text.substring(lastIndex, format.start), bold: false, italic: false });
+            }
+            
+            // Add formatted text
+            const formattedPart = text.substring(format.start, format.end);
+            parts.push({ 
+                text: formattedPart, 
+                bold: format.bold || false, 
+                italic: format.italic || false 
+            });
+            
+            lastIndex = format.end;
+        });
+        
+        // Add remaining text
+        if (lastIndex < text.length) {
+            parts.push({ text: text.substring(lastIndex), bold: false, italic: false });
+        }
+        
+        return parts.length > 0 ? parts : [{ text, bold: false, italic: false }];
+    }, [text, formats]);
     return (
         <div style={{ padding: "20px" }}>
             <h2 style={{ 
@@ -34,7 +75,8 @@ export default function Summarization({ text, loading, error, fontSize = 16, let
 
             {text && (
                 <div style={{ marginTop: "20px" }}>
-                <pre
+                <div
+                    data-ai-output="summarization"
                     style={{
                         fontFamily: "Amiri",
                         fontSize: `${fontSize}px`,
@@ -44,10 +86,25 @@ export default function Summarization({ text, loading, error, fontSize = 16, let
                         borderRadius: "5px",
                         overflow: "auto",
                         whiteSpace: "pre-wrap",
+                        userSelect: "text",
                     }}
                 >
-                    {text}
-                </pre>
+                    {Array.isArray(formattedText) ? (
+                        formattedText.map((part, index) => {
+                            const style = {
+                                fontWeight: part.bold ? "bold" : "normal",
+                                fontStyle: part.italic ? "italic" : "normal",
+                            };
+                            return (
+                                <span key={index} style={style}>
+                                    {part.text}
+                                </span>
+                            );
+                        })
+                    ) : (
+                        text
+                    )}
+                </div>
                 </div>
             )}
         </div>

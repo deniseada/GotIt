@@ -23,6 +23,8 @@ export default function ToolBar({
   onTextStyleChange,
   fontSize: externalFontSize,
   letterSpacing: externalLetterSpacing,
+  onApplyTextFormat,
+  onResetFormats,
 }) {
   const [highlightOpen, setHighlightOpen] = useState(false);
   const [highlightColor, setHighlightColor] = useState("#fff176");
@@ -88,7 +90,11 @@ export default function ToolBar({
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [pillFlash, setPillFlash] = useState(null);
+  const [boldFlash, setBoldFlash] = useState(false);
+  const [italicFlash, setItalicFlash] = useState(false);
   const pillTimeoutRef = useRef(null);
+  const boldTimeoutRef = useRef(null);
+  const italicTimeoutRef = useRef(null);
 
   // Sync with external props
   useEffect(() => {
@@ -586,17 +592,45 @@ export default function ToolBar({
                 <div className={styles.textControlsRow}>
                   <button
                     className={`${styles.textCircle} ${
-                      isBold ? styles.textCircleActive : ""
+                      isBold || boldFlash ? styles.textCircleActive : ""
                     }`}
-                    onClick={() => setIsBold((b) => !b)}
+                    onClick={() => {
+                      const newBold = !isBold;
+                      setIsBold(newBold);
+                      setBoldFlash(true);
+                      if (onApplyTextFormat) {
+                        onApplyTextFormat({ bold: newBold });
+                      }
+                      if (boldTimeoutRef.current) {
+                        clearTimeout(boldTimeoutRef.current);
+                      }
+                      boldTimeoutRef.current = setTimeout(() => {
+                        setBoldFlash(false);
+                        boldTimeoutRef.current = null;
+                      }, 150);
+                    }}
                   >
                     B
                   </button>
                   <button
                     className={`${styles.textCircle} ${
-                      isItalic ? styles.textCircleActive : ""
+                      isItalic || italicFlash ? styles.textCircleActive : ""
                     }`}
-                    onClick={() => setIsItalic((i) => !i)}
+                    onClick={() => {
+                      const newItalic = !isItalic;
+                      setIsItalic(newItalic);
+                      setItalicFlash(true);
+                      if (onApplyTextFormat) {
+                        onApplyTextFormat({ italic: newItalic });
+                      }
+                      if (italicTimeoutRef.current) {
+                        clearTimeout(italicTimeoutRef.current);
+                      }
+                      italicTimeoutRef.current = setTimeout(() => {
+                        setItalicFlash(false);
+                        italicTimeoutRef.current = null;
+                      }, 150);
+                    }}
                   >
                     <em>I</em>
                   </button>
@@ -607,8 +641,13 @@ export default function ToolBar({
                       const defaultLetterSpacing = 0;
                       setFontSize(defaultFontSize);
                       setLetterSpacing(defaultLetterSpacing);
+                      setIsBold(false);
+                      setIsItalic(false);
                       if (onTextStyleChange) {
                         onTextStyleChange({ fontSize: defaultFontSize, letterSpacing: defaultLetterSpacing });
+                      }
+                      if (onResetFormats) {
+                        onResetFormats();
                       }
                     }}
                     title="Reset to defaults"
