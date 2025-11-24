@@ -42,8 +42,6 @@ export default function TimerPopover({
     // Collapse when parent closes the UI
     useEffect(() => { if (!open) setExpanded(false); }, [open]);
 
-    const presetsMin = useMemo(() => [0, 10, 15, 20, 30], []);
-    const presetsHr  = useMemo(() => [60, 90, 120, 150, 180], []);
 
     const setTimer = (mins) => {
         onChange?.(mins);
@@ -178,7 +176,7 @@ export default function TimerPopover({
             <Collapse in={expanded} timeout={160} mountOnEnter unmountOnExit>
                 <Divider sx={{ my: 1 }} />
                 <Grid id="timer-presets" container spacing={1} columns={12} sx={{ mb: 1 }}>
-                {[0, 10, 15, 20, 30].map((m) => (
+                {[0, 1, 5, 10, 15, 20, 30].map((m) => (
                     <Grid item xs={4} key={`m-${m}`}>
                     <Button
                         fullWidth size="small"

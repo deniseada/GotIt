@@ -43,7 +43,7 @@ export default function VocabModal({
             anchorEl={anchorEl}
             placement="top-end"
             modifiers={[
-                { name: 'offset', options: { offset: [0, 8] } },
+                { name: 'offset', options: { offset: [0, -56] } },
                 { name: 'preventOverflow', options: { padding: 16 } },
                 { name: 'flip', options: { padding: 16 } },
             ]}

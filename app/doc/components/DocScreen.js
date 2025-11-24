@@ -21,6 +21,7 @@ import MindMap from "../../aiFeature/components/MindMap";
 import RightDockButtons from "./rightSideModals/RightDockButtons";
 import useModal from "./useModal";
 import TimerPopover from "./TimerPopover";
+import TimerCompletionDialog from "./TimerCompletionDialog";
 import AIModal from "./AIModal";
 import VocabModal from "./VocabModal";
 
@@ -486,6 +487,8 @@ export default function DocScreen() {
   const [timerOpen, setTimerOpen] = useState(false); // UI visibility (mini/presets)
   const [timerSeconds, setTimerSeconds] = useState(0); // remaining seconds
   const [timerRunning, setTimerRunning] = useState(false); // ticking state
+  const [originalTimerMinutes, setOriginalTimerMinutes] = useState(0); // original duration in minutes
+  const [completionDialogOpen, setCompletionDialogOpen] = useState(false); // completion popup
 
   // Show the mini timer UI
   const openTimer = () => setTimerOpen(true);
@@ -500,12 +503,15 @@ export default function DocScreen() {
   const resetTimer = () => {
     setTimerSeconds(0);
     setTimerRunning(false);
+    setOriginalTimerMinutes(0);
+    setCompletionDialogOpen(false); // close dialog if open
   };
 
   // Choosing a time from presets
   const handleTimerChange = (mins) => {
     const secs = Math.max(0, mins * 60);
     setTimerSeconds(secs);
+    setOriginalTimerMinutes(mins); // store original duration
     setTimerRunning(secs > 0); // auto-start if > 0
     setTimerOpen(true); // keep UI visible right after selection (mini collapses inside)
   };
@@ -519,10 +525,16 @@ export default function DocScreen() {
     return () => clearInterval(id);
   }, [timerRunning, timerSeconds]);
 
-  // Stop at 0
+  // Stop at 0 and show completion popup
   useEffect(() => {
-    if (timerSeconds === 0 && timerRunning) setTimerRunning(false);
-  }, [timerSeconds, timerRunning]);
+    if (timerSeconds === 0 && timerRunning) {
+      setTimerRunning(false);
+      // Show completion popup if timer was actually set (not just reset)
+      if (originalTimerMinutes > 0) {
+        setCompletionDialogOpen(true);
+      }
+    }
+  }, [timerSeconds, timerRunning, originalTimerMinutes]);
 
   // AI Feature Handlers
   const SIMPLIFY_PROMPT =
@@ -923,6 +935,13 @@ export default function DocScreen() {
         onMindMap={handleMindMap}
         loading={aiLoading}
         onHide={ai.onClose}
+      />
+
+      {/* Timer Completion Dialog */}
+      <TimerCompletionDialog
+        open={completionDialogOpen}
+        onClose={() => setCompletionDialogOpen(false)}
+        minutes={originalTimerMinutes}
       />
 
       {/* Text-to-Speech Button */}
