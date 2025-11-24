@@ -97,7 +97,7 @@ export default function LandingSection() {
                 <div className={styles.mobileText}>
                     <h2>Got It values your learning wherever you are</h2>
                     <p className={styles.mobileSubheading}>Available in mobile device for easy access!</p>
-                    <p className={styles.mobileDescription}>Built for apprentices who learn in school, on the job, and on the move.</p>
+                    <p className={styles.mobileDescription}>Built for apprentices who learn in school, <br></br> on the job, and on the move.</p>
                 </div>
             </div>
         </section>

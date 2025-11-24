@@ -94,7 +94,6 @@
     font-weight: 700;
     line-height: normal;
     letter-spacing: 2.56px;
-    
 }
 
 .featureRow {
@@ -118,7 +117,6 @@
     padding: 1%;
     position: relative;
     transition: transform 0.2s ease, color 0.25s ease;
-
 }
 
 .featureIcon {
@@ -127,7 +125,6 @@
     margin-bottom: 1rem;
     scale: 1.4;
     transition: filter 0.25s ease, transform 0.25s ease, fill 0.2s ease;
-    
 }
 
 /* Only show hover effects on devices that support hover (not touch devices) */
@@ -135,7 +132,7 @@
     .feature:hover .featureIcon {
         filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.704));
         transform: scale(1.1);
-        fill: rgba(255, 255, 255, 0.826)
+        fill: rgba(255, 255, 255, 0.826);
     }
 
     .feature:hover h4,
@@ -158,7 +155,6 @@
     color: rgb(174, 174, 174);
     margin-bottom: 0;
     transition: fill 0.2s ease;
-    
 }
 
 .feature p {
@@ -171,7 +167,6 @@
 .feature p {
     transition: color 0.25s ease, opacity 0.25s ease;
 }
-
 
 .andMore {
     margin-top: 3rem;
@@ -191,17 +186,34 @@
     justify-content: center;
     gap: 4rem;
     margin-top: 5rem;
-    padding: 3rem 5%;
+    padding: 3rem 5% 0rem;
     max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 3rem;
     border-radius: 48px;
+    margin: 5rem 4rem 5rem 4rem;
+    border-radius: 48px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+    background: radial-gradient(
+            circle at 30% 90%,
+            rgba(173, 16, 87, 0.773) 0%,
+            transparent 40%
+        ),
+        #1a1a1a;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
 }
 
 .mobileImage {
     width: 399px;
     height: auto;
     object-fit: contain;
+    position: relative;
+    z-index: 1;
 }
 
 .mobileText {
@@ -209,7 +221,10 @@
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    max-width: 500px;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+    padding: 0rem 0rem 2rem 3rem;
 }
 
 .mobileText h2 {
@@ -218,12 +233,14 @@
     line-height: 1.2;
     margin-bottom: 1rem;
     color: white;
+    margin-top: 0rem;
+    padding: top 0rem;
 }
 
 .mobileSubheading {
     font-size: 1.5rem;
     font-weight: 500;
-    margin-bottom: 1rem;
+    margin-bottom: 5rem;
     color: white;
 }
 
@@ -373,5 +390,3 @@
         font-size: 1rem;
     }
 }
-
-
