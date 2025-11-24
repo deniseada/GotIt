@@ -20,6 +20,9 @@ export default function ToolBar({
   printPlugin,
   getFilePlugin,
   onNavigateToPage,
+  onTextStyleChange,
+  fontSize: externalFontSize,
+  letterSpacing: externalLetterSpacing,
 }) {
   const [highlightOpen, setHighlightOpen] = useState(false);
   const [highlightColor, setHighlightColor] = useState("#fff176");
@@ -80,11 +83,21 @@ export default function ToolBar({
   };
 
   // text menu state (font size + bold/italic) for the text popup
-  const [fontSize, setFontSize] = useState(16);
+  const [fontSize, setFontSize] = useState(externalFontSize || 16);
+  const [letterSpacing, setLetterSpacing] = useState(externalLetterSpacing || 0);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [pillFlash, setPillFlash] = useState(null);
   const pillTimeoutRef = useRef(null);
+
+  // Sync with external props
+  useEffect(() => {
+    if (externalFontSize !== undefined) setFontSize(externalFontSize);
+  }, [externalFontSize]);
+  
+  useEffect(() => {
+    if (externalLetterSpacing !== undefined) setLetterSpacing(externalLetterSpacing);
+  }, [externalLetterSpacing]);
 
   useLayoutEffect(() => {
     if (!activeButtons.text) return;
@@ -506,7 +519,11 @@ export default function ToolBar({
                       pillFlash === "minus" ? styles.textPillActive : ""
                     }`}
                     onClick={() => {
-                      setFontSize((s) => Math.max(8, s - 1));
+                      const newSize = Math.max(8, fontSize - 1);
+                      setFontSize(newSize);
+                      if (onTextStyleChange) {
+                        onTextStyleChange({ fontSize: newSize, letterSpacing });
+                      }
                       setPillFlash("minus");
                       if (pillTimeoutRef.current) {
                         clearTimeout(pillTimeoutRef.current);
@@ -524,7 +541,11 @@ export default function ToolBar({
                       pillFlash === "plus" ? styles.textPillActive : ""
                     }`}
                     onClick={() => {
-                      setFontSize((s) => Math.min(72, s + 1));
+                      const newSize = Math.min(72, fontSize + 1);
+                      setFontSize(newSize);
+                      if (onTextStyleChange) {
+                        onTextStyleChange({ fontSize: newSize, letterSpacing });
+                      }
                       setPillFlash("plus");
                       if (pillTimeoutRef.current) {
                         clearTimeout(pillTimeoutRef.current);
@@ -543,10 +564,17 @@ export default function ToolBar({
                   <div className={styles.smallCircle}>A</div>
                   <input
                     type="range"
-                    min={1}
-                    max={8}
-                    value={thickness}
-                    onChange={(e) => setThickness(Number(e.target.value))}
+                    min={-2}
+                    max={5}
+                    step={0.1}
+                    value={letterSpacing}
+                    onChange={(e) => {
+                      const newSpacing = Number(e.target.value);
+                      setLetterSpacing(newSpacing);
+                      if (onTextStyleChange) {
+                        onTextStyleChange({ fontSize, letterSpacing: newSpacing });
+                      }
+                    }}
                     className={styles.thicknessSlider}
                   />
                   <div className={styles.bigCircle}>A</div>

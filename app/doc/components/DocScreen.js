@@ -440,6 +440,10 @@ export default function DocScreen() {
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Text styling state for AI output
+  const [textFontSize, setTextFontSize] = useState(16);
+  const [textLetterSpacing, setTextLetterSpacing] = useState(0);
 
   // Navigate to page when page state changes
   useEffect(() => {
@@ -788,6 +792,8 @@ export default function DocScreen() {
               text={simplifiedText}
               loading={aiLoading.simplify}
               error={aiError.simplify}
+              fontSize={textFontSize}
+              letterSpacing={textLetterSpacing}
             />
           </>
         )}
@@ -797,6 +803,8 @@ export default function DocScreen() {
               text={summary}
               loading={aiLoading.summarize}
               error={aiError.summarize}
+              fontSize={textFontSize}
+              letterSpacing={textLetterSpacing}
             />
           </div>
         )}
@@ -837,6 +845,12 @@ export default function DocScreen() {
         searchPlugin={searchPluginInstance}
         printPlugin={printPluginInstance}
         getFilePlugin={getFilePluginInstance}
+        fontSize={textFontSize}
+        letterSpacing={textLetterSpacing}
+        onTextStyleChange={({ fontSize, letterSpacing }) => {
+          setTextFontSize(fontSize);
+          setTextLetterSpacing(letterSpacing);
+        }}
       />
 
       {/* Main content */}

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-export default function Simplification({ text, loading, error }) {
+export default function Simplification({ text, loading, error, fontSize = 16, letterSpacing = 0 }) {
     return (
         <div style={{ 
                 padding: "20px"
@@ -39,7 +39,8 @@ export default function Simplification({ text, loading, error }) {
             <pre
                 style={{
                 fontFamily: "Amiri",
-                    fontSize: "16px",
+                    fontSize: `${fontSize}px`,
+                    letterSpacing: `${letterSpacing}px`,
                     padding: "15px",
                     backgroundColor: "white",
                     borderRadius: "5px",

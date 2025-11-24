@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-export default function Summarization({ text, loading, error }) {
+export default function Summarization({ text, loading, error, fontSize = 16, letterSpacing = 0 }) {
     return (
         <div style={{ padding: "20px" }}>
             <h2 style={{ 
@@ -37,7 +37,8 @@ export default function Summarization({ text, loading, error }) {
                 <pre
                     style={{
                         fontFamily: "Amiri",
-                        fontSize: "16px",
+                        fontSize: `${fontSize}px`,
+                        letterSpacing: `${letterSpacing}px`,
                         padding: "15px",
                         backgroundColor: "white",
                         borderRadius: "5px",
