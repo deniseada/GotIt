@@ -1,15 +1,18 @@
 .card {
   background: #fff;
-  border-radius: 12px 28px 28px 12px;
+  border-radius: 8px 28px 28px 8px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   border: 2px solid #d6d6d6;
   overflow: visible;
-  padding: 120px 20px 2px 20px !important;
+  padding: 8rem 1rem 0 1rem !important;
+  max-height: 308px;
   height: 100%;
-  max-width: 280px;
-  width: 100%;
+  max-width: 230px;
+  width: 230px;
+  min-width: 230px;
   position: relative;
   margin-top: 20px;
+  box-sizing: border-box;
 }
 
 /* Bookmark ribbon - floating ABOVE the card */
@@ -24,26 +27,89 @@
   cursor: pointer;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
   background-color: #d1d5db;
-  transition: background-color 0.2s ease;
   z-index: 10;
   padding: 0;
   border-radius: 4px 4px 0 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.ribbonBtn:hover {
+/* Hover state - subtle lift and glow */
+.ribbonBtn:hover:not(.ribbonActive) {
   background-color: #9ca3af;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
+
+.ribbonBtn:hover.ribbonActive {
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+  filter: brightness(1.1);
+}
+
+/* Intermediate state when clicking - shows yellow with lighter border effect */
+.ribbonBtn:active:not(.ribbonActive) {
+  background-color: #fbbf24;
+  transition: all 0.15s ease;
+}
+
+.ribbonBtn:active:not(.ribbonActive)::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+  background-color: #ffe786;
+  z-index: -1;
+  border-radius: 11px 11px 0 0;
+}
+
 
 /* active/bookmarked - yellow */
 .ribbonActive {
   background-color: #fbbf24;
+  box-shadow: 0 2px 6px rgba(251, 191, 36, 0.3);
+}
+
+@keyframes ribbonActivate {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Active state when clicking on already active ribbon */
+.ribbonActive:active {
+  transform: translateY(0) scale(0.95);
+  transition: all 0.15s ease;
+}
+
+.ribbonActive:active::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+  background-color: #fdf2c6;
+  z-index: -1;
+  border-radius: 11px 11px 0 0;
 }
 
 /* Kebab menu - top right */
 .kebab {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 12px;
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -57,10 +123,19 @@
   cursor: pointer;
   z-index: 15;
   padding: 0;
+  transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .kebab:hover {
   background: #f3f4f6;
+  transform: scale(1.1);
+}
+
+.kebab:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
 }
 
 /* Three dots for kebab menu */
@@ -69,7 +144,28 @@
   height: 5px;
   background: #1f2937;
   border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
+
+/* Hover state - dots expand slightly */
+.kebab:hover .kebabDot {
+  background: #374151;
+}
+
+.kebab:hover .kebabDot:nth-child(1) {
+  animation: dotPulse 0.6s ease-in-out 0s infinite;
+}
+
+.kebab:hover .kebabDot:nth-child(2) {
+  animation: dotPulse 0.6s ease-in-out 0.1s infinite;
+}
+
+.kebab:hover .kebabDot:nth-child(3) {
+  animation: dotPulse 0.6s ease-in-out 0.2s infinite;
+}
+
+
 
 /* Backdrop overlay */
 .backdrop {
@@ -80,6 +176,16 @@
   bottom: 0;
   z-index: 12;
   background: transparent;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Menu Modal/Dropdown */
@@ -106,7 +212,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 500;
   color: #1f2937;
   transition: background-color 0.2s ease;
@@ -138,20 +244,11 @@
   padding: 4px 12px;
   border-radius: 22px;
   border: 1px solid;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   margin-bottom: 10px;
   margin-top: 0;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.emotionBadge:hover {
-  transform: scale(1.05);
-}
-
-.emotionBadge:active {
-  transform: scale(0.98);
 }
 
 .emotionBadge img {
@@ -162,18 +259,31 @@
 /* Emotion Selection Modal */
 .emotionModal {
   position: absolute;
-  top: 120px;
-  left: 20px;
+  top: 160px;
+  left: 5px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid #e5e7eb;
-  padding: 12px;
-  min-width: 200px;
+  padding: 10px;
+  min-width: 130px;
   z-index: 20;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top left;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .emotionOption {
@@ -181,30 +291,63 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: 4px 12px;
   background: transparent;
-  border: 2px solid;
+  border: 1px solid;
   border-radius: 22px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.75rem;
   font-weight: 600;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
+  opacity: 0;
+  animation: optionFadeIn 0.3s ease-out forwards;
+  transform: translateX(-5px);
+}
+
+.emotionOption:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.emotionOption:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.emotionOption:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+@keyframes optionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .emotionOption:hover {
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(2px) scale(1.02);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  border-width: 1.5px;
 }
 
 .emotionOption:active {
-  transform: scale(0.98);
+  transform: translateX(0) scale(0.98);
+  transition: all 0.1s ease;
 }
 
 .emotionOption img {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotionOption:hover img {
+  transform: scale(1.1);
 }
 
 /* Emotion tints */
@@ -212,22 +355,40 @@
   background: #ecfdf5;
   border-color: #10b981;
   color: #059669;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.confident:hover {
+  background: #d1fae5;
+  border-color: #059669;
 }
 
 .needs {
   background: #fff7ed;
   border-color: #fb923c;
   color: #ea580c;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.needs:hover {
+  background: #ffedd5;
+  border-color: #ea580c;
 }
 
 .neutral {
   background: #f9fafb;
   border-color: #d1d5db;
   color: #6b7280;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.neutral:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 1.1rem;
   line-height: 1.25;
   font-weight: 700;
   color: #111827;
@@ -235,24 +396,102 @@
   padding-right: 35px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-family: var(--font-lexend), sans-serif;
+}
+
+/* Title editing styles */
+.titleEditContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 5px 0;
+  padding-right: 35px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.titleInput {
+  font-size: 1.1rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #111827;
+  font-family: var(--font-lexend), sans-serif;
+  border: 2px solid #522A70;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.titleInput:focus {
+  border-color: #955EBF;
+  box-shadow: 0 0 0 3px rgba(82, 42, 112, 0.1);
+}
+
+.titleEditActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.titleSaveBtn,
+.titleCancelBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.titleSaveBtn {
+  background: #522A70;
+  color: white;
+}
+
+.titleSaveBtn:hover {
+  background: #955EBF;
+  transform: scale(1.05);
+}
+
+.titleCancelBtn {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.titleCancelBtn:hover {
+  background: #d1d5db;
+  transform: scale(1.05);
 }
 
 .section {
-  font-size: 16px;
+  font-size: 1rem;
   color: #111827;
   font-weight: 500;
-  margin-top: 12px;
-  padding-top: 12px;
+  padding: 10px 0 0 0;
   border-top: 1px solid #e5e7eb;
-  margin-bottom: 12px;
+  font-family: var(--font-lexend), sans-serif;
 }
 
 .meta {
-  font-size: 14px;
+  font-size: 0.8rem;
   color: #b3b3b3;
   margin: 0;
+  font-family: var(--font-lexend), sans-serif;
 }
 
 /* Links and Animation */
@@ -260,18 +499,81 @@
   text-decoration: none;
   color: inherit;
   display: block;
+  position: relative;
+}
+
+/* First grey page behind courseBookCard */
+.courseBookPage1 {
+  position: absolute;
+  top: 45px;
+  left: 20px;
+  width: 210px;
+  max-width: 210px;
+  height: 205px;
+  max-height: 205px;
+  background: #D6D6D6;
+  z-index: 1;
+  pointer-events: none;
+  transform: rotate(5deg);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Second grey page behind first page */
+.courseBookPage2 {
+  position: absolute;
+  top: 50px;
+  left: 20px;
+  width: 210px;
+  max-width: 210px;
+  height: 210px;
+  max-height: 210px;
+  background: #D6D6D6;
+  z-index: 0;
+  pointer-events: none;
+  transform: rotate(10deg);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .cardLink:hover {
   text-decoration: none;
 }
 
-.card {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.cardLink:hover .kebab {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* optional hover feedback */
-.cardLink:hover .card {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+/* Course Book Card - simple white card with shadow */
+.courseBookCard {
+  background: #fff;
+  border-radius: 8px 28px 28px 8px;
+  border: 1px solid #D6D6D6;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  overflow: visible;
+  padding: 14rem 1rem 1rem 1rem;
+  max-height: 308px;
+  height: 100%;
+  max-width: 230px;
+  width: 230px;
+  min-width: 230px;
+  position: relative;
+  margin: 30px 0 0 0;
+  z-index: 2;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Hide ribbon, emotion badge, meta, and section for course book cards */
+.courseBookCard .ribbonBtn,
+.courseBookCard .emotionBadge,
+.courseBookCard .meta,
+.courseBookCard .section {
+  display: none;
+}
+
+/* Course book card title styling */
+.courseBookCard .title {
+  margin: 0;
+  padding: 0;
+  padding-right: 35px;
 }
