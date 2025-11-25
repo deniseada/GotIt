@@ -9,7 +9,7 @@ import styles from "../homepage.module.css";
 export default function Navbar() {
   return (
     <header className={styles.navbar}>
-      <a href="#" className={styles.navLink}>
+      <a href="<https://dwong429.wixsite.com/gotit/about" target="_blank" className={styles.navLink}>
         About Us
       </a>
       <a

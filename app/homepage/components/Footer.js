@@ -24,10 +24,10 @@ export default function Footer() {
     <h4>Learn More</h4>
     <ul>
     <li>
-    <Link href="/about">About Us</Link>
+    <Link href="https://dwong429.wixsite.com/gotit/about" target="_blank">About Us</Link>
     </li>
     <li>
-    <Link href="/blogs">Blogs</Link>
+    <Link href="https://dwong429.wixsite.com/gotit/my-blog" target="_blank">Blogs</Link>
     </li>
     </ul>
     </div>
