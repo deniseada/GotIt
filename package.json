@@ -30,8 +30,8 @@
     "pdfjs-dist": "^3.4.120",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-pdf": "^10.2.0",
-    "sass": "^1.93.2"
+    "sass": "^1.93.2",
+    "three": "^0.181.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

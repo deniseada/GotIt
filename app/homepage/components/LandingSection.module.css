@@ -1,0 +1,527 @@
+.wrapper {
+    width: 100%;
+    margin-top: 0rem;
+    color: rgb(255, 255, 255);
+    overflow: hidden;
+    
+    /* The Correction: Stack them in one property */
+    background: 
+    
+
+        radial-gradient(circle at 100% 45%, rgba(126, 87, 194, 0.672) 0%, transparent 16%),
+        
+
+        radial-gradient(circle at 0% 25%, rgba(173, 16, 87, 0.478) 0%, transparent 20%),
+        
+
+        rgb(4, 2, 5); 
+}
+
+/* HERO SECTION */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 780px;
+    overflow: hidden;
+}
+
+.heroImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heroTextBox {
+    position: absolute;
+    top: 12%;
+    bottom: 12%;
+    left: 3%;
+    background: rgba(82, 42, 112, 0.6);
+    border-radius: 16px;
+    width: 857px;
+    padding: 56px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    backdrop-filter: blur(6px);
+}
+
+.heroTextBox h2 {
+    font-size: 2rem;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 2.56px;
+    margin-top: 0;
+}
+
+.heroTextBox p {
+    margin-top: 0.75rem;
+    line-height: 1.4;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.28px;
+}
+
+.heroTextBox p.subtext {
+    margin-top: 0.5rem;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    padding-right: 30%;
+}
+
+/* LAPTOP SECTION */
+.laptopSection {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.laptopImage {
+    max-width: 900px;
+    width: 90%;
+    height: auto;
+    border-radius: 12px;
+}
+
+/* FEATURES SECTION */
+.features {
+    text-align: center;
+    margin-top: 5rem;
+    padding-bottom: 2rem;
+    fill: rgb(255, 255, 255);
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.features h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 2.56px;
+}
+
+.featureRow {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature {
+    flex: 1;
+    max-width: 330px;
+    min-width: 250px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+    padding: 1%;
+    position: relative;
+    transition: transform 0.2s ease, color 0.25s ease;
+}
+
+.featureIcon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    scale: 1.4;
+    transition: filter 0.25s ease, transform 0.25s ease, fill 0.2s ease;
+}
+
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+    .feature:hover .featureIcon {
+        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.704));
+        transform: scale(1.1);
+        fill: rgba(255, 255, 255, 0.826);
+    }
+
+    .feature:hover h4,
+    .feature:hover p {
+        color: white;
+        opacity: 1;
+    }
+}
+
+.feature + .feature {
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    padding-left: 2rem;
+    margin-left: 0.5rem;
+}
+
+.feature h4 {
+    margin-top: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgb(174, 174, 174);
+    margin-bottom: 0;
+    transition: fill 0.2s ease;
+}
+
+.feature p {
+    margin-top: 0rem;
+    opacity: 0.85;
+    transition: fill 0.2s ease;
+}
+
+.feature h4,
+.feature p {
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.andMore {
+    margin-top: 3rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.laptopSection {
+    margin-top: 0%;
+}
+
+/* MOBILE SECTION */
+.mobileSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+    margin-top: 5rem;
+    padding: 3rem 5% 0rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3rem;
+    border-radius: 48px;
+    margin: 5rem 4rem 5rem 4rem;
+    border-radius: 48px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+    background: radial-gradient(
+            circle at 30% 90%,
+            rgba(173, 16, 87, 0.773) 0%,
+            transparent 40%
+        ),
+        #1a1a1a;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.mobileImage {
+    width: 399px;
+    height: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+.mobileText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+    padding: 0rem 0rem 2rem 3rem;
+}
+
+.mobileText h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: white;
+    margin-top: 0rem;
+    padding: top 0rem;
+}
+
+.mobileSubheading {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 5rem;
+    color: white;
+}
+
+.mobileDescription {
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* TABLET */
+@media (max-width: 1024px) {
+    .featureRow {
+        gap: 1rem;
+    }
+
+    .feature {
+        max-width: 300px;
+        min-width: 200px;
+    }
+
+    .features h2 {
+        font-size: 1.75rem;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .heroTextBox {
+        left: 5%;
+        right: 5%;
+        max-width: none;
+    }
+
+    .features {
+        padding-left: 3%;
+        padding-right: 3%;
+        margin-top: 3rem;
+    }
+
+    .features h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 1.5px;
+    }
+
+    .featureRow {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        width: 100%;
+    }
+
+    .feature {
+        max-width: 100%;
+        min-width: unset;
+        width: 100%;
+        text-align: center;
+        padding: 1.5rem 1rem;
+    }
+
+    .feature + .feature {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-left: 1rem;
+        margin-left: 0;
+        padding-top: 2rem;
+        margin-top: 0;
+    }
+
+    .featureIcon {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature h4 {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .feature p {
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .andMore {
+        font-size: 1.1rem;
+        margin-top: 2rem;
+    }
+
+    .mobileSection {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 5%;
+    }
+
+    .mobileImage {
+        width: 280px;
+    }
+
+    .mobileText {
+        text-align: center;
+        align-items: center;
+        max-width: 100%;
+    }
+
+    .mobileText h2 {
+        font-size: 2rem;
+    }
+
+    .mobileSubheading {
+        font-size: 1.25rem;
+    }
+
+    .mobileDescription {
+        font-size: 1rem;
+    }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+    .features h2 {
+        font-size: 1.25rem;
+        letter-spacing: 1px;
+    }
+
+    .feature {
+        padding: 1rem 0.5rem;
+    }
+
+    .featureIcon {
+        width: 56px;
+        height: 56px;
+        scale: 1.2;
+    }
+
+    .feature h4 {
+        font-size: 1rem;
+    }
+
+    .feature p {
+        font-size: 0.9rem;
+    }
+
+    .andMore {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .featureRow {
+        gap: 1rem;
+    }
+
+    .feature {
+        max-width: 300px;
+        min-width: 200px;
+    }
+
+    .features h2 {
+        font-size: 1.75rem;
+    }
+
+    .mobileSection {
+        margin-left: 2rem;
+        margin-right: 2rem;
+        padding: 3rem 2rem;
+    }
+    
+    .mobileImage {
+        width: 320px; /* Slightly smaller image for tablet */
+    }
+}
+
+/* =========================
+   MOBILE PHONES (Landscape & Portrait)
+   ========================= */
+@media (max-width: 768px) {
+    .heroTextBox {
+        left: 5%;
+        right: 5%;
+        width: auto; 
+        padding: 2rem; 
+        top: 10%; 
+    }
+
+    .heroTextBox h2 {
+        font-size: 2rem; 
+        letter-spacing: 1px;
+    }
+    
+    .heroTextBox p {
+        font-size: 1.2rem; 
+    }
+
+    .features {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-top: 3rem;
+    }
+
+    .featureRow {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .feature + .feature {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-left: 0;
+        padding-top: 2rem;
+        margin-left: 0;
+    }
+
+
+    .mobileSection {
+        flex-direction: column; 
+        gap: 2rem;
+        margin: 3rem 1rem 3rem 2rem; 
+        padding: 3rem 1.5rem;
+        border-radius: 24px; 
+    }
+
+    .mobileImage {
+        width: 80%; 
+        max-width: 280px;
+        height: auto;
+    }
+
+    .mobileText {
+        padding: 0; 
+        width: 100%;
+        text-align: center;
+        align-items: center; 
+    }
+
+    .mobileText h2 {
+        font-size: 2rem;
+        margin-top: 1rem;
+        text-align: center; /* Force center alignment */
+    }
+
+    .mobileSubheading {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .mobileDescription {
+        font-size: 1rem;
+        text-align: center;
+    }
+}
+
+/* =========================
+   SMALL PHONES (e.g. iPhone SE)
+   ========================= */
+@media (max-width: 480px) {
+    .heroTextBox h2 {
+        font-size: 2rem;
+    }
+
+    .mobileSection {
+        padding: 2rem 1rem; /* Even less padding inside card */
+        margin: 2rem 0.5rem; /* Even less margin outside card */
+    }
+
+    .mobileText h2 {
+        font-size: 1.75rem;
+    }
+}

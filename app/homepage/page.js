@@ -5,48 +5,76 @@ import styles from "./homepage.module.css";
 import Navbar from "./components/Navbar";
 import HoverSwap from "./components/HoverSwap";
 import Link from "next/link";
+import LandingSection from "./components/LandingSection";
+import Footer from "./components/Footer"
+import FloatingLines from './components/FloatingLines';
 
-/**
- * Homepage: left column (logo + text + CTA),
- *           right column (hover-swap image)
- */
 export default function GotItHomepage() {
   return (
-    <div className={styles.page}>
-      {/* top navigation */}
-      <Navbar />
+    <div className={styles.page} style={{ position: 'relative', overflow: 'hidden' }}>
+      
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        <Navbar />
+      </div>
 
-      {/* main 2-column layout */}
-      <main className={styles.container}>
-        {/* left side: brand + tagline + CTA */}
-        <section className={styles.leftCol}>
-            <Image
-              src="/logo/Logo.svg"
-              alt="Got It Logo"
-              width={360}
-              height={110.12}
-              priority
-            />
-            <p className={styles.tagline}>
-              Confidence starts
-              <br />
-              with clarity
-            </p>
-          <Link href="/signup">
-            <button className={styles.cta}>Sign Up</button>
-          </Link>
-        </section>
-
-        {/* right side: hover-swap image */}
-        <section className={styles.rightCol}>
-          <HoverSwap
-            frontSrc="/images/paper-a.png"
-            backSrc="/images/paper-b.png"
-            altFront="Manual Circuit — long text"
-            altBack="Manual Circuit — simplified bullets"
+      {/* --- MAIN SECTION WITH FLOATING LINES --- */}
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        {/* --- BACKGROUND LAYER (Fixed to main section only) --- */}
+        <div 
+          style={{
+            position: 'absolute',    // Positioned relative to main section
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',          // Full width of main section
+            height: '100%',         // Full height of main section
+            zIndex: 0               // Behind content (content has zIndex: 1, so it's still clickable)
+          }}
+        >
+          <FloatingLines />
+          <div 
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(ellipse 50% 100% at center, transparent 20%, rgba(4, 2, 5, 1) 100%)',
+              pointerEvents: 'none'
+            }}
           />
-        </section>
-      </main>
+        </div>
+
+        {/* --- FOREGROUND CONTENT LAYER --- */}
+        <main className={styles.container} style={{ position: 'relative', zIndex: 1 }}>
+          <section className={styles.leftCol}>
+              
+              <p className={styles.tagline}>
+              Electrical Theory,
+                <br />
+                Simplified.
+              </p>
+              <p className={styles.subTagline}>
+              No jargon. No confusion. Just a smart AI tool that helps electrical apprentices learn faster, retain more, and stress less.
+              </p>
+            <Link href="/signup">
+              <button className={styles.cta}>Sign Up</button>
+            </Link>
+          </section>
+
+          <section className={styles.rightCol}>
+            <HoverSwap
+              frontSrc="/images/paper-a.png"
+              backSrc="/images/paper-b.png"
+              altFront="Manual Circuit — long text"
+              altBack="Manual Circuit — simplified bullets"
+            />
+          </section>
+        </main>
+      </div>
+      {/* End Main Section with Floating Lines */}
+        
+      <LandingSection />
+      <Footer />
+
     </div>
   );
 }

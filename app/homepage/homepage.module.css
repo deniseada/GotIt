@@ -44,13 +44,7 @@
   color: #fff;
   position: relative;
   overflow: hidden;
-  background-image: radial-gradient(
-      2285px 1235px at 50% -25%,
-      #7e57c2,
-      transparent 60%
-    ),
-    radial-gradient(900px 2514px at 40% 180%, #ad1057, transparent 60%),
-    linear-gradient(180deg, #0b0b0e 40%, #161317 100%);
+  background: rgb(4, 2, 5);
   font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial;
 }
@@ -64,10 +58,29 @@
   right: 0;
   left: 0;
   display: flex;
-  justify-content: flex-end;
-  gap: 3rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
   font-size: 1.25rem;
   padding: 0 8rem; /* equal left/right margin for desktop */
+}
+
+.navbarBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.navbarBrandText {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
 }
 
 .navLink {
@@ -117,6 +130,14 @@
   max-width: 520px;
   font-weight: 500;
   line-height: 1.25;
+}
+
+.subTagline {
+  margin-top: 1.5rem;
+  max-width: 520px;
+  color: #d1d5db;
+  line-height: 1.5;
+  font-size: 1.05rem;
 }
 
 /* ===========================
