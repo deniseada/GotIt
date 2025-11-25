@@ -171,7 +171,7 @@ export default function ToolBar({
             title="Toggle sidebar"
             aria-label="Toggle sidebar"
           >
-            <img src="/icons/sideBarIcon.svg" className={styles.toolbarIcon} />
+            <img src="/icons/sideBarIcon.svg" className={styles.toolbarIcon} alt="Toggle sidebar" />
           </button>
           <button
             className={`${styles.toolButton} ${
@@ -204,7 +204,7 @@ export default function ToolBar({
                   aria-expanded={!!activeButtons.search}
                   title="Search"
                 >
-                  <img src="/icons/searchIcon.svg" className={styles.toolbarIcon} />
+                  <img src="/icons/searchIcon.svg" className={styles.toolbarIcon} alt="Search" />
                 </button>
               )}
             </ShowSearchPopover>
