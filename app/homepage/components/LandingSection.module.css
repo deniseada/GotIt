@@ -3,7 +3,18 @@
     margin-top: 0rem;
     color: rgb(255, 255, 255);
     overflow: hidden;
-    background-color: rgb(4, 2, 5);
+    
+    /* The Correction: Stack them in one property */
+    background: 
+    
+
+        radial-gradient(circle at 100% 45%, rgba(126, 87, 194, 0.672) 0%, transparent 16%),
+        
+
+        radial-gradient(circle at 0% 25%, rgba(173, 16, 87, 0.478) 0%, transparent 20%),
+        
+
+        rgb(4, 2, 5); 
 }
 
 /* HERO SECTION */
@@ -389,5 +400,128 @@
 
     .andMore {
         font-size: 1rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .featureRow {
+        gap: 1rem;
+    }
+
+    .feature {
+        max-width: 300px;
+        min-width: 200px;
+    }
+
+    .features h2 {
+        font-size: 1.75rem;
+    }
+
+    .mobileSection {
+        margin-left: 2rem;
+        margin-right: 2rem;
+        padding: 3rem 2rem;
+    }
+    
+    .mobileImage {
+        width: 320px; /* Slightly smaller image for tablet */
+    }
+}
+
+/* =========================
+   MOBILE PHONES (Landscape & Portrait)
+   ========================= */
+@media (max-width: 768px) {
+    .heroTextBox {
+        left: 5%;
+        right: 5%;
+        width: auto; 
+        padding: 2rem; 
+        top: 10%; 
+    }
+
+    .heroTextBox h2 {
+        font-size: 2rem; 
+        letter-spacing: 1px;
+    }
+    
+    .heroTextBox p {
+        font-size: 1.2rem; 
+    }
+
+    .features {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-top: 3rem;
+    }
+
+    .featureRow {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .feature + .feature {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-left: 0;
+        padding-top: 2rem;
+        margin-left: 0;
+    }
+
+
+    .mobileSection {
+        flex-direction: column; 
+        gap: 2rem;
+        margin: 3rem 1rem 3rem 2rem; 
+        padding: 3rem 1.5rem;
+        border-radius: 24px; 
+    }
+
+    .mobileImage {
+        width: 80%; 
+        max-width: 280px;
+        height: auto;
+    }
+
+    .mobileText {
+        padding: 0; 
+        width: 100%;
+        text-align: center;
+        align-items: center; 
+    }
+
+    .mobileText h2 {
+        font-size: 2rem;
+        margin-top: 1rem;
+        text-align: center; /* Force center alignment */
+    }
+
+    .mobileSubheading {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .mobileDescription {
+        font-size: 1rem;
+        text-align: center;
+    }
+}
+
+/* =========================
+   SMALL PHONES (e.g. iPhone SE)
+   ========================= */
+@media (max-width: 480px) {
+    .heroTextBox h2 {
+        font-size: 2rem;
+    }
+
+    .mobileSection {
+        padding: 2rem 1rem; /* Even less padding inside card */
+        margin: 2rem 0.5rem; /* Even less margin outside card */
+    }
+
+    .mobileText h2 {
+        font-size: 1.75rem;
     }
 }

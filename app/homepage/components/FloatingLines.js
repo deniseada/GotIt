@@ -13,13 +13,8 @@ import {
   Clock
 } from 'three';
 
-// If you put the CSS in a separate file, keep this line:
-import './FloatingLines.module.css'; 
-// If you put the fragmentShader in a separate file, you'd import it here, 
-// but in the provided code, it's defined as a string, which is fine.
 
-// ... Paste the ENTIRE provided code (including vertexShader, 
-// fragmentShader, hexToVec3, and the FloatingLines function) here. ...
+import './FloatingLines.module.css'; 
 
 
 
@@ -247,7 +242,7 @@ export default function FloatingLines({
   topWavePosition,
   middleWavePosition,
   bottomWavePosition = { x: 2.0, y: -0.7, rotate: -1 },
-  animationSpeed = 1,
+  animationSpeed = 2,
   interactive = true,
   bendRadius = 5.0,
   bendStrength = -0.5,

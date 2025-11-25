@@ -44,13 +44,7 @@
   color: #fff;
   position: relative;
   overflow: hidden;
-  background-image: radial-gradient(
-      2285px 1235px at 50% -25%,
-      #7e57c2,
-      transparent 60%
-    ),
-    radial-gradient(900px 2514px at 40% 180%, #ad1057, transparent 60%),
-    linear-gradient(180deg, #0b0b0e 40%, #161317 100%);
+  background: rgb(4, 2, 5);
   font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial;
 }

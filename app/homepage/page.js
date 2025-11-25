@@ -11,7 +11,6 @@ import FloatingLines from './components/FloatingLines';
 
 export default function GotItHomepage() {
   return (
-    // 1. Ensure the parent has relative positioning
     <div className={styles.page} style={{ position: 'relative', overflow: 'hidden' }}>
       
       <div style={{ position: 'relative', zIndex: 10 }}>
@@ -34,12 +33,11 @@ export default function GotItHomepage() {
           }}
         >
           <FloatingLines />
-          {/* Gradient overlay to blend to black - more aggressive */}
           <div 
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'radial-gradient(ellipse 120% 120% at center, transparent 0%, rgb(0, 0, 0) 25%, rgba(0, 0, 0, 0.5) 50%, rgb(0, 0, 0) 75%, rgb(4, 3, 3) 100%)',
+              background: 'radial-gradient(ellipse 50% 100% at center, transparent 20%, rgba(4, 2, 5, 1) 100%)',
               pointerEvents: 'none'
             }}
           />
