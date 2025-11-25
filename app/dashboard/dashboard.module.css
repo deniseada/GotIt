@@ -20,13 +20,15 @@
 .settingsBtn {
   background: #fff;
   border: 1px solid #e9e9ea;
-  padding: 0.5rem;
-  border-radius: 10px;
+  padding: 0.45rem;
+  border-radius: 8px;
   box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui,
+    -apple-system, sans-serif;
 }
 
 .gearImg {
@@ -82,7 +84,7 @@
 /* UPLOAD BUTTON CSS */
 .uploadButtonContainer {
   border-radius: 13px;
-  border: 3px dashed rgba(82, 42, 112, 0.50);
+  border: 3px dashed rgba(82, 42, 112, 0.5);
   background: rgba(230, 220, 240, 0.5);
   display: flex;
   flex-direction: row;
@@ -119,9 +121,7 @@
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(82, 42, 112, 0.25);
   flex-shrink: 0;
-
 }
-
 
 .uploadButtonText {
   color: var(--button-color);
@@ -131,12 +131,11 @@
   font-family: var(--font-lexend), sans-serif;
 }
 
-
 /* Divider between upload button and sections */
 .sectionDivider {
   width: 100%;
   height: 1px;
-  background-color: #BAAAC6;
+  background-color: #baaac6;
   margin: 2rem 0;
 }
 
@@ -175,12 +174,6 @@
 
 .TabBar :global(.Mui-selected) {
   color: var(--button-color) !important;
-  background-color: #C0B2CB !important;
-}
-
-/* Hide the default underline indicator */
-.TabBar :global(.MuiTabs-indicator) {
-  display: none !important;
 }
 
 /* Filter styling */
@@ -197,7 +190,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #7B868D;
+  background: #7b868d;
   padding: 0.45rem 0.9rem;
   border-radius: 10px;
   border: none;
@@ -210,7 +203,7 @@
 }
 
 .filterPillSelected {
-  background: #5A6570;
+  background: #5a6570;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -230,7 +223,7 @@
   width: 40px;
   height: 40px;
   display: block;
-  background: #DCD4E2;
+  background: #dcd4e2;
   padding: 10px;
   border-radius: 10px;
 }
@@ -335,7 +328,7 @@
 }
 
 .clearFilterBtn {
-  background: #7B868D;
+  background: #7b868d;
   color: white;
   border: none;
   padding: 8px 14px;
@@ -402,49 +395,33 @@
   right: 16px;
   top: 16px;
   border: none;
-  background: #F0E5F8;
-  border-radius: 50%;
-  font-size: 2.5rem;
+  background: transparent;
+  font-size: 20px;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #522A70;
-  transition: background-color 0.2s ease;
-}
-
-.modalClose:hover {
-  background-color: #522A70;
-  color: #F0E5F8;
 }
 
 .modalTitle {
   color: var(--button-color);
-  font-size: 1.625rem;
+  font-size: 26px;
   font-weight: 700;
   margin: 0 0 10px 0;
   text-align: center;
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .modalSubtitle {
   color: var(--button-color);
   margin: 0 0 20px 0;
   text-align: center;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .uploadBox {
   border: 2px dashed #2b2b2b;
-
   border-radius: 16px;
-  padding: 40px 28px 30px 28px;
+  padding: 60px 28px;
   margin-top: 12px;
   margin-bottom: 8px;
   min-height: 400px;
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .uploadIconCircle {
@@ -464,33 +441,28 @@
 }
 
 .uploadHeading {
-  font-size: 1.25rem;
+  font-size: 20px;
   margin: 8px 0 6px 0;
   color: #42515b;
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .uploadSupport {
   color: #42515b;
   margin: 0 0 18px 0;
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .modalUploadBtn {
   background: transparent;
-  border: 1px solid #522A7080;
+  border: 1px solid #522a7080;
   color: var(--button-color);
   padding: 12px 150px;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
   box-sizing: border-box;
-  font-size: 0.875rem; 
+  font-size: 14px;
 }
 
-.modalUploadBtn:hover {
-  border: 2px solid #7b498f;
-}
 .selectedFileRow {
   display: inline-flex;
   align-items: center;
@@ -513,10 +485,9 @@
   border-radius: 10px;
   background: #fff;
   color: #3a2b3f;
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 .selectedFileRemove {
-  background: #8E1149;
+  background: #8e1149;
   color: white;
   border: none;
   width: 24px;
@@ -530,13 +501,13 @@
   position: absolute;
   top: -12px;
   left: -12px;
-  font-size: 1.125rem;
+  font-size: 18px;
   line-height: 1;
   z-index: 10;
 }
 
 .selectedFileRemove:hover {
-  background: #D84C4C;
+  background: #d84c4c;
   font-weight: bold;
 }
 
@@ -586,14 +557,13 @@
   padding: 18px 20px;
   border-radius: 8px;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .nextStepBtn:hover {
-  background: #955EBF;
+  background: #955ebf;
 }
 .nextStepBtn:disabled {
   opacity: 0.5;
@@ -624,7 +594,7 @@
   position: relative;
 }
 .optionCard:hover {
-  border-color: #955EBF;
+  border-color: #955ebf;
 }
 
 .optionCheckbox {
@@ -647,8 +617,6 @@
   cursor: pointer;
 }
 
-
-
 .checkboxChecked {
   background: var(--button-color);
   border-color: var(--button-color);
@@ -668,16 +636,14 @@
 
 .optionTitle {
   margin-top: 12px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 700;
   color: var(--button-color);
-  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .optionDesc {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: var(--button-color);
-  font-family: var(--font-lexend), sans-serif;
 }
 
 .optionCard:hover {
@@ -709,8 +675,7 @@
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 1rem;
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 16px;
 }
 
 .beginBtn {
@@ -722,12 +687,11 @@
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 1rem;
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 16px;
 }
 
 .beginBtn:hover {
-  background: #955EBF;
+  background: #955ebf;
 }
 
 @media (max-width: 960px) {
@@ -736,23 +700,22 @@
   }
 }
 
-@media (max-width: 520px) {
+/* Media Queries */
+
+@media (max-width: 960px) {
   .optionsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
-  .bottomActions {
-    flex-direction: column;
-  }
-  .backBtnSmall,
-  .beginBtn {
-    width: 100%;
-    flex: none;
-  }
+}
+
+@media (max-width: 520px) {
   .modal {
-    padding: 20px;
+    width: 67.5rem;
+    padding: 3.5rem 4.125rem;
   }
   .modalHasFile {
-    padding: 20px;
+    width: 67.5rem;
+    padding: 3.5rem 4.125rem;
   }
   .uploadBox {
     padding: 20px;
@@ -797,7 +760,7 @@
 
 .sectionContainer {
   margin-bottom: 3rem;
-  background-color: #F7F6F9;
+  background-color: #f7f6f9;
   border-radius: 1rem;
   padding: 1rem 1rem 4rem;
   min-height: 20rem;
@@ -819,7 +782,7 @@
 .sectionHeader {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #522A70;
+  color: #522a70;
   font-family: var(--font-space-grotesk), sans-serif;
   padding: 1rem 0 0.5rem 0;
   margin: 0 0.5rem;
@@ -840,23 +803,23 @@
     grid-template-columns: repeat(2, minmax(200px, 1fr));
     gap: 2rem;
   }
-  
+
   .navBar {
     max-width: 65%;
     padding: 1.5em 1em;
   }
-  
+
   .searchInputWrapper {
     width: 90%;
     max-width: 100%;
   }
-  
+
   .tabRow {
     padding: 0 20px;
     flex-wrap: wrap;
     gap: 1rem;
   }
-  
+
   .contentWrap {
     max-width: 95%;
     padding: 0 1rem;
@@ -869,45 +832,45 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .sectionHeader {
     margin-left: 0;
     font-size: 1.125rem;
   }
-  
+
   .sectionsWrapper {
     padding: 0.5rem;
   }
-  
+
   .navBar {
     max-width: 100%;
     padding: 1em 1rem;
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .searchInputWrapper {
     width: 100%;
     margin-top: 1rem;
     padding: 0 1rem;
   }
-  
+
   .searchInput {
     padding: 0.7rem 1.5rem 0.7rem 2.5rem;
     font-size: 0.9rem;
   }
-  
+
   .tabRow {
     padding: 0 1rem;
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .TabBar :global(.MuiTab-root) {
     font-size: 1.2rem;
     padding: 0 8px;
   }
-  
+
   .contentWrap {
     max-width: 100%;
     margin: 0 auto 10rem auto;

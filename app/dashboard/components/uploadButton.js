@@ -25,14 +25,14 @@ export default function UploadButton({ onUpload, onNext }) {
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    
+
     // Validate that the file is a PDF
     if (file.type !== "application/pdf") {
       alert("Please upload a PDF file only.");
       e.target.value = null;
       return;
     }
-    
+
     setSelectedFile(file);
     e.target.value = null;
   };
