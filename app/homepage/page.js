@@ -6,11 +6,7 @@ import Navbar from "./components/Navbar";
 import HoverSwap from "./components/HoverSwap";
 import Link from "next/link";
 import LandingSection from "./components/LandingSection";
-import Footer from "./components/Footer";
-
-
-
-
+import Footer from "./components/Footer"
 
 /**
  * Homepage: left column (logo + text + CTA),
