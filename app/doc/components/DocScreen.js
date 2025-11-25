@@ -301,10 +301,7 @@ export default function DocScreen() {
                 fontWeight: 600,
                 color: "#333",
               }}
-             
-            >
-              
-            </button>
+            ></button>
           ))}
         </div>
 
@@ -314,14 +311,14 @@ export default function DocScreen() {
             display: "flex",
             gap: "8px",
             justifyContent: "space-between",
-            
           }}
         >
           <button
             onClick={handleCancel}
             style={{
               background: "var(--background)",
-              fontFamily: "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
+              fontFamily:
+                "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
               color: "#333",
               border: ".5px solid #ddd",
               borderRadius: "6px",
@@ -344,7 +341,8 @@ export default function DocScreen() {
             style={{
               background: "#522A70",
               color: "#fff",
-              fontFamily: "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
+              fontFamily:
+                "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
               border: "none",
               borderRadius: "6px",
               padding: "6px 16px",
@@ -440,11 +438,11 @@ export default function DocScreen() {
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+
   // Text styling state for AI output
   const [textFontSize, setTextFontSize] = useState(16);
   const [textLetterSpacing, setTextLetterSpacing] = useState(0);
-  
+
   // Text formatting state (bold/italic ranges)
   const [simplifiedFormats, setSimplifiedFormats] = useState([]);
   const [summaryFormats, setSummaryFormats] = useState([]);
@@ -803,15 +801,15 @@ export default function DocScreen() {
               onApplyFormat={(format) => {
                 const selection = window.getSelection();
                 if (selection.rangeCount === 0) return;
-                
+
                 const range = selection.getRangeAt(0);
                 const start = range.startOffset;
                 const end = range.endOffset;
                 const textNode = range.startContainer;
-                
+
                 if (textNode.nodeType === Node.TEXT_NODE) {
                   const newFormat = { start, end, ...format };
-                  setSimplifiedFormats(prev => [...prev, newFormat]);
+                  setSimplifiedFormats((prev) => [...prev, newFormat]);
                 }
               }}
             />
@@ -830,15 +828,15 @@ export default function DocScreen() {
               onApplyFormat={(format) => {
                 const selection = window.getSelection();
                 if (selection.rangeCount === 0) return;
-                
+
                 const range = selection.getRangeAt(0);
                 const start = range.startOffset;
                 const end = range.endOffset;
                 const textNode = range.startContainer;
-                
+
                 if (textNode.nodeType === Node.TEXT_NODE) {
                   const newFormat = { start, end, ...format };
-                  setSummaryFormats(prev => [...prev, newFormat]);
+                  setSummaryFormats((prev) => [...prev, newFormat]);
                 }
               }}
             />
@@ -890,23 +888,29 @@ export default function DocScreen() {
         onApplyTextFormat={(format) => {
           // Apply format to the currently active mode
           const selection = window.getSelection();
-          if (selection.rangeCount === 0 || selection.toString().trim() === '') return;
-          
+          if (selection.rangeCount === 0 || selection.toString().trim() === "")
+            return;
+
           const range = selection.getRangeAt(0);
           const selectedText = selection.toString();
-          
+
           if (mode === "simplified") {
-            const simplificationElement = document.querySelector('[data-ai-output="simplification"]');
-            if (simplificationElement && simplificationElement.contains(range.commonAncestorContainer)) {
+            const simplificationElement = document.querySelector(
+              '[data-ai-output="simplification"]'
+            );
+            if (
+              simplificationElement &&
+              simplificationElement.contains(range.commonAncestorContainer)
+            ) {
               const fullText = simplifiedText;
               // Find the selection in the original text
               const start = fullText.indexOf(selectedText, 0);
               if (start >= 0) {
                 const end = start + selectedText.length;
-                setSimplifiedFormats(prev => {
+                setSimplifiedFormats((prev) => {
                   // Remove any existing formats that overlap with this range
-                  const filtered = prev.filter(f => 
-                    !(f.start < end && f.end > start)
+                  const filtered = prev.filter(
+                    (f) => !(f.start < end && f.end > start)
                   );
                   // Add the new format
                   return [...filtered, { start, end, ...format }];
@@ -914,16 +918,21 @@ export default function DocScreen() {
               }
             }
           } else if (mode === "summarized") {
-            const summaryElement = document.querySelector('[data-ai-output="summarization"]');
-            if (summaryElement && summaryElement.contains(range.commonAncestorContainer)) {
+            const summaryElement = document.querySelector(
+              '[data-ai-output="summarization"]'
+            );
+            if (
+              summaryElement &&
+              summaryElement.contains(range.commonAncestorContainer)
+            ) {
               const fullText = summary;
               const start = fullText.indexOf(selectedText, 0);
               if (start >= 0) {
                 const end = start + selectedText.length;
-                setSummaryFormats(prev => {
+                setSummaryFormats((prev) => {
                   // Remove any existing formats that overlap with this range
-                  const filtered = prev.filter(f => 
-                    !(f.start < end && f.end > start)
+                  const filtered = prev.filter(
+                    (f) => !(f.start < end && f.end > start)
                   );
                   // Add the new format
                   return [...filtered, { start, end, ...format }];
