@@ -6,28 +6,7 @@ import styles from "./LandingSection.module.css";
 export default function LandingSection() {
     return (
         <section className={styles.wrapper}>
-            {/* HERO SECTION */}
-            <div className={styles.hero}>
-                <Image
-                    src='/icons/landingPageSmile.jpg'
-                    alt='Construction apprentice smiling'
-                    width={1800}
-                    height={900}
-                    className={styles.heroImage}
-                />
-
-                <div className={styles.heroTextBox}>
-                    <h2>Got It is created by and for students</h2>
-                    <p>
-                        Designed with empathy and experience, it bridges the gap
-                        between classroom theory and hands-on practice.
-                    </p>
-                    <p className={styles.subtext}>
-                        Studying made simpler, smarter, and more accessible for
-                        everyone.
-                    </p>
-                </div>
-            </div>
+            
 
             {/* FEATURE ROW */}
             <div className={styles.features}>
@@ -98,6 +77,28 @@ export default function LandingSection() {
                     <h2>Got It values your learning wherever you are</h2>
                     <p className={styles.mobileSubheading}>Available in mobile device for easy access!</p>
                     <p className={styles.mobileDescription}>Built for apprentices who learn in school, <br></br> on the job, and on the move.</p>
+                </div>
+            </div>
+            {/* HERO SECTION */}
+            <div className={styles.hero}>
+                <Image
+                    src='/icons/landingPageSmile.jpg'
+                    alt='Construction apprentice smiling'
+                    width={1800}
+                    height={900}
+                    className={styles.heroImage}
+                />
+
+                <div className={styles.heroTextBox}>
+                    <h2>Got It is created by and for students</h2>
+                    <p>
+                        Designed with empathy and experience, it bridges the gap
+                        between classroom theory and hands-on practice.
+                    </p>
+                    <p className={styles.subtext}>
+                        Studying made simpler, smarter, and more accessible for
+                        everyone.
+                    </p>
                 </div>
             </div>
         </section>
