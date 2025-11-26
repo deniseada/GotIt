@@ -790,6 +790,39 @@ export default function DocScreen() {
       >
         {mode === "simplified" && (
           <>
+            <p >
+              <b>Main Points:</b>
+                <ul>
+                  <li>The atom is the smallest part of an element.</li> 
+                  <li>The three principal parts of an atom are the proton, the electron, and the neutron.</li>
+                  <li>Protons have a positive charge, electrons a negative charge, and neutrons no charge.</li>
+                  <li>Valence electrons are located in the outer orbit of an atom.</li>
+                  <li>Conductors are materials that provide an easy path for electron flow.</li>
+                  <li>Conductors are made from materials that contain from one to three valence electrons.</li>
+                  <li>Insulators are materials that do not provide an easy path for the flow of electrons.</li>
+                  <li>Insulators are generally made from materials containing seven or eight valence electrons.</li>
+                </ul>
+                
+                <b>Key Concepts:</b>
+                  <ul>
+                    <li>Atomic structure</li>
+                    <li>Protons, electrons, and neutrons</li>
+                    <li>Valence electrons</li>
+                    <li>Conductors and insulators</li>
+                    <li>Electron flow</li>
+                  </ul>
+
+                <b>Important Definitions:</b>
+                  <ul>
+                    <li>Atom: The smallest part of an element.</li>
+                    <li>Proton: A positively charged particle located in the nucleus of an atom.</li>
+                    <li>Electron: A negatively charged particle that orbits the nucleus of an atom.</li>
+                    <li>Neutron: A particle with no charge that is located in the nucleus of an atom.</li>
+                    <li>Valence electrons: Electrons located in the outer orbit of an atom.</li>
+                    <li>Conductor: A material that provides an easy path for electron flow.</li>
+                    <li>Insulator: A material that does not provide an easy path for the flow of electrons.</li>
+                  </ul>
+            </p>
             <Simplification
               text={simplifiedText}
               loading={aiLoading.simplify}
@@ -817,6 +850,10 @@ export default function DocScreen() {
         )}
         {mode === "summarized" && (
           <div>
+            <b>Summary:</b>
+            <p>
+              Delmar - Section 1 introduces the concept of electricity, its history, and its importance in modern life. It explains the basic principles of electricity, including voltage, current, and resistance, and how they relate to Ohm's Law. The section also covers different types of circuits, including series and parallel, and the role of components like resistors, capacitors, and inductors. It discusses power in electrical circuits, both in terms of instantaneous and average power, and introduces the concept of electrical energy. The section also touches on electrical safety and the use of circuit breakers and fuses. Lastly, it provides an overview of electrical systems in homes and buildings, including the electrical service entrance, service panel, and branch circuits.
+            </p>
             <Summarization
               text={summary}
               loading={aiLoading.summarize}
