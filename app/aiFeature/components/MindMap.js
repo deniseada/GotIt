@@ -25,6 +25,18 @@ const initialNodes = [
         },
         type: "",
     },
+    {
+        id: "n2",
+        position: { x: 100, y: 100 },
+        data: {
+            label: "Waiting for ai generation...",
+            name: "",
+            relation: "",
+            reason: "",
+            expanded: false,
+        },
+        type: "",
+    }
 ];
 
 const initialEdges = [];
