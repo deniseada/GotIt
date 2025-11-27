@@ -1,0 +1,555 @@
+/* Study Guide Modal Styles */
+
+/* Modal Container - shared with uploadButton */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal {
+  width: 67.5rem;
+  height: 712px;
+  max-width: calc(100% - 40px);
+  background: #fff;
+  border-radius: 12px;
+  padding: 3.5rem 4.125rem;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(16, 24, 40, 0.24);
+  text-align: center;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal::-webkit-scrollbar {
+  display: none;
+}
+
+.modal {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.modalClose {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: none;
+  background: transparent;
+  color: #000;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Study Guide Content */
+.studyGuideContent {
+  flex: 1;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  padding-bottom: 20px;
+  text-align: left;
+}
+
+.studyGuideContent::-webkit-scrollbar {
+  display: none;
+}
+
+.studyGuideContent {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.studyGuideHeader {
+  margin-bottom: 2rem;
+}
+
+.studyGuideTitle {
+  color: var(--button-color);
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  text-align: left;
+}
+
+.progressLine {
+  display: flex;
+  width: 100%;
+  height: 3px;
+  background-color: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressLineActive {
+  height: 100%;
+  background-color: var(--button-color);
+  width: 30%;
+  border-radius: 2px 0 0 2px;
+}
+
+.progressLineInactive {
+  height: 100%;
+  background-color: #e5e7eb;
+  flex: 1;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Form Styles */
+.formSection {
+  margin-bottom: 2rem;
+}
+
+.formLabel {
+  display: block;
+  color: #2b2b2b;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.formLabelInline {
+  color: #2b2b2b;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-family: var(--font-space-grotesk), sans-serif;
+  flex-shrink: 0;
+}
+
+.studyGuideInput {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid #c5c5c5;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  background-color: white;
+  color: #000000;
+  box-sizing: border-box;
+}
+
+.studyGuideInput::placeholder {
+  color: #9ca3af;
+}
+
+.studyGuideInput:focus {
+  outline: none;
+  border-color: var(--button-color);
+}
+
+.sectionHeading {
+  color: #2b2b2b;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+/* Topics Grid */
+.topicsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.topicCard {
+  position: relative;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.topicCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.topicCardText {
+  color: #2b2b2b;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  padding-right: 2.5rem;
+  font-family: var(--font-space-grotesk), sans-serif;
+  line-height: 1.5;
+}
+
+.topicCardAddBtn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 28px;
+  height: 28px;
+  background-color: var(--button-color);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(82, 42, 112, 0.2);
+}
+
+.topicCardAddBtn:hover {
+  background-color: #955ebf;
+}
+
+.topicCardRemoveBtn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 28px;
+  height: 28px;
+  background-color: #6b7280;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
+}
+
+.topicCardRemoveBtn:hover {
+  background-color: #4b5563;
+}
+
+/* Action Buttons */
+.studyGuideActions {
+  display: flex;
+  gap: 20px;
+  position: absolute;
+  bottom: 56px;
+  left: 4.125rem;
+  right: 4.125rem;
+  width: calc(100% - 8.25rem);
+}
+
+.exitBtn {
+  flex: 1 1 48%;
+  background: white;
+  border: 1px solid #6b7280;
+  color: #2b2b2b;
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  transition: all 0.2s ease;
+}
+
+.exitBtn:hover {
+  background-color: #f9fafb;
+  border-color: #4b5563;
+}
+
+.nextBtn {
+  flex: 1 1 48%;
+  background: var(--button-color);
+  border: none;
+  color: #fff;
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  transition: background-color 0.2s ease;
+}
+
+.nextBtn:hover {
+  background: #955ebf;
+}
+
+.nextBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backBtn {
+  flex: 1 1 48%;
+  background: white;
+  border: 1px solid #6b7280;
+  color: #2b2b2b;
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  background-color: #f9fafb;
+  border-color: #4b5563;
+}
+
+/* Step 2 Styles */
+.step2Content {
+  text-align: center;
+}
+
+.step2Question {
+  color: #2b2b2b;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.step2Subtitle {
+  color: #6b7280;
+  font-size: 16px;
+  margin: 0 0 2rem 0;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.dateTimeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.dateTimeField {
+  text-align: left;
+}
+
+.dateTimeLabel {
+  display: block;
+  color: #2b2b2b;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-space-grotesk), sans-serif;
+  min-height: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.dateTimeInput {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--button-color);
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  background-color: white;
+  color: #000000;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.dateTimeInput[type="date"] {
+  position: relative;
+}
+
+.dateTimeInput[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+}
+
+.dateTimeInput[type="date"]::-webkit-inner-spin-button,
+.dateTimeInput[type="date"]::-webkit-clear-button {
+  display: none;
+}
+
+.dateTimeInput::placeholder {
+  color: #9ca3af;
+}
+
+.dateTimeInput:focus {
+  outline: none;
+  border-color: var(--button-color);
+  box-shadow: 0 0 0 3px rgba(82, 42, 112, 0.1);
+}
+
+.dateTimeInput[type="time"] {
+  cursor: pointer;
+}
+
+.dateTimeInput[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+}
+
+/* Step 3 - Commitment Cards */
+.commitmentGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.commitmentCard {
+  position: relative;
+  background: white;
+  border: 2px solid var(--button-color);
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 200px;
+}
+
+.commitmentCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(82, 42, 112, 0.12);
+}
+
+.commitmentCardSelected {
+  border-color: var(--button-color);
+  background-color: #f9f5ff;
+  box-shadow: 0 8px 28px rgba(82, 42, 112, 0.15);
+}
+
+.commitmentCheckbox {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--button-color);
+  border-radius: 4px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.commitmentCardSelected .commitmentCheckbox {
+  background-color: var(--button-color);
+  border-color: var(--button-color);
+}
+
+.commitmentIcon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.iconPlaceholder {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.commitmentTitle {
+  color: #2b2b2b;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-space-grotesk), sans-serif;
+  margin-top: 0.5rem;
+}
+
+.commitmentDuration {
+  color: #6b7280;
+  font-size: 14px;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.daysCalculation {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.daysCalculationText {
+  color: #2b2b2b;
+  font-size: 16px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.daysNumber {
+  color: var(--button-color);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.eventName {
+  color: var(--button-color);
+  font-weight: 600;
+}
+
+.emptyState {
+  color: #6b7280;
+  font-size: 14px;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .topicsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .studyGuideActions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .exitBtn,
+  .nextBtn,
+  .backBtn {
+    flex: 1;
+  }
+
+  .dateTimeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .commitmentGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .commitmentGrid {
+    grid-template-columns: 1fr;
+  }
+}

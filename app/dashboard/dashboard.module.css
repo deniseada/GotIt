@@ -74,6 +74,12 @@
   padding: 0.9rem 2rem 0.9rem 3rem;
   width: 100%;
   box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
+  color: #000000;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--button-color);
 }
 
 .searchInput::placeholder {
@@ -371,8 +377,18 @@
   text-align: center;
   box-sizing: border-box;
   overflow-y: hidden;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.modal::-webkit-scrollbar {
+  display: none;
+}
+
+.modal {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .modalHasFile {
@@ -878,3 +894,4 @@
     padding: 0 0.5rem;
   }
 }
+

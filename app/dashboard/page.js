@@ -7,6 +7,7 @@ import Nav from "./components/navBar";
 import SearchBar from "./components/searchBar";
 import UploadButton from "./components/uploadButton";
 import TabBar from "./components/tabBar";
+import StudyGuideButton from "./components/StudyGuideButton";
 
 // Page linking
 import Link from "next/link";
@@ -30,6 +31,7 @@ export default function DashboardPage() {
                 ))}
             </section> */}
       {/* <NavBar /> */}
+      <StudyGuideButton />
     </div>
   );
 }
