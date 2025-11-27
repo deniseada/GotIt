@@ -111,6 +111,8 @@ const MockRightPane = React.memo(function MockRightPane({
   aiError,
   textFontSize,
   textLetterSpacing,
+  isBold,
+  isItalic,
   simplifiedFormats,
   setSimplifiedFormats,
   summary,
@@ -127,6 +129,10 @@ const MockRightPane = React.memo(function MockRightPane({
         borderRadius: { xs: 0, md: 2 },
         boxShadow: 1,
         overflow: "auto",
+        fontSize: `${textFontSize}px`,
+        letterSpacing: `${textLetterSpacing}px`,
+        fontWeight: isBold ? "bold" : "normal",
+        fontStyle: isItalic ? "italic" : "normal",
       }}
     >
       {mode === "simplified" && (
@@ -388,6 +394,8 @@ export default function DocScreen() {
   const [textLetterSpacing, setTextLetterSpacing] = useState(0);
   const [simplifiedFormats, setSimplifiedFormats] = useState([]);
   const [summaryFormats, setSummaryFormats] = useState([]);
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
   const [simplifiedText, setSimplifiedText] = useState("");
   const [summary, setSummary] = useState("");
   const [mindmap, setMindmap] = useState("");
@@ -443,6 +451,8 @@ export default function DocScreen() {
   const handleResetFormats = useCallback(() => {
     setSimplifiedFormats([]);
     setSummaryFormats([]);
+    setIsBold(false);
+    setIsItalic(false);
   }, []);
 
   const toggleSplit = useCallback(() => {
@@ -450,54 +460,14 @@ export default function DocScreen() {
   }, []);
 
   const handleApplyTextFormat = useCallback((format) => {
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0 || selection.toString().trim() === "") return;
-
-    const range = selection.getRangeAt(0);
-    const selectedText = selection.toString();
-
-    if (mode === "simplified") {
-      const simplificationElement = document.querySelector(
-        '[data-ai-output="simplification"]'
-      );
-      if (
-        simplificationElement &&
-        simplificationElement.contains(range.commonAncestorContainer)
-      ) {
-        const fullText = simplifiedText;
-        const start = fullText.indexOf(selectedText, 0);
-        if (start >= 0) {
-          const end = start + selectedText.length;
-          setSimplifiedFormats((prev) => {
-            const filtered = prev.filter(
-              (f) => !(f.start < end && f.end > start)
-            );
-            return [...filtered, { start, end, ...format }];
-          });
-        }
-      }
-    } else if (mode === "summarized") {
-      const summaryElement = document.querySelector(
-        '[data-ai-output="summarization"]'
-      );
-      if (
-        summaryElement &&
-        summaryElement.contains(range.commonAncestorContainer)
-      ) {
-        const fullText = summary;
-        const start = fullText.indexOf(selectedText, 0);
-        if (start >= 0) {
-          const end = start + selectedText.length;
-          setSummaryFormats((prev) => {
-            const filtered = prev.filter(
-              (f) => !(f.start < end && f.end > start)
-            );
-            return [...filtered, { start, end, ...format }];
-          });
-        }
-      }
+    // Toggle global bold/italic state for all text
+    if (format.bold !== undefined) {
+      setIsBold(format.bold);
     }
-  }, [mode, simplifiedText, summary]);
+    if (format.italic !== undefined) {
+      setIsItalic(format.italic);
+    }
+  }, []);
 
   // Keep highlightsRef in sync with state
   highlightsRef.current = highlights;
@@ -1060,6 +1030,8 @@ export default function DocScreen() {
                   aiError={aiError}
                   textFontSize={textFontSize}
                   textLetterSpacing={textLetterSpacing}
+                  isBold={isBold}
+                  isItalic={isItalic}
                   simplifiedFormats={simplifiedFormats}
                   setSimplifiedFormats={setSimplifiedFormats}
                   summary={summary}

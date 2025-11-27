@@ -698,29 +698,6 @@ function ToolBar({
   );
 }
 
-// Custom comparison function for React.memo
-// Only compare stable props, ignore plugin instances which are recreated each render
-function arePropsEqual(prevProps, nextProps) {
-  // Compare primitive/stable props
-  if (prevProps.page !== nextProps.page) return false;
-  if (prevProps.split !== nextProps.split) return false;
-  if (prevProps.fontSize !== nextProps.fontSize) return false;
-  if (prevProps.letterSpacing !== nextProps.letterSpacing) return false;
-  if (prevProps.totalPages !== nextProps.totalPages) return false;
-  
-  // Compare callback references (these should be memoized with useCallback)
-  if (prevProps.onToggleSplit !== nextProps.onToggleSplit) return false;
-  if (prevProps.onToggleSidebar !== nextProps.onToggleSidebar) return false;
-  if (prevProps.onNavigateToPage !== nextProps.onNavigateToPage) return false;
-  if (prevProps.onTextStyleChange !== nextProps.onTextStyleChange) return false;
-  if (prevProps.onApplyTextFormat !== nextProps.onApplyTextFormat) return false;
-  if (prevProps.onResetFormats !== nextProps.onResetFormats) return false;
-  
-  // Ignore plugin props - they're recreated each render but functionally equivalent
-  // The plugins are stable in behavior even if object references change
-  
-  return true;
-}
-
-// Wrap with React.memo with custom comparison to prevent unnecessary re-renders
-export default React.memo(ToolBar, arePropsEqual);
+// Export ToolBar without memo for now to ensure all props flow correctly
+// TODO: Re-add React.memo with proper comparison once functionality is confirmed
+export default ToolBar;
