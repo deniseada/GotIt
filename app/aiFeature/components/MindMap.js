@@ -17,17 +17,56 @@ const initialNodes = [
         id: "n1",
         position: { x: 0, y: 0 },
         data: {
-            label: "Waiting for ai generation...",
-            name: "",
-            relation: "",
-            reason: "",
+            label: "Atom",
+            name: "Atom",
+            relation: "The atom is the smallest part of an element.",
+            reason: "The atom is the smallest part of an element.",
             expanded: false,
         },
         type: "",
     },
+    {
+        id: "n2",
+        position: { x: 150, y: 150 },
+        data: {
+            label: "Proton",
+            name: "Proton",
+            relation: "The proton is a positively charged particle located in the nucleus of an atom.",
+            reason: "The proton is a positively charged particle located in the nucleus of an atom.",
+            expanded: false,
+        },
+        type: "",
+    },
+    {
+        id: "n3",
+        position: { x: -150, y: 150 },
+        data: {
+            label: "Electron",
+            name: "Electron",
+            relation: "The electron is a negatively charged particle that orbits the nucleus of an atom.",
+            reason: "The electron is a negatively charged particle that orbits the nucleus of an atom.",
+            expanded: false,
+        },
+        type: "",
+    }
 ];
 
-const initialEdges = [];
+const initialEdges = [
+    {
+        id: "e1",
+        source: "n1",
+        target: "n2",
+        type: "step",
+        label: "",
+    },
+    {
+        id: "e2",
+        source: "n1",
+        target: "n3",
+        type: "step",
+        label: "",
+    },
+];
 
 function buildMindMapFromConcepts(concepts) {
     if (!Array.isArray(concepts) || concepts.length === 0) {

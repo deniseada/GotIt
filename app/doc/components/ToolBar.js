@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import styles from "../mvp.module.css";
 import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 
-export default function ToolBar({
+function ToolBar({
   page,
   onPrev,
   onNext,
@@ -223,92 +223,46 @@ export default function ToolBar({
             </button>
           )}
 
-          {/* PAGE NAVIGATION */}
-          {GoToPreviousPage && (
-            <GoToPreviousPage>
-              {(props) => (
-                <button
-                  className={`${styles.iconBtn} ${styles.pageNavBtnPrev}`}
-                  onClick={props.onClick}
-                  disabled={props.isDisabled}
-                  aria-label="Previous page"
-                  title="Previous page"
-                >
-                  <img
-                    src="/icons/arrowDown.svg"
-                    alt="Previous page"
-                    width="20"
-                    height="20"
-                  />
-                </button>
-              )}
-            </GoToPreviousPage>
-          )}
+          {/* PAGE NAVIGATION - using stable callbacks instead of plugin components */}
+          <button
+            className={`${styles.iconBtn} ${styles.pageNavBtnPrev}`}
+            onClick={() => onNavigateToPage && page > 1 && onNavigateToPage(page - 1)}
+            disabled={page <= 1}
+            aria-label="Previous page"
+            title="Previous page"
+          >
+            <img
+              src="/icons/arrowDown.svg"
+              alt="Previous page"
+              width="20"
+              height="20"
+            />
+          </button>
          
-          {CurrentPageInput ? (
-            <>
-              <div className={styles.pageInputWrapper}>
-                <CurrentPageInput />
-              </div>
-              {CurrentPageLabel ? (
-                <CurrentPageLabel>
-                  {({ numberOfPages }) => (
-                    <span className={styles.pageText}>of {numberOfPages}</span>
-                  )}
-                </CurrentPageLabel>
-              ) : (
-                <span className={styles.pageText}>of {totalPages || ""}</span>
-              )}
-            </>
-          ) : CurrentPageLabel ? (
-            <CurrentPageLabel>
-              {({ currentPage, numberOfPages }) => (
-                <>
-                  <input
-                    type="text"
-                    className={styles.pageInput}
-                    value={currentPage + 1}
-                    readOnly
-                    aria-label="Current page"
-                  />
-                  <span className={styles.pageText}>of {numberOfPages}</span>
-                </>
-              )}
-            </CurrentPageLabel>
-          ) : (
-            <>
-              <input
-                type="text"
-                className={styles.pageInput}
-                value={page}
-                readOnly
-                aria-label="Current page"
-              />
-              <span className={styles.pageText}>of {totalPages || ""}</span>
-            </>
-          )}
+          <input
+            type="text"
+            className={styles.pageInput}
+            value={page}
+            readOnly
+            aria-label="Current page"
+          />
+          <span className={styles.pageText}>of {totalPages || "?"}</span>
          
-          {GoToNextPage && (
-            <GoToNextPage>
-              {(props) => (
-                <button
-                  className={`${styles.iconBtn} ${styles.pageNavBtnNext}`}
-                  onClick={props.onClick}
-                  disabled={props.isDisabled}
-                  aria-label="Next page"
-                  title="Next page"
-                >
-                  <img
-                    src="/icons/arrowDown.svg"
-                    alt="Next page"
-                    width="20"
-                    height="20"
-                    style={{ transform: "rotate(0deg)" }}
-                  />
-                </button>
-              )}
-            </GoToNextPage>
-          )}
+          <button
+            className={`${styles.iconBtn} ${styles.pageNavBtnNext}`}
+            onClick={() => onNavigateToPage && page < (totalPages || 999) && onNavigateToPage(page + 1)}
+            disabled={page >= (totalPages || 999)}
+            aria-label="Next page"
+            title="Next page"
+          >
+            <img
+              src="/icons/arrowDown.svg"
+              alt="Next page"
+              width="20"
+              height="20"
+              style={{ transform: "rotate(0deg)" }}
+            />
+          </button>
           <div className={styles.toolbarDivider} />
         </div>
 
@@ -697,3 +651,28 @@ export default function ToolBar({
     </div>
   );
 }
+
+// Custom comparison for React.memo - ignore plugin props which are recreated each render
+function arePropsEqual(prevProps, nextProps) {
+  // Compare primitive props that affect rendering
+  if (prevProps.page !== nextProps.page) return false;
+  if (prevProps.split !== nextProps.split) return false;
+  if (prevProps.fontSize !== nextProps.fontSize) return false;
+  if (prevProps.letterSpacing !== nextProps.letterSpacing) return false;
+  if (prevProps.totalPages !== nextProps.totalPages) return false;
+  
+  // Compare memoized callbacks - these should have stable references
+  if (prevProps.onToggleSplit !== nextProps.onToggleSplit) return false;
+  if (prevProps.onToggleSidebar !== nextProps.onToggleSidebar) return false;
+  if (prevProps.onNavigateToPage !== nextProps.onNavigateToPage) return false;
+  if (prevProps.onTextStyleChange !== nextProps.onTextStyleChange) return false;
+  if (prevProps.onApplyTextFormat !== nextProps.onApplyTextFormat) return false;
+  if (prevProps.onResetFormats !== nextProps.onResetFormats) return false;
+  
+  // Intentionally ignore plugin props - they're recreated each render but functionally equivalent:
+  // zoomPlugin, pageNavigationPlugin, searchPlugin, printPlugin, getFilePlugin
+  
+  return true; // Props are equal, don't re-render
+}
+
+export default React.memo(ToolBar, arePropsEqual);
