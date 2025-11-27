@@ -422,10 +422,82 @@ export default function DocScreen() {
   const ai = useModal(false);
   const vocab = useModal(false);
 
-  // useCallback hooks
+  // useCallback hooks - memoize callbacks to prevent unnecessary re-renders
   const handleDocumentLoad = useCallback((e) => {
     setTotalPages(e.doc.numPages);
   }, []);
+
+  const handleToggleSidebar = useCallback(() => {
+    setSidebarOpen((v) => !v);
+  }, []);
+
+  const handleNavigateToPage = useCallback((pageNum) => {
+    setPage(pageNum);
+  }, []);
+
+  const handleTextStyleChange = useCallback(({ fontSize, letterSpacing }) => {
+    setTextFontSize(fontSize);
+    setTextLetterSpacing(letterSpacing);
+  }, []);
+
+  const handleResetFormats = useCallback(() => {
+    setSimplifiedFormats([]);
+    setSummaryFormats([]);
+  }, []);
+
+  const toggleSplit = useCallback(() => {
+    setSplit((s) => !s);
+  }, []);
+
+  const handleApplyTextFormat = useCallback((format) => {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0 || selection.toString().trim() === "") return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = selection.toString();
+
+    if (mode === "simplified") {
+      const simplificationElement = document.querySelector(
+        '[data-ai-output="simplification"]'
+      );
+      if (
+        simplificationElement &&
+        simplificationElement.contains(range.commonAncestorContainer)
+      ) {
+        const fullText = simplifiedText;
+        const start = fullText.indexOf(selectedText, 0);
+        if (start >= 0) {
+          const end = start + selectedText.length;
+          setSimplifiedFormats((prev) => {
+            const filtered = prev.filter(
+              (f) => !(f.start < end && f.end > start)
+            );
+            return [...filtered, { start, end, ...format }];
+          });
+        }
+      }
+    } else if (mode === "summarized") {
+      const summaryElement = document.querySelector(
+        '[data-ai-output="summarization"]'
+      );
+      if (
+        summaryElement &&
+        summaryElement.contains(range.commonAncestorContainer)
+      ) {
+        const fullText = summary;
+        const start = fullText.indexOf(selectedText, 0);
+        if (start >= 0) {
+          const end = start + selectedText.length;
+          setSummaryFormats((prev) => {
+            const filtered = prev.filter(
+              (f) => !(f.start < end && f.end > start)
+            );
+            return [...filtered, { start, end, ...format }];
+          });
+        }
+      }
+    }
+  }, [mode, simplifiedText, summary]);
 
   // Keep highlightsRef in sync with state
   highlightsRef.current = highlights;
@@ -694,8 +766,6 @@ export default function DocScreen() {
     }
   }, [page, pageNavigationPluginInstance]);
 
-  const toggleSplit = () => setSplit((s) => !s);
-
   // Press 'S' to toggle split view
   useEffect(() => {
     const onKey = (e) => {
@@ -927,88 +997,18 @@ export default function DocScreen() {
         page={page}
         split={split}
         onToggleSplit={toggleSplit}
-        onToggleSidebar={() => setSidebarOpen((v) => !v)}
+        onToggleSidebar={handleToggleSidebar}
         zoomPlugin={zoomPluginInstance}
         pageNavigationPlugin={pageNavigationPluginInstance}
-        onNavigateToPage={(pageNum) => {
-          setPage(pageNum);
-          // Also use the plugin's jumpToPage if available
-          if (
-            pageNavigationPluginInstance?.jumpToPage &&
-            typeof pageNavigationPluginInstance.jumpToPage === "function"
-          ) {
-            pageNavigationPluginInstance.jumpToPage(pageNum - 1);
-          }
-        }}
+        onNavigateToPage={handleNavigateToPage}
         searchPlugin={searchPluginInstance}
         printPlugin={printPluginInstance}
         getFilePlugin={getFilePluginInstance}
         fontSize={textFontSize}
         letterSpacing={textLetterSpacing}
-        onTextStyleChange={({ fontSize, letterSpacing }) => {
-          setTextFontSize(fontSize);
-          setTextLetterSpacing(letterSpacing);
-        }}
-        onApplyTextFormat={(format) => {
-          // Apply format to the currently active mode
-          const selection = window.getSelection();
-          if (selection.rangeCount === 0 || selection.toString().trim() === "")
-            return;
-
-          const range = selection.getRangeAt(0);
-          const selectedText = selection.toString();
-
-          if (mode === "simplified") {
-            const simplificationElement = document.querySelector(
-              '[data-ai-output="simplification"]'
-            );
-            if (
-              simplificationElement &&
-              simplificationElement.contains(range.commonAncestorContainer)
-            ) {
-              const fullText = simplifiedText;
-              // Find the selection in the original text
-              const start = fullText.indexOf(selectedText, 0);
-              if (start >= 0) {
-                const end = start + selectedText.length;
-                setSimplifiedFormats((prev) => {
-                  // Remove any existing formats that overlap with this range
-                  const filtered = prev.filter(
-                    (f) => !(f.start < end && f.end > start)
-                  );
-                  // Add the new format
-                  return [...filtered, { start, end, ...format }];
-                });
-              }
-            }
-          } else if (mode === "summarized") {
-            const summaryElement = document.querySelector(
-              '[data-ai-output="summarization"]'
-            );
-            if (
-              summaryElement &&
-              summaryElement.contains(range.commonAncestorContainer)
-            ) {
-              const fullText = summary;
-              const start = fullText.indexOf(selectedText, 0);
-              if (start >= 0) {
-                const end = start + selectedText.length;
-                setSummaryFormats((prev) => {
-                  // Remove any existing formats that overlap with this range
-                  const filtered = prev.filter(
-                    (f) => !(f.start < end && f.end > start)
-                  );
-                  // Add the new format
-                  return [...filtered, { start, end, ...format }];
-                });
-              }
-            }
-          }
-        }}
-        onResetFormats={() => {
-          setSimplifiedFormats([]);
-          setSummaryFormats([]);
-        }}
+        onTextStyleChange={handleTextStyleChange}
+        onApplyTextFormat={handleApplyTextFormat}
+        onResetFormats={handleResetFormats}
       />
 
       {/* Main content */}
