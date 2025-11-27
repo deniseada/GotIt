@@ -965,6 +965,7 @@ export default function DocScreen() {
       {/* Toolbar */}
       <ToolBar
         page={page}
+        totalPages={totalPages}
         split={split}
         onToggleSplit={toggleSplit}
         onToggleSidebar={handleToggleSidebar}
