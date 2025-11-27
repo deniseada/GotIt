@@ -3,9 +3,11 @@
 import React, { useState } from "react";
 import styles from "../mvp.module.css";
 import Link from "next/link";
+import SettingsOverlay from "../../settings/components/SettingsOverlay";
 
 export default function NavBar({ title, backHref = "/dashboard" }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
@@ -44,7 +46,11 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
 
         <div className={styles.rightGroup}>
           <div className={styles.toolIcons}>
-            <button className={styles.settingsBtn}>
+            <button
+              className={styles.settingsBtn}
+              onClick={() => setSettingsOpen(true)}
+              type="button"
+            >
               <img
                 src="/icons/gear.svg"
                 alt="settings"
@@ -55,6 +61,11 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
               <span className={styles.settingsLabel}>Settings</span>
             </button>
           </div>
+          {/** Settings overlay renders here and handles its own backdrop */}
+          <SettingsOverlay
+            open={settingsOpen}
+            onClose={() => setSettingsOpen(false)}
+          />
         </div>
       </div>
       <div className={styles.backBtnWrapper}>
