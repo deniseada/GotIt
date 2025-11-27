@@ -790,7 +790,7 @@ export default function DocScreen() {
       >
         {mode === "simplified" && (
           <>
-            <p >
+            <div>
               <b>Main Points:</b>
                 <ul>
                   <li>The atom is the smallest part of an element.</li> 
@@ -822,7 +822,8 @@ export default function DocScreen() {
                     <li>Conductor: A material that provides an easy path for electron flow.</li>
                     <li>Insulator: A material that does not provide an easy path for the flow of electrons.</li>
                   </ul>
-            </p>
+            </div>
+
             <Simplification
               text={simplifiedText}
               loading={aiLoading.simplify}
