@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from "react";
 import styles from "../dashboard.module.css";
-import Link from "next/link";
 
 export default function UploadButton({ onUpload, onNext }) {
   const [open, setOpen] = useState(false);
@@ -311,15 +310,13 @@ export default function UploadButton({ onUpload, onNext }) {
                   >
                     Back to Upload
                   </button>
-                  <Link href="/doc" className={styles.beginBtn}>
-                    <button
-                      className={styles.beginBtn}
-                      onClick={handleBegin}
-                      disabled={selectedOptions.length === 0}
-                    >
-                      Begin Studying
-                    </button>
-                  </Link>
+                  <button
+                    className={styles.beginBtn}
+                    onClick={handleBegin}
+                    disabled={selectedOptions.length === 0}
+                  >
+                    Begin Studying
+                  </button>
                 </div>
               </>
             )}
