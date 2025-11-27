@@ -29,6 +29,9 @@ export default function TimerCompletionDialog({ open, onClose, minutes }) {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      sx={{
+        zIndex: (theme) => theme.zIndex.modal + 10, // Ensure it appears above timer popover
+      }}
       PaperProps={{
         sx: {
           borderRadius: 3,
