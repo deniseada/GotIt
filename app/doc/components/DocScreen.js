@@ -1,6 +1,6 @@
 "use client";
 import SideBar from "./sideBar";
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import styles from "../mvp.module.css";
@@ -42,10 +42,393 @@ import { getFilePlugin } from "@react-pdf-viewer/get-file";
 import { highlightPlugin, Trigger } from "@react-pdf-viewer/highlight";
 import "@react-pdf-viewer/highlight/lib/styles/index.css";
 
-export default function DocScreen() {
-  // create plugin instances once so Viewer and ToolBar share them
+// Memoized PDF viewer component - moved outside to prevent re-renders
+const MockOriginalPage = React.memo(function MockOriginalPage({
+  page,
+  plugins,
+  onDocumentLoad,
+  GoToPage,
+  navigateToPageRef,
+}) {
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        p: 2,
+        overflow: "auto",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: "800px",
+          height: "100vh",
+          maxHeight: "100vh",
+          bgcolor: "common.white",
+          p: 1,
+          overflow: "auto",
+        }}
+      >
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+          <Viewer
+            fileUrl="/delmarSection1.pdf"
+            defaultScale={1.4}
+            initialPage={page - 1}
+            plugins={plugins}
+            onDocumentLoad={onDocumentLoad}
+          />
+        </Worker>
+        {GoToPage && (
+          <div style={{ display: "none" }}>
+            <GoToPage>
+              {(props) => {
+                // Store the jumpToPage function in ref when available
+                if (
+                  props.jumpToPage &&
+                  navigateToPageRef.current !== props.jumpToPage
+                ) {
+                  navigateToPageRef.current = props.jumpToPage;
+                }
+                return null;
+              }}
+            </GoToPage>
+          </div>
+        )}
+      </Box>
+    </Box>
+  );
+});
 
+// Memoized right pane component - moved outside to prevent re-renders
+const MockRightPane = React.memo(function MockRightPane({
+  mode,
+  simplifiedText,
+  aiLoading,
+  aiError,
+  textFontSize,
+  textLetterSpacing,
+  simplifiedFormats,
+  setSimplifiedFormats,
+  summary,
+  summaryFormats,
+  setSummaryFormats,
+  mindmap,
+}) {
+  return (
+    <Box
+      sx={{
+        height: "100%",
+        p: 2,
+        bgcolor: "background.paper",
+        borderRadius: { xs: 0, md: 2 },
+        boxShadow: 1,
+        overflow: "auto",
+      }}
+    >
+      {mode === "simplified" && (
+        <>
+          <div>
+            <b>Main Points:</b>
+              <ul>
+                <li>The atom is the smallest part of an element.</li> 
+                <li>The three principal parts of an atom are the proton, the electron, and the neutron.</li>
+                <li>Protons have a positive charge, electrons a negative charge, and neutrons no charge.</li>
+                <li>Valence electrons are located in the outer orbit of an atom.</li>
+                <li>Conductors are materials that provide an easy path for electron flow.</li>
+                <li>Conductors are made from materials that contain from one to three valence electrons.</li>
+                <li>Insulators are materials that do not provide an easy path for the flow of electrons.</li>
+                <li>Insulators are generally made from materials containing seven or eight valence electrons.</li>
+              </ul>
+              
+              <b>Key Concepts:</b>
+                <ul>
+                  <li>Atomic structure</li>
+                  <li>Protons, electrons, and neutrons</li>
+                  <li>Valence electrons</li>
+                  <li>Conductors and insulators</li>
+                  <li>Electron flow</li>
+                </ul>
+
+              <b>Important Definitions:</b>
+                <ul>
+                  <li>Atom: The smallest part of an element.</li>
+                  <li>Proton: A positively charged particle located in the nucleus of an atom.</li>
+                  <li>Electron: A negatively charged particle that orbits the nucleus of an atom.</li>
+                  <li>Neutron: A particle with no charge that is located in the nucleus of an atom.</li>
+                  <li>Valence electrons: Electrons located in the outer orbit of an atom.</li>
+                  <li>Conductor: A material that provides an easy path for electron flow.</li>
+                  <li>Insulator: A material that does not provide an easy path for the flow of electrons.</li>
+                </ul>
+          </div>
+
+          <Simplification 
+            text={simplifiedText}
+            loading={aiLoading.simplify}
+            error={aiError.simplify}
+            fontSize={textFontSize}
+            letterSpacing={textLetterSpacing}
+            formats={simplifiedFormats}
+            onFormatsChange={setSimplifiedFormats}
+            onApplyFormat={(format) => {
+              const selection = window.getSelection();
+              if (selection.rangeCount === 0) return;
+
+              const range = selection.getRangeAt(0);
+              const start = range.startOffset;
+              const end = range.endOffset;
+              const textNode = range.startContainer;
+
+              if (textNode.nodeType === Node.TEXT_NODE) {
+                const newFormat = { start, end, ...format };
+                setSimplifiedFormats((prev) => [...prev, newFormat]);
+              }
+            }}
+          />
+        </>
+      )}
+      {mode === "summarized" && (
+        <div>
+          <b>Summary:</b>
+          <p>
+            Delmar - Section 1 introduces the concept of electricity, its history, and its importance in modern life. It explains the basic principles of electricity, including voltage, current, and resistance, and how they relate to Ohm's Law. The section also covers different types of circuits, including series and parallel, and the role of components like resistors, capacitors, and inductors. It discusses power in electrical circuits, both in terms of instantaneous and average power, and introduces the concept of electrical energy. The section also touches on electrical safety and the use of circuit breakers and fuses. Lastly, it provides an overview of electrical systems in homes and buildings, including the electrical service entrance, service panel, and branch circuits.
+          </p>
+          <Summarization 
+            text={summary}
+            loading={aiLoading.summarize}
+            error={aiError.summarize}
+            fontSize={textFontSize}
+            letterSpacing={textLetterSpacing}
+            formats={summaryFormats}
+            onFormatsChange={setSummaryFormats}
+            onApplyFormat={(format) => {
+              const selection = window.getSelection();
+              if (selection.rangeCount === 0) return;
+
+              const range = selection.getRangeAt(0);
+              const start = range.startOffset;
+              const end = range.endOffset;
+              const textNode = range.startContainer;
+
+              if (textNode.nodeType === Node.TEXT_NODE) {
+                const newFormat = { start, end, ...format };
+                setSummaryFormats((prev) => [...prev, newFormat]);
+              }
+            }}
+          />
+        </div>
+      )}
+      {mode === "mindmap" && (
+        <div>
+          <MindMap 
+            text={mindmap}
+            loading={aiLoading.mindmap}
+            error={aiError.mindmap}
+          />
+        </div>
+      )}
+    </Box>
+  );
+});
+
+// Color picker component - moved outside to prevent re-renders
+const ColorPickerMenu = React.memo(function ColorPickerMenu({ onDone, onCancel, initialColor }) {
+  const [localSelectedColor, setLocalSelectedColor] = useState(initialColor);
+
+  // Color options matching the image
+  const colorOptions = [
+    { color: "#DDC3FE", label: "Purple" }, // Light purple
+    { color: "#FEF4C3", label: "Yellow" }, // Light yellow
+    { color: "#D0E6C1", label: "Green" }, // Light green
+    { color: "#F5C7A9", label: "Orange" }, // Light orange
+  ];
+
+  const handleDone = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onDone(localSelectedColor);
+  };
+
+  const handleCancel = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onCancel();
+  };
+
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: "8px",
+        padding: "12px",
+        boxShadow: "0 6px 16px rgba(0,0,0,0.3)",
+        minWidth: "200px",
+        border: "1px solid #e0e0e0",
+      }}
+    >
+      {/* Title */}
+      <div
+        style={{
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "#333",
+          marginBottom: "12px",
+        }}
+      >
+        Highlight
+      </div>
+
+      {/* Color options */}
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "12px",
+        }}
+      >
+        {colorOptions.map((option) => (
+          <button
+            key={option.color}
+            onClick={(e) => {
+              e.stopPropagation();
+              setLocalSelectedColor(option.color);
+            }}
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "6px",
+              border:
+                localSelectedColor === option.color
+                  ? "2px solid #522A70"
+                  : "2px solid rgb(186, 186, 186)",
+              background: option.color,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "#333",
+            }}
+          ></button>
+        ))}
+      </div>
+
+      {/* Done and Cancel buttons */}
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          justifyContent: "space-between",
+        }}
+      >
+        <button
+          onClick={handleCancel}
+          style={{
+            background: "var(--background)",
+            fontFamily:
+              "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
+            color: "#333",
+            border: ".5px solid #ddd",
+            borderRadius: "6px",
+            padding: "6px 16px",
+            fontSize: "13px",
+            fontWeight: 500,
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#e0e0e0";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#f5f5f5";
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleDone}
+          style={{
+            background: "#522A70",
+            color: "#fff",
+            fontFamily:
+              "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
+            border: "none",
+            borderRadius: "6px",
+            padding: "6px 16px",
+            fontSize: "13px",
+            fontWeight: 500,
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#3d1f52";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#522A70";
+          }}
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  );
+});
+
+export default function DocScreen() {
+  // ========== ALL HOOKS MUST BE DECLARED AT THE TOP ==========
+  // useState hooks
   const [split, setSplit] = useState(false);
+  const [highlights, setHighlights] = useState([]);
+  const [page, setPage] = useState(1);
+  const [mode, setMode] = useState("simplified");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [textFontSize, setTextFontSize] = useState(16);
+  const [textLetterSpacing, setTextLetterSpacing] = useState(0);
+  const [simplifiedFormats, setSimplifiedFormats] = useState([]);
+  const [summaryFormats, setSummaryFormats] = useState([]);
+  const [simplifiedText, setSimplifiedText] = useState("");
+  const [summary, setSummary] = useState("");
+  const [mindmap, setMindmap] = useState("");
+  const [aiLoading, setAiLoading] = useState({
+    simplify: false,
+    summarize: false,
+    mindmap: false,
+  });
+  const [aiError, setAiError] = useState({
+    simplify: null,
+    summarize: null,
+    mindmap: null,
+  });
+  const [timerOpen, setTimerOpen] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [originalTimerMinutes, setOriginalTimerMinutes] = useState(0);
+  const [completionDialogOpen, setCompletionDialogOpen] = useState(false);
+  const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
+  const [totalPages, setTotalPages] = useState(99);
+
+  // useRef hooks
+  const highlightIdRef = useRef(0);
+  const currentSelectionColorRef = useRef("#FFF9C4");
+  const navigateToPageRef = useRef(null);
+  const highlightsRef = useRef(highlights);
+  const timerBtnRef = useRef(null);
+  const aiBtnRef = useRef(null);
+  const vocabBtnRef = useRef(null);
+
+  // Custom hooks
+  const ai = useModal(false);
+  const vocab = useModal(false);
+
+  // useCallback hooks
+  const handleDocumentLoad = useCallback((e) => {
+    setTotalPages(e.doc.numPages);
+  }, []);
+
+  // Keep highlightsRef in sync with state
+  highlightsRef.current = highlights;
 
   // Replace the old zoom plugin with a small custom plugin that exposes
   // a `zoomTo(scale)` method so we can programmatically zoom from outside
@@ -210,163 +593,18 @@ export default function DocScreen() {
     };
   };
 
-  // Store highlights in state - each highlight has highlightAreas array and color
-  const [highlights, setHighlights] = useState([]);
-  const highlightIdRef = useRef(0);
-  const currentSelectionColorRef = useRef("#FFF9C4"); // Default yellow
-  const zoomPluginInstance = useMemo(() => createCustomZoomPlugin(), []);
+  // Create plugin instances - these are designed to be created each render
+  // The Viewer component handles the actual stability
+  const zoomPluginInstance = createCustomZoomPlugin();
   const pageNavigationPluginInstance = pageNavigationPlugin();
   const searchPluginInstance = searchPlugin();
   const printPluginInstance = printPlugin();
   const getFilePluginInstance = getFilePlugin();
-  const navigateToPageRef = useRef(null);
   const { GoToPage } = pageNavigationPluginInstance || {};
 
-  // Color picker component that can use hooks properly
-  const ColorPickerMenu = React.memo(({ onDone, onCancel, initialColor }) => {
-    const [localSelectedColor, setLocalSelectedColor] = useState(initialColor);
-
-    // Color options matching the image
-    const colorOptions = [
-      { color: "#DDC3FE", label: "Purple" }, // Light purple
-      { color: "#FEF4C3", label: "Yellow" }, // Light yellow
-      { color: "#D0E6C1", label: "Green" }, // Light green
-      { color: "#F5C7A9", label: "Orange" }, // Light orange
-    ];
-
-    const handleDone = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      onDone(localSelectedColor);
-    };
-
-    const handleCancel = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      onCancel();
-    };
-
-    return (
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "8px",
-          padding: "12px",
-          boxShadow: "0 6px 16px rgba(0,0,0,0.3)",
-          minWidth: "200px",
-          border: "1px solid #e0e0e0",
-        }}
-      >
-        {/* Title */}
-        <div
-          style={{
-            fontSize: "14px",
-            fontWeight: 600,
-            color: "#333",
-            marginBottom: "12px",
-          }}
-        >
-          Highlight
-        </div>
-
-        {/* Color options */}
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginBottom: "12px",
-          }}
-        >
-          {colorOptions.map((option) => (
-            <button
-              key={option.color}
-              onClick={(e) => {
-                e.stopPropagation();
-                setLocalSelectedColor(option.color);
-              }}
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "6px",
-                border:
-                  localSelectedColor === option.color
-                    ? "2px solid #522A70"
-                    : "2px solid rgb(186, 186, 186)",
-                background: option.color,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "16px",
-                fontWeight: 600,
-                color: "#333",
-              }}
-            ></button>
-          ))}
-        </div>
-
-        {/* Done and Cancel buttons */}
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            justifyContent: "space-between",
-          }}
-        >
-          <button
-            onClick={handleCancel}
-            style={{
-              background: "var(--background)",
-              fontFamily:
-                "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
-              color: "#333",
-              border: ".5px solid #ddd",
-              borderRadius: "6px",
-              padding: "6px 16px",
-              fontSize: "13px",
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#e0e0e0";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#f5f5f5";
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleDone}
-            style={{
-              background: "#522A70",
-              color: "#fff",
-              fontFamily:
-                "var(--font-space-grotesk), 'Space Grotesk', system-ui, -apple-system, sans-serif",
-              border: "none",
-              borderRadius: "6px",
-              padding: "6px 16px",
-              fontSize: "13px",
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#3d1f52";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#522A70";
-            }}
-          >
-            Done
-          </button>
-        </div>
-      </div>
-    );
-  });
-
+  // Highlight plugin render functions
   const renderHighlightTarget = (props) => {
     const handleDone = (selectedColor) => {
-      // Add the highlight with selected color when Done is clicked
       const newHighlight = {
         id: highlightIdRef.current++,
         highlightAreas: props.highlightAreas,
@@ -381,7 +619,6 @@ export default function DocScreen() {
       props.cancel();
     };
 
-    // Calculate position - ensure it's visible
     const leftPos = Math.max(0, Math.min(props.selectionRegion.left, 85));
     const topPos = props.selectionRegion.top + props.selectionRegion.height;
 
@@ -410,7 +647,6 @@ export default function DocScreen() {
       {highlights.map((highlight) => (
         <React.Fragment key={highlight.id}>
           {highlight.highlightAreas
-            // Filter all highlights on the current page
             .filter((area) => area.pageIndex === props.pageIndex)
             .map((area, idx) => (
               <div
@@ -430,22 +666,22 @@ export default function DocScreen() {
     </div>
   );
 
+  // Create highlight plugin - designed to be created each render
   const highlightPluginInstance = highlightPlugin({
     renderHighlightTarget,
     renderHighlights,
     trigger: Trigger.TextSelection,
   });
-  const [page, setPage] = useState(1);
-  const [mode, setMode] = useState("simplified");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Text styling state for AI output
-  const [textFontSize, setTextFontSize] = useState(16);
-  const [textLetterSpacing, setTextLetterSpacing] = useState(0);
-
-  // Text formatting state (bold/italic ranges)
-  const [simplifiedFormats, setSimplifiedFormats] = useState([]);
-  const [summaryFormats, setSummaryFormats] = useState([]);
+  // Create plugins array for the Viewer
+  const plugins = [
+    highlightPluginInstance,
+    zoomPluginInstance,
+    pageNavigationPluginInstance,
+    searchPluginInstance,
+    printPluginInstance,
+    getFilePluginInstance,
+  ];
 
   // Navigate to page when page state changes
   useEffect(() => {
@@ -469,33 +705,7 @@ export default function DocScreen() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Right Side Buttons (AI/Vocab)
-  const ai = useModal(false);
-  const vocab = useModal(false);
-
-  // AI Feature States
-  const [simplifiedText, setSimplifiedText] = useState("");
-  const [summary, setSummary] = useState("");
-  const [mindmap, setMindmap] = useState("");
-  const [aiLoading, setAiLoading] = useState({
-    simplify: false,
-    summarize: false,
-    mindmap: false,
-  });
-  const [aiError, setAiError] = useState({
-    simplify: null,
-    summarize: null,
-    mindmap: null,
-  });
-
   // ===== TIMER (single source of truth) =====
-  const timerBtnRef = useRef(null); // anchor for Popper
-  const [timerOpen, setTimerOpen] = useState(false); // UI visibility (mini/presets)
-  const [timerSeconds, setTimerSeconds] = useState(0); // remaining seconds
-  const [timerRunning, setTimerRunning] = useState(false); // ticking state
-  const [originalTimerMinutes, setOriginalTimerMinutes] = useState(0); // original duration in minutes
-  const [completionDialogOpen, setCompletionDialogOpen] = useState(false); // completion popup
-
   // Show the mini timer UI
   const openTimer = () => setTimerOpen(true);
   // Hide UI only (do not pause)
@@ -585,7 +795,7 @@ export default function DocScreen() {
     setAiError((prev) => ({ ...prev, simplify: null }));
     setSimplifiedText("");
     ai.onClose(); // Close the modal
-
+    
     // Open split view and set mode immediately
     setMode("simplified");
     if (!split) setSplit(true);
@@ -628,7 +838,7 @@ export default function DocScreen() {
     setAiError((prev) => ({ ...prev, summarize: null }));
     setSummary("");
     ai.onClose(); // Close the modal
-
+    
     // Open split view and set mode immediately
     setMode("summarized");
     if (!split) setSplit(true);
@@ -671,7 +881,7 @@ export default function DocScreen() {
     setAiError((prev) => ({ ...prev, mindmap: null }));
     setMindmap("");
     ai.onClose(); // Close the modal
-
+    
     // Open split view and set mode immediately
     setMode("mindmap");
     if (!split) setSplit(true);
@@ -708,190 +918,6 @@ export default function DocScreen() {
       setAiLoading((prev) => ({ ...prev, mindmap: false }));
     }
   };
-
-  const aiBtnRef = useRef(null);
-  const vocabBtnRef = useRef(null);
-  const [textToSpeechPlaying, setTextToSpeechPlaying] = useState(false);
-  const [totalPages, setTotalPages] = useState(99);
-
-  // ===== MOCK CONTENT =====
-  function MockOriginalPage({ page }) {
-    return (
-      <Box
-        sx={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          p: 2,
-          overflow: "auto",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: "800px",
-            height: "100vh",
-            maxHeight: "100vh",
-            bgcolor: "common.white",
-            p: 1,
-            overflow: "auto",
-          }}
-        >
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-            <Viewer
-              fileUrl="/delmarSection1.pdf"
-              defaultScale={1.4}
-              initialPage={page - 1}
-              plugins={[
-                highlightPluginInstance,
-                zoomPluginInstance,
-                pageNavigationPluginInstance,
-                searchPluginInstance,
-                printPluginInstance,
-                getFilePluginInstance,
-              ].filter(Boolean)}
-              onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
-            />
-          </Worker>
-          {GoToPage && (
-            <div style={{ display: "none" }}>
-              <GoToPage>
-                {(props) => {
-                  // Store the jumpToPage function in ref when available
-                  if (
-                    props.jumpToPage &&
-                    navigateToPageRef.current !== props.jumpToPage
-                  ) {
-                    navigateToPageRef.current = props.jumpToPage;
-                  }
-                  return null;
-                }}
-              </GoToPage>
-            </div>
-          )}
-        </Box>
-      </Box>
-    );
-  }
-
-  function MockRightPane({ mode, page }) {
-    return (
-      <Box
-        sx={{
-          height: "100%",
-          p: 2,
-          bgcolor: "background.paper",
-          borderRadius: { xs: 0, md: 2 },
-          boxShadow: 1,
-          overflow: "auto",
-        }}
-      >
-        {mode === "simplified" && (
-          <>
-            <div>
-              <b>Main Points:</b>
-                <ul>
-                  <li>The atom is the smallest part of an element.</li> 
-                  <li>The three principal parts of an atom are the proton, the electron, and the neutron.</li>
-                  <li>Protons have a positive charge, electrons a negative charge, and neutrons no charge.</li>
-                  <li>Valence electrons are located in the outer orbit of an atom.</li>
-                  <li>Conductors are materials that provide an easy path for electron flow.</li>
-                  <li>Conductors are made from materials that contain from one to three valence electrons.</li>
-                  <li>Insulators are materials that do not provide an easy path for the flow of electrons.</li>
-                  <li>Insulators are generally made from materials containing seven or eight valence electrons.</li>
-                </ul>
-                
-                <b>Key Concepts:</b>
-                  <ul>
-                    <li>Atomic structure</li>
-                    <li>Protons, electrons, and neutrons</li>
-                    <li>Valence electrons</li>
-                    <li>Conductors and insulators</li>
-                    <li>Electron flow</li>
-                  </ul>
-
-                <b>Important Definitions:</b>
-                  <ul>
-                    <li>Atom: The smallest part of an element.</li>
-                    <li>Proton: A positively charged particle located in the nucleus of an atom.</li>
-                    <li>Electron: A negatively charged particle that orbits the nucleus of an atom.</li>
-                    <li>Neutron: A particle with no charge that is located in the nucleus of an atom.</li>
-                    <li>Valence electrons: Electrons located in the outer orbit of an atom.</li>
-                    <li>Conductor: A material that provides an easy path for electron flow.</li>
-                    <li>Insulator: A material that does not provide an easy path for the flow of electrons.</li>
-                  </ul>
-            </div>
-
-            <Simplification
-              text={simplifiedText}
-              loading={aiLoading.simplify}
-              error={aiError.simplify}
-              fontSize={textFontSize}
-              letterSpacing={textLetterSpacing}
-              formats={simplifiedFormats}
-              onFormatsChange={setSimplifiedFormats}
-              onApplyFormat={(format) => {
-                const selection = window.getSelection();
-                if (selection.rangeCount === 0) return;
-
-                const range = selection.getRangeAt(0);
-                const start = range.startOffset;
-                const end = range.endOffset;
-                const textNode = range.startContainer;
-
-                if (textNode.nodeType === Node.TEXT_NODE) {
-                  const newFormat = { start, end, ...format };
-                  setSimplifiedFormats((prev) => [...prev, newFormat]);
-                }
-              }}
-            />
-          </>
-        )}
-        {mode === "summarized" && (
-          <div>
-            <b>Summary:</b>
-            <p>
-              Delmar - Section 1 introduces the concept of electricity, its history, and its importance in modern life. It explains the basic principles of electricity, including voltage, current, and resistance, and how they relate to Ohm's Law. The section also covers different types of circuits, including series and parallel, and the role of components like resistors, capacitors, and inductors. It discusses power in electrical circuits, both in terms of instantaneous and average power, and introduces the concept of electrical energy. The section also touches on electrical safety and the use of circuit breakers and fuses. Lastly, it provides an overview of electrical systems in homes and buildings, including the electrical service entrance, service panel, and branch circuits.
-            </p>
-            <Summarization
-              text={summary}
-              loading={aiLoading.summarize}
-              error={aiError.summarize}
-              fontSize={textFontSize}
-              letterSpacing={textLetterSpacing}
-              formats={summaryFormats}
-              onFormatsChange={setSummaryFormats}
-              onApplyFormat={(format) => {
-                const selection = window.getSelection();
-                if (selection.rangeCount === 0) return;
-
-                const range = selection.getRangeAt(0);
-                const start = range.startOffset;
-                const end = range.endOffset;
-                const textNode = range.startContainer;
-
-                if (textNode.nodeType === Node.TEXT_NODE) {
-                  const newFormat = { start, end, ...format };
-                  setSummaryFormats((prev) => [...prev, newFormat]);
-                }
-              }}
-            />
-          </div>
-        )}
-        {mode === "mindmap" && (
-          <div>
-            <MindMap
-              text={mindmap}
-              loading={aiLoading.mindmap}
-              error={aiError.mindmap}
-            />
-          </div>
-        )}
-      </Box>
-    );
-  }
 
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
@@ -1012,8 +1038,10 @@ export default function DocScreen() {
             left={
               <MockOriginalPage
                 page={page}
-                onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
-                onPageChange={(newPage) => setPage(newPage)}
+                plugins={plugins}
+                onDocumentLoad={handleDocumentLoad}
+                GoToPage={GoToPage}
+                navigateToPageRef={navigateToPageRef}
               />
             }
             right={
@@ -1025,7 +1053,20 @@ export default function DocScreen() {
                 }}
               >
                 <ModeTabs value={mode} onChange={setMode} />
-                <MockRightPane mode={mode} page={page} />
+                <MockRightPane
+                  mode={mode}
+                  simplifiedText={simplifiedText}
+                  aiLoading={aiLoading}
+                  aiError={aiError}
+                  textFontSize={textFontSize}
+                  textLetterSpacing={textLetterSpacing}
+                  simplifiedFormats={simplifiedFormats}
+                  setSimplifiedFormats={setSimplifiedFormats}
+                  summary={summary}
+                  summaryFormats={summaryFormats}
+                  setSummaryFormats={setSummaryFormats}
+                  mindmap={mindmap}
+                />
               </Box>
             }
           />
@@ -1033,8 +1074,10 @@ export default function DocScreen() {
           <Box>
             <MockOriginalPage
               page={page}
-              onDocumentLoad={(e) => setTotalPages(e.doc.numPages)}
-              onPageChange={(newPage) => setPage(newPage)}
+              plugins={plugins}
+              onDocumentLoad={handleDocumentLoad}
+              GoToPage={GoToPage}
+              navigateToPageRef={navigateToPageRef}
             />
           </Box>
         )}
@@ -1072,7 +1115,7 @@ export default function DocScreen() {
         onHide={vocab.onClose}
       />
 
-      <AIModal
+      <AIModal 
         anchorEl={aiBtnRef.current}
         open={ai.open}
         onClose={ai.onClose}
