@@ -6,13 +6,13 @@ export default function RightDockButtons({
   timerBtnRef,
   onOpenTimer,
   aiBtnRef,
-  onOpenA,
   onOpenB,
   vocabBtnRef,
   onOpenC,
 }) {
   return (
     <Box
+      className="right-dock-buttons"
       sx={{
         position: "fixed",
         right: 16,

@@ -4,14 +4,12 @@ import React, {
   useState,
   useEffect,
   useRef,
-  useMemo,
   useCallback,
 } from "react";
-import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import styles from "../mvp.module.css";
 import NavBar from "./NavBar";
-import Link from "next/link";
 
 // Components
 import SplitView from "./SplitView";
@@ -33,7 +31,6 @@ import VocabModal from "./VocabModal";
 import {
   Worker,
   Viewer,
-  SpecialZoomLevel,
   createStore,
 } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
@@ -57,6 +54,7 @@ const MockOriginalPage = React.memo(function MockOriginalPage({
 }) {
   return (
     <Box
+      className="pdf-viewer-wrapper"
       sx={{
         width: "100%",
         height: "100%",
@@ -68,6 +66,7 @@ const MockOriginalPage = React.memo(function MockOriginalPage({
       }}
     >
       <Box
+        className="pdf-viewer-container"
         sx={{
           width: "100%",
           maxWidth: "800px",
@@ -1054,15 +1053,44 @@ export default function DocScreen() {
             }
           />
         ) : (
-          <Box>
+          <>
+            <Box className="desktop-pdf-content">
             <MockOriginalPage
               page={page}
-              plugins={plugins}
-              onDocumentLoad={handleDocumentLoad}
-              GoToPage={GoToPage}
-              navigateToPageRef={navigateToPageRef}
+                plugins={plugins}
+                onDocumentLoad={handleDocumentLoad}
+                GoToPage={GoToPage}
+                navigateToPageRef={navigateToPageRef}
             />
           </Box>
+            <Box className="mobile-ai-content">
+              <Box
+                sx={{
+                  height: "100%",
+                  display: "grid",
+                  gridTemplateRows: "auto 1fr",
+                }}
+              >
+                <ModeTabs value={mode} onChange={setMode} />
+                <MockRightPane
+                  mode={mode}
+                  simplifiedText={simplifiedText}
+                  aiLoading={aiLoading}
+                  aiError={aiError}
+                  textFontSize={textFontSize}
+                  textLetterSpacing={textLetterSpacing}
+                  isBold={isBold}
+                  isItalic={isItalic}
+                  simplifiedFormats={simplifiedFormats}
+                  setSimplifiedFormats={setSimplifiedFormats}
+                  summary={summary}
+                  summaryFormats={summaryFormats}
+                  setSummaryFormats={setSummaryFormats}
+                  mindmap={mindmap}
+                />
+              </Box>
+            </Box>
+          </>
         )}
       </Box>
 

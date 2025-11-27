@@ -6,8 +6,6 @@ import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 
 function ToolBar({
   page,
-  onPrev,
-  onNext,
   split,
   onToggleSplit,
 
@@ -26,28 +24,12 @@ function ToolBar({
   onApplyTextFormat,
   onResetFormats,
 }) {
-  const [highlightOpen, setHighlightOpen] = useState(false);
-  const [highlightColor, setHighlightColor] = useState("#fff176");
-  const [thickness, setThickness] = useState(2);
-  const highlightBtnRef = useRef(null);
   const textBtnRef = useRef(null);
   const searchBtnRef = useRef(null);
   const [textMenuPos, setTextMenuPos] = useState({ left: 0, top: 0 });
-  const [menuPos, setMenuPos] = useState({ left: 0, top: 0 });
   const [zoomDropdownOpen, setZoomDropdownOpen] = useState(false);
   const zoomDropdownRef = useRef(null);
   const [zoomMenuPos, setZoomMenuPos] = useState({ left: 0, top: 0 });
-
-  // compute position when opened (center under the highlight button)
-  useLayoutEffect(() => {
-    if (!highlightOpen) return;
-    const btn = highlightBtnRef.current;
-    if (!btn || typeof window === "undefined") return;
-    const rect = btn.getBoundingClientRect();
-    const left = Math.round(rect.left + rect.width / 2);
-    const top = Math.round(rect.bottom + 8);
-    setMenuPos({ left, top });
-  }, [highlightOpen]);
 
   // compute position for zoom dropdown
   useLayoutEffect(() => {
@@ -75,8 +57,6 @@ function ToolBar({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [zoomDropdownOpen]);
-
-  const toggleHighlight = () => setHighlightOpen((v) => !v);
 
   // visual toggle state for toolbar icon buttons (keep purple when toggled)
   const [activeButtons, setActiveButtons] = useState({});
@@ -114,21 +94,6 @@ function ToolBar({
     const top = Math.round(rect.bottom + 8);
     setTextMenuPos({ left, top });
   }, [activeButtons.text]);
-
-  // compute search menu position when search toggled on
-  const [searchMenuPos, setSearchMenuPos] = useState({ left: 0, top: 0 });
-  useLayoutEffect(() => {
-    if (!activeButtons.search) return;
-    const btn = searchBtnRef.current;
-    if (!btn || typeof window === "undefined") return;
-    const rect = btn.getBoundingClientRect();
-    const left = Math.round(rect.left + rect.width / 2);
-    const top = Math.round(rect.bottom + 8);
-    setSearchMenuPos({ left, top });
-  }, [activeButtons.search]);
-
-  // four swatches: purple, yellow, green, red (in that order)
-  const colorSwatches = ["#DDC3FE", "#FEF4C3", "#D0E6C1", "#F5C7A9"];
 
   // toolbar plugin rendering (if provided)
   const { Toolbar } = toolbarPlugin || {};
