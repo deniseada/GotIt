@@ -418,19 +418,31 @@ font-size: 24px;
 
 .dateTimeInput[type="date"] {
   position: relative;
+  cursor: pointer;
 }
 
 .dateTimeInput[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 1;
-  width: 20px;
-  height: 20px;
-  margin-left: 5px;
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  padding: 0;
+  background: transparent;
 }
 
 .dateTimeInput[type="date"]::-webkit-inner-spin-button,
 .dateTimeInput[type="date"]::-webkit-clear-button {
   display: none;
+  -webkit-appearance: none;
+}
+
+.dateTimeInput[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.dateTimeInput[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
 }
 
 .dateTimeInput::placeholder {
