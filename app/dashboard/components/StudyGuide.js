@@ -1,75 +1,131 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styles from "../dashboard.module.css";
 import Link from "next/link";
 
+const STORAGE_KEY = "gotit-study-guide-task-completion";
+
+const DAY_LABELS = {
+  today: "Today's Tasks",
+  tomorrow: "Tomorrow",
+  saturday: "Saturday",
+  sunday: "Sunday",
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+};
+
+const DAY_ORDER = [
+  "today",
+  "tomorrow",
+  "saturday",
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+];
+
+const normalizeDayKey = (day) => {
+  if (!day) return "today";
+  return day.trim().toLowerCase();
+};
+
+const getDayLabel = (dayKey) =>
+  DAY_LABELS[dayKey] ||
+  `${dayKey.charAt(0).toUpperCase()}${dayKey.slice(1)}`;
+
+const getInitialCompletionState = () => {
+  if (typeof window === "undefined") return {};
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch (error) {
+    console.error("Failed to parse stored study guide tasks", error);
+    return {};
+  }
+};
+
+const buildTasksByDay = (guides, completionMap = {}) => {
+  const base = DAY_ORDER.reduce((acc, key) => {
+    acc[key] = [];
+    return acc;
+  }, {});
+
+  const tasksByDay = { ...base };
+
+  guides.forEach((guide) => {
+    guide.tasks.forEach((task, index) => {
+      const dayKey = normalizeDayKey(task.day);
+      if (!tasksByDay[dayKey]) {
+        tasksByDay[dayKey] = [];
+      }
+
+      const taskKey = `${guide.id}-${index}`;
+      tasksByDay[dayKey].push({
+        id: taskKey,
+        text: task.title,
+        completed: !!completionMap[taskKey],
+      });
+    });
+  });
+
+  return tasksByDay;
+};
+
 export default function StudyGuide() {
   const [date, setDate] = useState(new Date());
   const [expandedGuides, setExpandedGuides] = useState({});
+  const studyGuides = useMemo(
+    () => [
+      {
+        id: 1,
+        title: "AELX 2GAP - Electrical Apprenticeship Lvl 1 Final",
+        examDate: { day: 12, date: "Fri, Dec 12" },
+        tasks: [
+          { day: "Today", title: "Circuit Concepts", icon: "/icons/bookOutline.svg" },
+          { day: "Saturday", title: "Safety-Related Functions", icon: "/icons/bookOutline.svg" },
+          { day: "Sunday", title: "Installations and Maintenance", icon: "/icons/bookOutline.svg" },
+          { day: "Sunday", title: "Low Voltage Distribution Systems", icon: "/icons/bookOutline.svg" },
+        ],
+      },
+      {
+        id: 2,
+        title: "AELX 1GAP - Electrical Apprentice Lvl 1 Final",
+        examDate: { day: 10, date: "Wed, Dec 10" },
+        tasks: [
+          { day: "Today", title: "Physics 1 Review", icon: "/icons/bookOutline.svg", hasFire: true },
+          { day: "Saturday", title: "Delmar's Section 1", icon: "/icons/bookOutline.svg" },
+          { day: "Sunday", title: "Delmar's Section 2", icon: "/icons/bookOutline.svg" },
+        ],
+      },
+    ],
+    []
+  );
 
-  // Study guides data
-  const studyGuides = [
-    {
-      id: 1,
-      title: "AELX 2GAP - Electrical Apprenticeship Lvl 1 Final",
-      examDate: { day: 12, date: "Fri, Dec 12" },
-      tasks: [
-        { day: "Today", title: "Circuit Concepts", icon: "/icons/bookOutline.svg"},
-        { day: "Saturday", title: "Safety-Related Functions", icon: "/icons/bookOutline.svg" },
-        { day: "Sunday", title: "Installations and Maintenance", icon: "/icons/bookOutline.svg" },
-        { day: "Sunday", title: "Low Voltage Distribution Systems", icon: "/icons/bookOutline.svg" },
-      ],
-    },
-    {
-      id: 2,
-      title: "AELX 1GAP - Electrical Apprentice Lvl 1 Final",
-      examDate: { day: 10, date: "Wed, Dec 10" },
-      tasks: [
-        { day: "Today", title: "Physics 1 Review", icon: "/icons/bookOutline.svg", hasFire: true },
-        { day: "Saturday", title: "Delmar's Section 1", icon: "/icons/bookOutline.svg" },
-        { day: "Sunday", title: "Delmar's Section 2", icon: "/icons/bookOutline.svg" },
-      ],
-    },
-  ];
+  const [taskCompletion, setTaskCompletion] = useState(getInitialCompletionState);
 
-  // Extract tasks from study guides and group by day
-  const extractTasksFromStudyGuides = () => {
-    const tasksByDay = {
-      today: [],
-      tomorrow: [],
-      sunday: [],
-      monday: [],
-      saturday: [],
-      tuesday: [],
-      wednesday: [],
-      thursday: [],
-      friday: [],
-    };
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(taskCompletion));
+  }, [taskCompletion]);
 
-    let taskIdCounter = 1;
+  const tasksByDay = useMemo(
+    () => buildTasksByDay(studyGuides, taskCompletion),
+    [studyGuides, taskCompletion]
+  );
 
-    studyGuides.forEach((guide) => {
-      guide.tasks.forEach((task, taskIndex) => {
-        const dayKey = task.day?.toLowerCase() || "today";
-        if (tasksByDay[dayKey]) {
-          tasksByDay[dayKey].push({
-            id: taskIdCounter++,
-            text: task.title,
-            completed: false,
-            guideId: guide.id,
-            taskIndex: taskIndex,
-          });
-        }
-      });
-    });
-
-    return tasksByDay;
-  };
-
-  // Initialize tasks from study guides
-  const [tasks, setTasks] = useState(() => extractTasksFromStudyGuides());
+  const dayKeysToRender = useMemo(() => {
+    const additionalKeys = Object.keys(tasksByDay).filter(
+      (key) => !DAY_ORDER.includes(key)
+    );
+    return [...DAY_ORDER, ...additionalKeys];
+  }, [tasksByDay]);
 
   const toggleGuide = (guideId) => {
     setExpandedGuides((prev) => ({
@@ -78,13 +134,16 @@ export default function StudyGuide() {
     }));
   };
 
-  const toggleTask = (section, taskId) => {
-    setTasks((prev) => ({
-      ...prev,
-      [section]: prev[section].map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      ),
-    }));
+  const toggleTask = (taskId) => {
+    setTaskCompletion((prev) => {
+      const next = { ...prev };
+      if (next[taskId]) {
+        delete next[taskId];
+      } else {
+        next[taskId] = true;
+      }
+      return next;
+    });
   };
 
   // Get day name helper
@@ -109,100 +168,31 @@ export default function StudyGuide() {
       <div className={styles.studyGuideTop}>
         {/* Todo List */}
         <div className={styles.todoListContainer}>
-          {tasks.today && tasks.today.length > 0 && (
-            <div className={styles.todoSection}>
-              <h3 className={styles.todoSectionTitle}>Today's Tasks</h3>
-              {tasks.today.map((task) => (
-                <label key={task.id} className={styles.todoItem}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => toggleTask("today", task.id)}
-                    className={styles.todoCheckbox}
-                  />
-                  <span className={task.completed ? styles.todoCompleted : ""}>
-                    {task.text}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
+          {dayKeysToRender.map((dayKey) => {
+            const sectionTasks = tasksByDay[dayKey];
+            if (!sectionTasks || sectionTasks.length === 0) {
+              return null;
+            }
 
-          {tasks.tomorrow && tasks.tomorrow.length > 0 && (
-            <div className={styles.todoSection}>
-              <h3 className={styles.todoSectionTitle}>Tomorrow</h3>
-              {tasks.tomorrow.map((task) => (
-                <label key={task.id} className={styles.todoItem}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => toggleTask("tomorrow", task.id)}
-                    className={styles.todoCheckbox}
-                  />
-                  <span className={task.completed ? styles.todoCompleted : ""}>
-                    {task.text}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {tasks.saturday && tasks.saturday.length > 0 && (
-            <div className={styles.todoSection}>
-              <h3 className={styles.todoSectionTitle}>Saturday</h3>
-              {tasks.saturday.map((task) => (
-                <label key={task.id} className={styles.todoItem}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => toggleTask("saturday", task.id)}
-                    className={styles.todoCheckbox}
-                  />
-                  <span className={task.completed ? styles.todoCompleted : ""}>
-                    {task.text}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {tasks.sunday && tasks.sunday.length > 0 && (
-            <div className={styles.todoSection}>
-              <h3 className={styles.todoSectionTitle}>Sunday</h3>
-              {tasks.sunday.map((task) => (
-                <label key={task.id} className={styles.todoItem}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => toggleTask("sunday", task.id)}
-                    className={styles.todoCheckbox}
-                  />
-                  <span className={task.completed ? styles.todoCompleted : ""}>
-                    {task.text}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {tasks.monday && tasks.monday.length > 0 && (
-            <div className={styles.todoSection}>
-              <h3 className={styles.todoSectionTitle}>Monday</h3>
-              {tasks.monday.map((task) => (
-                <label key={task.id} className={styles.todoItem}>
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => toggleTask("monday", task.id)}
-                    className={styles.todoCheckbox}
-                  />
-                  <span className={task.completed ? styles.todoCompleted : ""}>
-                    {task.text}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
+            return (
+              <div key={dayKey} className={styles.todoSection}>
+                <h3 className={styles.todoSectionTitle}>{getDayLabel(dayKey)}</h3>
+                {sectionTasks.map((task) => (
+                  <label key={task.id} className={styles.todoItem}>
+                    <input
+                      type="checkbox"
+                      checked={task.completed}
+                      onChange={() => toggleTask(task.id)}
+                      className={styles.todoCheckbox}
+                    />
+                    <span className={task.completed ? styles.todoCompleted : ""}>
+                      {task.text}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            );
+          })}
         </div>
 
         {/* Calendar */}
@@ -248,40 +238,57 @@ export default function StudyGuide() {
             >
               <div className={styles.studyGuideContentInner}>
                 {guide.tasks.map((task, index) => {
-                // Group tasks by day
-                const isNewDay = index === 0 || task.day !== guide.tasks[index - 1].day;
-                return (
-                  <React.Fragment key={`${guide.id}-task-${index}`}>
-                    {isNewDay && task.day && (
-                      <div className={styles.studyGuideDayHeader}>
-                        <span className={styles.studyGuideDayTitle}>{task.day}</span>
-                      </div>
-                    )}
-                    {!task.day && index > 0 && guide.tasks[index - 1].day && (
-                      <div className={styles.studyGuideDayHeader}>
-                        <span className={styles.studyGuideDayTitle}></span>
-                      </div>
-                    )}
-                    <Link 
-                      href="/doc" 
-                      className={styles.studyGuideTask}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <span className={styles.studyGuideTaskIcon}>
-                        {task.icon.startsWith('/') || task.icon.startsWith('http') ? (
-                          <img src={task.icon} alt="" width="24" height="24" />
-                        ) : (
-                          task.icon
-                        )}
-                      </span>
-                      <span className={styles.studyGuideTaskTitle}>{task.title}</span>
-                      <span className={styles.studyGuideOpenButton}>
-                        Open
-                      </span>
-                    </Link>
-                  </React.Fragment>
-                );
-              })}
+                  const isNewDay =
+                    index === 0 || task.day !== guide.tasks[index - 1].day;
+                  const taskKey = `${guide.id}-${index}`;
+                  const isTaskCompleted = !!taskCompletion[taskKey];
+
+                  return (
+                    <React.Fragment key={`${guide.id}-task-${index}`}>
+                      {isNewDay && task.day && (
+                        <div className={styles.studyGuideDayHeader}>
+                          <span className={styles.studyGuideDayTitle}>
+                            {task.day}
+                          </span>
+                        </div>
+                      )}
+                      {!task.day && index > 0 && guide.tasks[index - 1].day && (
+                        <div className={styles.studyGuideDayHeader}>
+                          <span className={styles.studyGuideDayTitle}></span>
+                        </div>
+                      )}
+                      <Link
+                        href="/doc"
+                        className={`${styles.studyGuideTask} ${
+                          isTaskCompleted ? styles.studyGuideTaskCompleted : ""
+                        }`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span className={styles.studyGuideTaskIcon}>
+                          {task.icon.startsWith("/") || task.icon.startsWith("http") ? (
+                            <img src={task.icon} alt="" width="24" height="24" />
+                          ) : (
+                            task.icon
+                          )}
+                        </span>
+                        <span
+                          className={`${styles.studyGuideTaskTitle} ${
+                            isTaskCompleted ? styles.studyGuideTaskTitleCompleted : ""
+                          }`}
+                        >
+                          {task.title}
+                        </span>
+                        <span
+                          className={`${styles.studyGuideOpenButton} ${
+                            isTaskCompleted ? styles.studyGuideOpenButtonCompleted : ""
+                          }`}
+                        >
+                          Open
+                        </span>
+                      </Link>
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </div>
           </div>

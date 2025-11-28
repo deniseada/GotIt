@@ -1270,6 +1270,11 @@
   background: #f9f9f9;
 }
 
+.studyGuideTaskCompleted {
+  background: rgba(186, 170, 198, 0.15);
+  border-color: #c9bed9;
+}
+
 .studyGuideTaskIcon {
   font-size: 1.25rem;
   width: 2.5rem;
@@ -1298,6 +1303,11 @@
   font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
 }
 
+.studyGuideTaskTitleCompleted {
+  text-decoration: line-through;
+  color: #8a7aa0;
+}
+
 .studyGuideOpenButton {
   background: #522a70;
   color: white;
@@ -1312,4 +1322,9 @@
 
 .studyGuideOpenButton:hover {
   background: #3d1f52;
+}
+
+.studyGuideOpenButtonCompleted {
+  background: #d1c5e1;
+  color: #522a70;
 }
