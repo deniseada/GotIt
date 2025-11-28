@@ -346,6 +346,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       className={styles.dateTimeInput}
                       value={formatDateForInput(startDate)}
                       onChange={handleStartDateChange}
+                      onClick={(e) => e.target.showPicker?.()}
                     />
                   </div>
 
@@ -358,6 +359,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       className={styles.dateTimeInput}
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
+                      onClick={(e) => e.target.showPicker?.()}
                     />
                   </div>
 
@@ -371,6 +373,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       value={formatDateForInput(endDate)}
                       onChange={handleEndDateChange}
                       min={startDate ? formatDateForInput(startDate) : undefined}
+                      onClick={(e) => e.target.showPicker?.()}
                     />
                   </div>
 
@@ -383,6 +386,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       className={styles.dateTimeInput}
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
+                      onClick={(e) => e.target.showPicker?.()}
                     />
                   </div>
                 </div>
@@ -650,6 +654,7 @@ export default function StudyGuideModal({ open, onClose }) {
                               className={styles.dateTimeInput}
                               value={formatDateForInput(startDate)}
                               onChange={handleStartDateChange}
+                              onClick={(e) => e.target.showPicker?.()}
                             />
                           </div>
                           <div className={styles.dateRangeEditField}>
@@ -660,6 +665,7 @@ export default function StudyGuideModal({ open, onClose }) {
                               value={formatDateForInput(endDate)}
                               onChange={handleEndDateChange}
                               min={startDate ? formatDateForInput(startDate) : undefined}
+                              onClick={(e) => e.target.showPicker?.()}
                             />
                           </div>
                         </div>
