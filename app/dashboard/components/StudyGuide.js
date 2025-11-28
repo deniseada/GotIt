@@ -30,13 +30,23 @@ export default function StudyGuide() {
   const studyGuides = [
     {
       id: 1,
-      title: "TELC 0011 - Electrical Apprenticeship Level 1 Theory Review",
-      examDate: { day: 17, date: "Friday, December 12, 2025" },
+      title: "AELX 2GAP - Electrical Apprenticeship Lvl 1 Final",
+      examDate: { day: 17, date: "Fri, Dec 12" },
       tasks: [
         { day: "Today", title: "Circuit Concepts", icon: "📚", hasFire: true },
         { day: "Saturday", title: "Safety-Related Functions", icon: "📚" },
-        { day: "Saturday", title: "Interpretation of Drawings, Plans, and Specifications", icon: "📚" },
-        { day: "", title: "Low Voltage Distribution Systems", icon: "📚" },
+        { day: "Saturday", title: "Installations and Maintenance", icon: "📚" },
+        { day: "*Next* Monday", title: "Low Voltage Distribution Systems", icon: "📚" },
+      ],
+    },
+    {
+      id: 1,
+      title: "AELX 1GAP - Electrical Apprentice Lvl 1 Final",
+      examDate: { day: 17, date: "Wed, Dec 10" },
+      tasks: [
+        { day: "Today", title: "Physics 1 Review", icon: "📚", hasFire: true },
+        { day: "Saturday", title: "Delmar's Section 1", icon: "📚" },
+        { day: "Saturday", title: "Delmar's Section 2", icon: "📚" },
       ],
     },
   ];
