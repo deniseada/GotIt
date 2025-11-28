@@ -9,23 +9,6 @@ export default function StudyGuide() {
   const [date, setDate] = useState(new Date());
   const [expandedGuides, setExpandedGuides] = useState({});
 
-  // To-do list state
-  const [tasks, setTasks] = useState({
-    today: [
-      { id: 1, text: "To read Delmar's section 1", completed: false },
-      { id: 2, text: "To read Basic Motor Control", completed: false },
-    ],
-    tomorrow: [
-      { id: 3, text: "To read Delmar's section 2", completed: false },
-    ],
-    sunday: [
-      { id: 4, text: "Circuit Control", completed: false },
-    ],
-    monday: [
-      { id: 5, text: "Three Wire Circuit", completed: false },
-    ],
-  });
-
   // Study guides data
   const studyGuides = [
     {
@@ -50,6 +33,43 @@ export default function StudyGuide() {
       ],
     },
   ];
+
+  // Extract tasks from study guides and group by day
+  const extractTasksFromStudyGuides = () => {
+    const tasksByDay = {
+      today: [],
+      tomorrow: [],
+      sunday: [],
+      monday: [],
+      saturday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+    };
+
+    let taskIdCounter = 1;
+
+    studyGuides.forEach((guide) => {
+      guide.tasks.forEach((task, taskIndex) => {
+        const dayKey = task.day?.toLowerCase() || "today";
+        if (tasksByDay[dayKey]) {
+          tasksByDay[dayKey].push({
+            id: taskIdCounter++,
+            text: task.title,
+            completed: false,
+            guideId: guide.id,
+            taskIndex: taskIndex,
+          });
+        }
+      });
+    });
+
+    return tasksByDay;
+  };
+
+  // Initialize tasks from study guides
+  const [tasks, setTasks] = useState(() => extractTasksFromStudyGuides());
 
   const toggleGuide = (guideId) => {
     setExpandedGuides((prev) => ({
@@ -89,73 +109,100 @@ export default function StudyGuide() {
       <div className={styles.studyGuideTop}>
         {/* Todo List */}
         <div className={styles.todoListContainer}>
-          <div className={styles.todoSection}>
-            <h3 className={styles.todoSectionTitle}>Today's Tasks</h3>
-            {tasks.today.map((task) => (
-              <label key={task.id} className={styles.todoItem}>
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask("today", task.id)}
-                  className={styles.todoCheckbox}
-                />
-                <span className={task.completed ? styles.todoCompleted : ""}>
-                  {task.text}
-                </span>
-              </label>
-            ))}
-          </div>
+          {tasks.today && tasks.today.length > 0 && (
+            <div className={styles.todoSection}>
+              <h3 className={styles.todoSectionTitle}>Today's Tasks</h3>
+              {tasks.today.map((task) => (
+                <label key={task.id} className={styles.todoItem}>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask("today", task.id)}
+                    className={styles.todoCheckbox}
+                  />
+                  <span className={task.completed ? styles.todoCompleted : ""}>
+                    {task.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
 
-          <div className={styles.todoSection}>
-            <h3 className={styles.todoSectionTitle}>Tomorrow</h3>
-            {tasks.tomorrow.map((task) => (
-              <label key={task.id} className={styles.todoItem}>
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask("tomorrow", task.id)}
-                  className={styles.todoCheckbox}
-                />
-                <span className={task.completed ? styles.todoCompleted : ""}>
-                  {task.text}
-                </span>
-              </label>
-            ))}
-          </div>
+          {tasks.tomorrow && tasks.tomorrow.length > 0 && (
+            <div className={styles.todoSection}>
+              <h3 className={styles.todoSectionTitle}>Tomorrow</h3>
+              {tasks.tomorrow.map((task) => (
+                <label key={task.id} className={styles.todoItem}>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask("tomorrow", task.id)}
+                    className={styles.todoCheckbox}
+                  />
+                  <span className={task.completed ? styles.todoCompleted : ""}>
+                    {task.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
 
-          <div className={styles.todoSection}>
-            <h3 className={styles.todoSectionTitle}>Sunday</h3>
-            {tasks.sunday.map((task) => (
-              <label key={task.id} className={styles.todoItem}>
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask("sunday", task.id)}
-                  className={styles.todoCheckbox}
-                />
-                <span className={task.completed ? styles.todoCompleted : ""}>
-                  {task.text}
-                </span>
-              </label>
-            ))}
-          </div>
+          {tasks.saturday && tasks.saturday.length > 0 && (
+            <div className={styles.todoSection}>
+              <h3 className={styles.todoSectionTitle}>Saturday</h3>
+              {tasks.saturday.map((task) => (
+                <label key={task.id} className={styles.todoItem}>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask("saturday", task.id)}
+                    className={styles.todoCheckbox}
+                  />
+                  <span className={task.completed ? styles.todoCompleted : ""}>
+                    {task.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
 
-          <div className={styles.todoSection}>
-            <h3 className={styles.todoSectionTitle}>Monday</h3>
-            {tasks.monday.map((task) => (
-              <label key={task.id} className={styles.todoItem}>
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask("monday", task.id)}
-                  className={styles.todoCheckbox}
-                />
-                <span className={task.completed ? styles.todoCompleted : ""}>
-                  {task.text}
-                </span>
-              </label>
-            ))}
-          </div>
+          {tasks.sunday && tasks.sunday.length > 0 && (
+            <div className={styles.todoSection}>
+              <h3 className={styles.todoSectionTitle}>Sunday</h3>
+              {tasks.sunday.map((task) => (
+                <label key={task.id} className={styles.todoItem}>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask("sunday", task.id)}
+                    className={styles.todoCheckbox}
+                  />
+                  <span className={task.completed ? styles.todoCompleted : ""}>
+                    {task.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+
+          {tasks.monday && tasks.monday.length > 0 && (
+            <div className={styles.todoSection}>
+              <h3 className={styles.todoSectionTitle}>Monday</h3>
+              {tasks.monday.map((task) => (
+                <label key={task.id} className={styles.todoItem}>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask("monday", task.id)}
+                    className={styles.todoCheckbox}
+                  />
+                  <span className={task.completed ? styles.todoCompleted : ""}>
+                    {task.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Calendar */}
