@@ -8,7 +8,7 @@ export default function StudyGuideModal({ open, onClose }) {
   const [step, setStep] = useState(1);
   
   // Step 1 data
-  const [studyGuideName, setStudyGuideName] = useState("Midterm Exam");
+  const [studyGuideName, setStudyGuideName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [chosenTopics, setChosenTopics] = useState([
     "Delmar's Standard Textbook for Electricity",
@@ -16,6 +16,8 @@ export default function StudyGuideModal({ open, onClose }) {
   const [recentTopics] = useState([
     "Delmar's Standard Textbook for Electricity",
     "Basic Motor Controls",
+    "Apply Circuit Concepts",
+    "Circuit Concept Module",
   ]);
   
   // Step 2 data
@@ -96,8 +98,16 @@ export default function StudyGuideModal({ open, onClose }) {
   };
 
   const handleAddTopic = (topic) => {
-    if (!chosenTopics.includes(topic)) {
+    if (!chosenTopics.includes(topic) && topic.trim() !== "") {
       setChosenTopics([...chosenTopics, topic]);
+    }
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      e.preventDefault();
+      handleAddTopic(searchQuery.trim());
+      setSearchQuery("");
     }
   };
 
@@ -231,36 +241,14 @@ export default function StudyGuideModal({ open, onClose }) {
                   </label>
                   <div className={sharedStyles.searchInputWrapper} style={{ marginTop: 0, width: "100%" }}>
                     <div className={sharedStyles.searchIcon}>
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <circle
-                          cx="9"
-                          cy="9"
-                          r="6"
-                          stroke="#6b7280"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="m15 15-3.5-3.5"
-                          stroke="#6b7280"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <img src="/icons/searchIcon.svg" alt="Search" width={24} height={24} />
                     </div>
                     <input
                       type="text"
                       className={sharedStyles.searchInput}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={handleSearchKeyDown}
                       placeholder="Search for your topic"
                     />
                   </div>
@@ -417,7 +405,7 @@ export default function StudyGuideModal({ open, onClose }) {
               <div className={styles.step2Content}>
                 <h3 className={styles.step2Question}>How much time can you commit daily?</h3>
                 <p className={styles.step2Subtitle}>
-                  Choose a realistic study duration you can maintain.
+                  Choose a realistic study duration you can maintain. You can always change this later.
                 </p>
 
                 <div className={styles.commitmentGrid}>
@@ -448,8 +436,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       )}
                     </div>
                     <div className={styles.commitmentIcon}>
-                      {/* Placeholder for beaker icon - user will replace later */}
-                      <div className={styles.iconPlaceholder}>⚗️</div>
+                      <img src="/icons/lightStudy.svg" alt="Light study" />
                     </div>
                     <div className={styles.commitmentTitle}>Light</div>
                     <div className={styles.commitmentDuration}>1 hour/day</div>
@@ -482,8 +469,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       )}
                     </div>
                     <div className={styles.commitmentIcon}>
-                      {/* Placeholder for clock icon - user will replace later */}
-                      <div className={styles.iconPlaceholder}>🕐</div>
+                      <img src="/icons/balancedStudy.svg" alt="Balanced study" />
                     </div>
                     <div className={styles.commitmentTitle}>Balanced</div>
                     <div className={styles.commitmentDuration}>2 hour/day</div>
@@ -516,8 +502,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       )}
                     </div>
                     <div className={styles.commitmentIcon}>
-                      {/* Placeholder for lightning icon - user will replace later */}
-                      <div className={styles.iconPlaceholder}>⚡</div>
+                      <img src="/icons/focusStudy.svg" alt="Focused study" />
                     </div>
                     <div className={styles.commitmentTitle}>Focused</div>
                     <div className={styles.commitmentDuration}>3 hour/day</div>
@@ -550,8 +535,7 @@ export default function StudyGuideModal({ open, onClose }) {
                       )}
                     </div>
                     <div className={styles.commitmentIcon}>
-                      {/* Placeholder for flame icon - user will replace later */}
-                      <div className={styles.iconPlaceholder}>🔥</div>
+                      <img src="/icons/intensiveStudy.svg" alt="Intensive study" />
                     </div>
                     <div className={styles.commitmentTitle}>Intensive</div>
                     <div className={styles.commitmentDuration}>4+ hour/day</div>
@@ -854,7 +838,7 @@ export default function StudyGuideModal({ open, onClose }) {
                               )}
                             </div>
                             <div className={styles.commitmentIcon}>
-                              <div className={styles.iconPlaceholder}>⚗️</div>
+                              <img src="/icons/lightStudy.svg" alt="Light study" />
                             </div>
                             <div className={styles.commitmentTitle}>Light</div>
                             <div className={styles.commitmentDuration}>1 hour/day</div>
@@ -890,7 +874,7 @@ export default function StudyGuideModal({ open, onClose }) {
                               )}
                             </div>
                             <div className={styles.commitmentIcon}>
-                              <div className={styles.iconPlaceholder}>🕐</div>
+                              <img src="/icons/balancedStudy.svg" alt="Balanced study" />
                             </div>
                             <div className={styles.commitmentTitle}>Balanced</div>
                             <div className={styles.commitmentDuration}>2 hour/day</div>
@@ -926,7 +910,7 @@ export default function StudyGuideModal({ open, onClose }) {
                               )}
                             </div>
                             <div className={styles.commitmentIcon}>
-                              <div className={styles.iconPlaceholder}>⚡</div>
+                              <img src="/icons/focusedStudy.svg" alt="Focused study" />
                             </div>
                             <div className={styles.commitmentTitle}>Focused</div>
                             <div className={styles.commitmentDuration}>3 hour/day</div>
@@ -962,7 +946,7 @@ export default function StudyGuideModal({ open, onClose }) {
                               )}
                             </div>
                             <div className={styles.commitmentIcon}>
-                              <div className={styles.iconPlaceholder}>🔥</div>
+                              <img src="/icons/intensiveStudy.svg" alt="Intensive study" />
                             </div>
                             <div className={styles.commitmentTitle}>Intensive</div>
                             <div className={styles.commitmentDuration}>4+ hour/day</div>
@@ -997,8 +981,8 @@ export default function StudyGuideModal({ open, onClose }) {
                 
                 <div className={styles.completeIcon}>
                   <svg
-                    width="80"
-                    height="80"
+                    width="160"
+                    height="160"
                     viewBox="0 0 80 80"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
