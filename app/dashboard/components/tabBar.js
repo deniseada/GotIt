@@ -45,8 +45,25 @@ const EMOTION_FILTERS = [
   { value: "neutral", label: "Neutral", icon: "/icons/neutralFilter.svg", pillClass: "optionPillNeutral" },
 ];
 
+const TAB_STORAGE_KEY = "gotit-dashboard-active-tab";
+const MAX_TAB_INDEX = 5;
+
+const getStoredTabValue = () => {
+  if (typeof window === "undefined") return 0;
+  try {
+    const storedValue = window.localStorage.getItem(TAB_STORAGE_KEY);
+    const parsed = storedValue !== null ? Number(storedValue) : NaN;
+    if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= MAX_TAB_INDEX) {
+      return parsed;
+    }
+  } catch (error) {
+    console.error("Error reading dashboard tab from localStorage:", error);
+  }
+  return 0;
+};
+
 export default function TabBar() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(getStoredTabValue);
   const [filterOpen, setFilterOpen] = useState(false);
   const [emotion, setEmotion] = useState("none");
   const [cardList, setCardList] = useState([]);
@@ -188,6 +205,27 @@ export default function TabBar() {
     saveBookmarksToStorage(bookmarksMap);
     saveEmotionsToStorage(emotionsMap);
   }, [cardList, isClient, saveBookmarksToStorage, saveEmotionsToStorage]);
+
+  // Update local tab value if storage changes (other tabs)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleStorage = (event) => {
+      if (event.key === TAB_STORAGE_KEY) {
+        setValue(getStoredTabValue());
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(TAB_STORAGE_KEY, String(value));
+    } catch (error) {
+      console.error("Error saving dashboard tab to localStorage:", error);
+    }
+  }, [value]);
 
   // Close filter menu on outside click or Escape key
   useEffect(() => {
