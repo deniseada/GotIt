@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import styles from "../mvp.module.css";
 import Link from "next/link";
 
-export default function NavBar({ title, backHref = "/dashboard" }) {
+export default function NavBar({ title, backHref = "/dashboard", onSettingsClick }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const toggleBookmark = () => {
@@ -44,7 +44,7 @@ export default function NavBar({ title, backHref = "/dashboard" }) {
 
         <div className={styles.rightGroup}>
           <div className={styles.toolIcons}>
-            <button className={styles.settingsBtn}>
+            <button className={styles.settingsBtn} onClick={onSettingsClick}>
               <img
                 src="/icons/gear.svg"
                 alt="settings"
