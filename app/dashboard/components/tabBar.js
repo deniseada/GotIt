@@ -63,12 +63,13 @@ const getStoredTabValue = () => {
 };
 
 export default function TabBar() {
-  const [value, setValue] = useState(getStoredTabValue);
+  const [value, setValue] = useState(0); // Start with 0 to match server render
   const [filterOpen, setFilterOpen] = useState(false);
   const [emotion, setEmotion] = useState("none");
   const [cardList, setCardList] = useState([]);
   const [isClient, setIsClient] = useState(false);
   const filterRef = useRef(null);
+  const hasLoadedTab = useRef(false); // Track if we've loaded the initial tab from localStorage
 
   // Initial card data
   const initialCards = [
@@ -190,6 +191,11 @@ export default function TabBar() {
         emotion: storedEmotions[card.id] ?? card.emotion,
       }));
     });
+
+    // Load saved tab after hydration to avoid mismatch
+    const savedTab = getStoredTabValue();
+    setValue(savedTab);
+    hasLoadedTab.current = true; // Mark as loaded so we can start saving changes
   }, [loadBookmarksFromStorage, loadEmotionsFromStorage]);
 
   // Save to localStorage when cards change
@@ -219,7 +225,7 @@ export default function TabBar() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !hasLoadedTab.current) return;
     try {
       window.localStorage.setItem(TAB_STORAGE_KEY, String(value));
     } catch (error) {
