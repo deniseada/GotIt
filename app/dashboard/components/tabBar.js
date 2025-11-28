@@ -6,6 +6,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import UploadButton from "./uploadButton";
 import DocCard from "../components/DocCard";
+import StudyGuide from "./StudyGuide";
 
 // Helper Components
 function CustomTabPanel(props) {
@@ -366,6 +367,7 @@ export default function TabBar() {
             <Tab label="Uploaded" {...a11yProps(2)} />
             <Tab label="Bookmarked" {...a11yProps(3)} />
             <Tab label="Course Books" {...a11yProps(4)} />
+            <Tab label="Study Guide" {...a11yProps(5)} />
           </Tabs>
         </div>
 
@@ -455,6 +457,10 @@ export default function TabBar() {
 
       <CustomTabPanel value={value} index={4}>
         {renderTabContent(renderGridWithSection("Course Book", styles.courseBookGrid))}
+      </CustomTabPanel>
+
+      <CustomTabPanel value={value} index={5}>
+        <StudyGuide />
       </CustomTabPanel>
     </Box>
   );

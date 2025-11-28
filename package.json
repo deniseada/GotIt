@@ -29,6 +29,7 @@
     "next": "15.5.3",
     "pdfjs-dist": "^3.4.120",
     "react": "19.1.0",
+    "react-calendar": "^6.0.0",
     "react-dom": "19.1.0",
     "sass": "^1.93.2",
     "three": "^0.181.2"
