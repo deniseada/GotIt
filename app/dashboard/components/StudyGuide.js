@@ -31,22 +31,22 @@ export default function StudyGuide() {
     {
       id: 1,
       title: "AELX 2GAP - Electrical Apprenticeship Lvl 1 Final",
-      examDate: { day: 17, date: "Fri, Dec 12" },
+      examDate: { day: 12, date: "Fri, Dec 12" },
       tasks: [
-        { day: "Today", title: "Circuit Concepts", icon: "📚", hasFire: true },
-        { day: "Saturday", title: "Safety-Related Functions", icon: "📚" },
-        { day: "Saturday", title: "Installations and Maintenance", icon: "📚" },
-        { day: "*Next* Monday", title: "Low Voltage Distribution Systems", icon: "📚" },
+        { day: "Today", title: "Circuit Concepts", icon: "/icons/bookOutline.svg"},
+        { day: "Saturday", title: "Safety-Related Functions", icon: "/icons/bookOutline.svg" },
+        { day: "Sunday", title: "Installations and Maintenance", icon: "/icons/bookOutline.svg" },
+        { day: "Sunday", title: "Low Voltage Distribution Systems", icon: "/icons/bookOutline.svg" },
       ],
     },
     {
-      id: 1,
+      id: 2,
       title: "AELX 1GAP - Electrical Apprentice Lvl 1 Final",
-      examDate: { day: 17, date: "Wed, Dec 10" },
+      examDate: { day: 10, date: "Wed, Dec 10" },
       tasks: [
-        { day: "Today", title: "Physics 1 Review", icon: "📚", hasFire: true },
-        { day: "Saturday", title: "Delmar's Section 1", icon: "📚" },
-        { day: "Saturday", title: "Delmar's Section 2", icon: "📚" },
+        { day: "Today", title: "Physics 1 Review", icon: "/icons/bookOutline.svg", hasFire: true },
+        { day: "Saturday", title: "Delmar's Section 1", icon: "/icons/bookOutline.svg" },
+        { day: "Sunday", title: "Delmar's Section 2", icon: "/icons/bookOutline.svg" },
       ],
     },
   ];
@@ -90,7 +90,7 @@ export default function StudyGuide() {
         {/* Todo List */}
         <div className={styles.todoListContainer}>
           <div className={styles.todoSection}>
-            <h3 className={styles.todoSectionTitle}>Today's Task</h3>
+            <h3 className={styles.todoSectionTitle}>Today's Tasks</h3>
             {tasks.today.map((task) => (
               <label key={task.id} className={styles.todoItem}>
                 <input
@@ -194,39 +194,49 @@ export default function StudyGuide() {
               )}
             </div>
 
-            {expandedGuides[guide.id] && (
-              <div className={styles.studyGuideContent}>
+            <div 
+              className={`${styles.studyGuideContent} ${
+                expandedGuides[guide.id] ? styles.studyGuideContentOpen : styles.studyGuideContentClosed
+              }`}
+            >
+              <div className={styles.studyGuideContentInner}>
                 {guide.tasks.map((task, index) => {
-                  // Group tasks by day
-                  const isNewDay = index === 0 || task.day !== guide.tasks[index - 1].day;
-                  return (
-                    <React.Fragment key={index}>
-                      {isNewDay && task.day && (
-                        <div className={styles.studyGuideDayHeader}>
-                          <span className={styles.studyGuideDayTitle}>{task.day}</span>
-                        </div>
-                      )}
-                      {!task.day && index > 0 && guide.tasks[index - 1].day && (
-                        <div className={styles.studyGuideDayHeader}>
-                          <span className={styles.studyGuideDayTitle}></span>
-                        </div>
-                      )}
-                      <div className={styles.studyGuideTask}>
-                        <span className={styles.studyGuideTaskIcon}>{task.icon}</span>
-                        <span className={styles.studyGuideTaskTitle}>{task.title}</span>
-                        <Link 
-                          href="/doc" 
-                          className={styles.studyGuideOpenButton}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Open
-                        </Link>
+                // Group tasks by day
+                const isNewDay = index === 0 || task.day !== guide.tasks[index - 1].day;
+                return (
+                  <React.Fragment key={`${guide.id}-task-${index}`}>
+                    {isNewDay && task.day && (
+                      <div className={styles.studyGuideDayHeader}>
+                        <span className={styles.studyGuideDayTitle}>{task.day}</span>
                       </div>
-                    </React.Fragment>
-                  );
-                })}
+                    )}
+                    {!task.day && index > 0 && guide.tasks[index - 1].day && (
+                      <div className={styles.studyGuideDayHeader}>
+                        <span className={styles.studyGuideDayTitle}></span>
+                      </div>
+                    )}
+                    <Link 
+                      href="/doc" 
+                      className={styles.studyGuideTask}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span className={styles.studyGuideTaskIcon}>
+                        {task.icon.startsWith('/') || task.icon.startsWith('http') ? (
+                          <img src={task.icon} alt="" width="24" height="24" />
+                        ) : (
+                          task.icon
+                        )}
+                      </span>
+                      <span className={styles.studyGuideTaskTitle}>{task.title}</span>
+                      <span className={styles.studyGuideOpenButton}>
+                        Open
+                      </span>
+                    </Link>
+                  </React.Fragment>
+                );
+              })}
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>
