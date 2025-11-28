@@ -4,6 +4,33 @@ import React, { useState } from "react";
 import styles from "./StudyGuideModal.module.css";
 import sharedStyles from "../dashboard.module.css";
 
+const STUDY_GUIDES_STORAGE_KEY = "gotit-study-guides";
+
+// Helper functions for localStorage
+const getStoredStudyGuides = () => {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = window.localStorage.getItem(STUDY_GUIDES_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Error loading study guides from localStorage:", error);
+    return [];
+  }
+};
+
+const saveStudyGuideToStorage = (studyGuide) => {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = getStoredStudyGuides();
+    const updated = [...existing, studyGuide];
+    window.localStorage.setItem(STUDY_GUIDES_STORAGE_KEY, JSON.stringify(updated));
+    // Trigger custom event to notify StudyGuide component
+    window.dispatchEvent(new CustomEvent("studyGuidesUpdated"));
+  } catch (error) {
+    console.error("Error saving study guide to localStorage:", error);
+  }
+};
+
 export default function StudyGuideModal({ open, onClose }) {
   const [step, setStep] = useState(1);
   
@@ -20,11 +47,15 @@ export default function StudyGuideModal({ open, onClose }) {
     "Circuit Concept Module",
   ]);
   
-  // Step 2 data
-  const [startDate, setStartDate] = useState("");
-  const [startTime, setStartTime] = useState("");
+  // Step 2 data - Initialize startDate with today's date
+  const [startDate, setStartDate] = useState(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
   const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
   
   // Step 3 data
   const [dailyCommitment, setDailyCommitment] = useState(null);
@@ -115,6 +146,75 @@ export default function StudyGuideModal({ open, onClose }) {
     setChosenTopics(chosenTopics.filter((t) => t !== topic));
   };
 
+  // Generate study guide structure and save it
+  const generateAndSaveStudyGuide = () => {
+    if (!startDate || !endDate || chosenTopics.length === 0) return;
+
+    // Calculate days between start and end
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = end - start;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Generate tasks by distributing topics across days
+    const tasks = [];
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
+    if (diffDays > 0) {
+      chosenTopics.forEach((topic, index) => {
+        // Distribute topics evenly across available days
+        const dayOffset = Math.floor((index / chosenTopics.length) * diffDays);
+        const taskDate = new Date(start);
+        taskDate.setDate(start.getDate() + dayOffset);
+        
+        const dayName = dayNames[taskDate.getDay()];
+        const isToday = dayOffset === 0;
+        const dayLabel = isToday ? "Today" : dayName;
+        
+        tasks.push({
+          day: dayLabel,
+          title: topic,
+          icon: "/icons/bookOutline.svg",
+        });
+      });
+    } else {
+      // If same day, all tasks are "Today"
+      chosenTopics.forEach((topic) => {
+        tasks.push({
+          day: "Today",
+          title: topic,
+          icon: "/icons/bookOutline.svg",
+        });
+      });
+    }
+
+    // Format exam date
+    const examDateObj = new Date(endDate);
+    const dayNamesShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dayName = dayNamesShort[examDateObj.getDay()];
+    const monthName = months[examDateObj.getMonth()];
+    const day = examDateObj.getDate();
+
+    // Create study guide object
+    const studyGuide = {
+      id: Date.now(), // Use timestamp as unique ID
+      title: studyGuideName || "Untitled Study Guide",
+      examDate: {
+        day: day,
+        date: `${dayName}, ${monthName} ${day}`,
+      },
+      tasks: tasks,
+      startDate: startDate,
+      endDate: endDate,
+      dailyCommitment: dailyCommitment,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to localStorage
+    saveStudyGuideToStorage(studyGuide);
+  };
+
   const handleNext = () => {
     if (step === 1) {
       if (chosenTopics.length === 0) return;
@@ -132,19 +232,11 @@ export default function StudyGuideModal({ open, onClose }) {
     } else if (step === 4) {
       // Handle Generate
       setIsGenerating(true);
-      // TODO: Handle final step or submission
-      console.log("All data:", {
-        studyGuideName,
-        chosenTopics,
-        startDate,
-        startTime,
-        endDate,
-        endTime,
-        dailyCommitment,
-      });
       
       // Simulate API call or processing (4-5 seconds)
       setTimeout(() => {
+        // Generate and save the study guide
+        generateAndSaveStudyGuide();
         setIsGenerating(false);
         setStep(5);
       }, 4500);
@@ -169,10 +261,13 @@ export default function StudyGuideModal({ open, onClose }) {
     setStudyGuideName("Midterm Exam");
     setSearchQuery("");
     setChosenTopics(["Delmar's Standard Textbook for Electricity"]);
-    setStartDate("");
-    setStartTime("");
+    // Reset start date to today's date
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    setStartDate(`${year}-${month}-${day}`);
     setEndDate("");
-    setEndTime("");
     setDailyCommitment(null);
     setIsEditingTitle(false);
     setIsEditingTopics(false);
@@ -352,19 +447,6 @@ export default function StudyGuideModal({ open, onClose }) {
 
                   <div className={styles.dateTimeField}>
                     <label className={styles.dateTimeLabel}>
-                      Start time<span className={styles.required}>*</span>
-                    </label>
-                    <input
-                      type="time"
-                      className={styles.dateTimeInput}
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      onClick={(e) => e.target.showPicker?.()}
-                    />
-                  </div>
-
-                  <div className={styles.dateTimeField}>
-                    <label className={styles.dateTimeLabel}>
                       End date<span className={styles.required}>*</span>
                     </label>
                     <input
@@ -373,19 +455,6 @@ export default function StudyGuideModal({ open, onClose }) {
                       value={formatDateForInput(endDate)}
                       onChange={handleEndDateChange}
                       min={startDate ? formatDateForInput(startDate) : undefined}
-                      onClick={(e) => e.target.showPicker?.()}
-                    />
-                  </div>
-
-                  <div className={styles.dateTimeField}>
-                    <label className={styles.dateTimeLabel}>
-                      End time<span className={styles.required}>*</span>
-                    </label>
-                    <input
-                      type="time"
-                      className={styles.dateTimeInput}
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
                       onClick={(e) => e.target.showPicker?.()}
                     />
                   </div>
@@ -957,9 +1026,7 @@ export default function StudyGuideModal({ open, onClose }) {
                 disabled={
                   step === 2
                     ? !startDate ||
-                      !startTime ||
                       !endDate ||
-                      !endTime ||
                       (startDate && endDate && startDate > endDate)
                     : step === 3
                     ? !dailyCommitment

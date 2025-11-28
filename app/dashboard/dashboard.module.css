@@ -1180,6 +1180,75 @@
   gap: 1rem;
 }
 
+.studyGuideDeleteButton {
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background-color 0.2s;
+}
+
+.studyGuideDeleteButton:hover {
+  background-color: rgba(82, 42, 112, 0.1);
+}
+
+.studyGuideDeleteButton:active {
+  background-color: rgba(82, 42, 112, 0.2);
+}
+
+.studyGuideDeleteButton img {
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.studyGuideMenuContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.studyGuideMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.studyGuideMenuItem {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+}
+
+.studyGuideMenuItem:hover {
+  background-color: #fef2f2;
+}
+
+.studyGuideMenuItem:active {
+  background-color: #fee2e2;
+}
+
 .studyGuideCardTitle {
   font-size: 1.1rem;
   font-weight: 600;
