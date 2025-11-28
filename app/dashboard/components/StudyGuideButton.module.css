@@ -20,6 +20,9 @@
 .studyGuideButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  background-color: #955ebf;
+  color: #fff;
 }
 
 .studyGuideButton:active {
@@ -49,6 +52,11 @@
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.buttonText:hover {
+  color: #fff;
+  font-weight: 600;
 }
 
 /* Responsive styles */
