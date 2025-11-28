@@ -633,6 +633,12 @@ font-size: 24px;
   flex-shrink: 0;
 }
 
+.editButton img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 .editButton:hover {
   background-color: #955ebf;
   transform: scale(1.05);
