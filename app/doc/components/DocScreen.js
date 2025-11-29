@@ -356,6 +356,7 @@ export default function DocScreen() {
   const [highlights, setHighlights] = useState([]);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
+  const [autoTriggerOptions, setAutoTriggerOptions] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [textFontSize, setTextFontSize] = useState(16);
   const [textLetterSpacing, setTextLetterSpacing] = useState(0);
@@ -392,6 +393,9 @@ export default function DocScreen() {
   const timerBtnRef = useRef(null);
   const aiBtnRef = useRef(null);
   const vocabBtnRef = useRef(null);
+  const hasAutoTriggeredRef = useRef(false);
+  const autoTriggerOptionsRef = useRef(null);
+  const autoTriggerTimeoutRef = useRef(null);
 
   // Custom hooks
   const ai = useModal(false);
@@ -945,6 +949,111 @@ export default function DocScreen() {
       setAiLoading((prev) => ({ ...prev, mindmap: false }));
     }
   };
+
+  // Auto-trigger AI features when navigating from upload screen
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (hasAutoTriggeredRef.current) {
+      console.log("Already processed auto-trigger, skipping");
+      return;
+    }
+
+    console.log("Checking for auto-trigger AI options in sessionStorage...");
+    const autoTriggerOptions = sessionStorage.getItem("gotit-auto-trigger-ai");
+    
+    if (!autoTriggerOptions) {
+      console.log("No auto-trigger options found");
+      return;
+    }
+
+    // Mark as triggered immediately
+    hasAutoTriggeredRef.current = true;
+
+    try {
+      const options = JSON.parse(autoTriggerOptions);
+      console.log("Parsed options:", options);
+      
+      // Clear sessionStorage immediately to prevent re-triggering
+      sessionStorage.removeItem("gotit-auto-trigger-ai");
+
+      // Open split screen immediately
+      console.log("Opening split screen");
+      setSplit(true);
+
+      // Determine which features to trigger
+      const shouldTriggerAll = options.includes("all");
+      
+      // Set the initial mode based on priority (simplify > summary > mindmap)
+      if (shouldTriggerAll || options.includes("simplify")) {
+        console.log("Setting mode to simplified");
+        setMode("simplified");
+      } else if (options.includes("summary")) {
+        console.log("Setting mode to summarized");
+        setMode("summarized");
+      } else if (options.includes("mindmap")) {
+        console.log("Setting mode to mindmap");
+        setMode("mindmap");
+      }
+
+      // Store options in state to trigger handlers via separate effect
+      setAutoTriggerOptions(options);
+    } catch (error) {
+      console.error("Error parsing auto-trigger AI options:", error);
+      sessionStorage.removeItem("gotit-auto-trigger-ai");
+      hasAutoTriggeredRef.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+
+  // Separate effect to trigger handlers when autoTriggerOptions is set
+  useEffect(() => {
+    if (!autoTriggerOptions) return;
+    
+    console.log("=== Auto-trigger options state changed, triggering handlers ===");
+    console.log("Options:", autoTriggerOptions);
+    
+    // Small delay to ensure split screen and mode are set first
+    const timeoutId = setTimeout(() => {
+      console.log("=== 🚀 TRIGGERING AI HANDLERS NOW ===");
+      try {
+        // Trigger all selected features
+        if (autoTriggerOptions.includes("all")) {
+          console.log("🔥 Triggering ALL AI features");
+          handleSimplify();
+          setTimeout(() => handleSummarize(), 1000);
+          setTimeout(() => handleMindMap(), 2000);
+        } else {
+          if (autoTriggerOptions.includes("simplify")) {
+            console.log("🔥 CALLING handleSimplify()");
+            handleSimplify();
+          }
+          if (autoTriggerOptions.includes("summary")) {
+            const delay = autoTriggerOptions.includes("simplify") ? 1000 : 0;
+            setTimeout(() => {
+              console.log("🔥 CALLING handleSummarize()");
+              handleSummarize();
+            }, delay);
+          }
+          if (autoTriggerOptions.includes("mindmap")) {
+            const delay = (autoTriggerOptions.includes("simplify") ? 1000 : 0) + 
+                          (autoTriggerOptions.includes("summary") ? 1000 : 0);
+            setTimeout(() => {
+              console.log("🔥 CALLING handleMindMap()");
+              handleMindMap();
+            }, delay);
+          }
+        }
+        
+        // Clear the state
+        setAutoTriggerOptions(null);
+      } catch (err) {
+        console.error("Error triggering handlers:", err);
+        setAutoTriggerOptions(null);
+      }
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [autoTriggerOptions, handleSimplify, handleSummarize, handleMindMap]);
 
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>

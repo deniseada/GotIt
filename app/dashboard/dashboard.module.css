@@ -695,6 +695,12 @@
   font-size: 16px;
 }
 
+.beginBtnLink {
+  flex: 1 1 48%;
+  text-decoration: none;
+  display: block;
+}
+
 .beginBtn {
   flex: 1 1 48%;
   background: var(--button-color);
@@ -705,6 +711,11 @@
   font-weight: 700;
   cursor: pointer;
   font-size: 16px;
+}
+
+.beginBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .beginBtn:hover {

@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import styles from "../dashboard.module.css";
-import Link from "next/link";
 
 export default function UploadButton({ onUpload, onNext }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState("upload");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -49,7 +50,20 @@ export default function UploadButton({ onUpload, onNext }) {
     setStep("options");
   };
 
-  const handleBegin = () => {
+  const handleBegin = (e) => {
+    e?.preventDefault();
+    
+    // Store selected AI options in sessionStorage for auto-triggering on doc screen
+    // Using sessionStorage instead of localStorage to avoid persistence issues
+    if (selectedOptions.length > 0) {
+      try {
+        sessionStorage.setItem("gotit-auto-trigger-ai", JSON.stringify(selectedOptions));
+        console.log("Saved auto-trigger options to sessionStorage:", selectedOptions);
+      } catch (error) {
+        console.error("Error saving auto-trigger AI options:", error);
+      }
+    }
+
     if (onNext)
       onNext(
         selectedFile,
@@ -57,10 +71,17 @@ export default function UploadButton({ onUpload, onNext }) {
         selectedOptions.length === 1 ? selectedOptions[0] : selectedOptions
       );
     else if (selectedFile && onUpload) onUpload(selectedFile);
+    
+    // Close modal and reset state
     setSelectedFile(null);
     setSelectedOptions([]);
     setStep("upload");
     closeModal();
+    
+    // Navigate to doc screen after a brief delay to ensure localStorage is saved
+    setTimeout(() => {
+      router.push("/doc");
+    }, 100);
   };
 
   return (
@@ -311,15 +332,13 @@ export default function UploadButton({ onUpload, onNext }) {
                   >
                     Back to Upload
                   </button>
-                  <Link href="/doc" className={styles.beginBtn}>
-                    <button
-                      className={styles.beginBtn}
-                      onClick={handleBegin}
-                      disabled={selectedOptions.length === 0}
-                    >
-                      Begin Studying
-                    </button>
-                  </Link>
+                  <button
+                    className={styles.beginBtn}
+                    onClick={handleBegin}
+                    disabled={selectedOptions.length === 0}
+                  >
+                    Begin Studying
+                  </button>
                 </div>
               </>
             )}
