@@ -136,6 +136,7 @@ export default function StudyGuide() {
   const [expandedGuides, setExpandedGuides] = useState({});
   const [openMenuId, setOpenMenuId] = useState(null); // Track which menu is open
   const menuRefs = useRef({}); // Refs for menu containers
+  const [futureTasksExpanded, setFutureTasksExpanded] = useState(true); // Track future tasks expansion
   
   // Load study guides from localStorage and combine with defaults
   const [studyGuides, setStudyGuides] = useState(() => {
@@ -173,9 +174,21 @@ export default function StudyGuide() {
     [studyGuides, taskCompletion]
   );
 
+  // Collect all future tasks (tasks more than 2 days ahead)
+  const futureTasks = useMemo(() => {
+    const allFutureTasks = [];
+    DAY_ORDER.forEach((dayKey) => {
+      if (dayKey !== "today" && dayKey !== "tomorrow") {
+        const dayTasks = tasksByDay[dayKey] || [];
+        allFutureTasks.push(...dayTasks);
+      }
+    });
+    return allFutureTasks;
+  }, [tasksByDay]);
+
   const dayKeysToRender = useMemo(() => {
-    // Only show Today and Tomorrow
-    return ["today", "tomorrow"];
+    // Always show Today, Tomorrow, and Future tasks headers
+    return ["today", "tomorrow", "future"];
   }, []);
 
   // Extract exam dates from study guides
@@ -304,28 +317,90 @@ export default function StudyGuide() {
         {/* Todo List */}
         <div className={styles.todoListContainer}>
           {dayKeysToRender.map((dayKey) => {
-            const sectionTasks = tasksByDay[dayKey] || [];
+            let sectionTasks;
+            let sectionTitle;
+            
+            if (dayKey === "future") {
+              // Handle future tasks separately
+              sectionTasks = futureTasks;
+              sectionTitle = "Future tasks";
+            } else {
+              sectionTasks = tasksByDay[dayKey] || [];
+              sectionTitle = getDayLabel(dayKey);
+            }
+
+            const isFutureSection = dayKey === "future";
 
             return (
               <div key={dayKey} className={styles.todoSection}>
-                <h3 className={styles.todoSectionTitle}>{getDayLabel(dayKey)}</h3>
-                {sectionTasks.length > 0 ? (
-                  sectionTasks.map((task) => (
-                    <label key={task.id} className={styles.todoItem}>
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleTask(task.id)}
-                        className={styles.todoCheckbox}
-                      />
-                      <span className={task.completed ? styles.todoCompleted : ""}>
-                        {task.text}
-                      </span>
-                    </label>
-                  ))
-                ) : (
-                  <p className={styles.todoEmpty}>No tasks for this day</p>
-                )}
+                <div className={styles.todoSectionHeader}>
+                  <h3 className={styles.todoSectionTitle}>{sectionTitle}</h3>
+                  {isFutureSection && (
+                    <button
+                      className={styles.todoSectionToggle}
+                      onClick={() => setFutureTasksExpanded(!futureTasksExpanded)}
+                      aria-label={futureTasksExpanded ? "Collapse future tasks" : "Expand future tasks"}
+                      type="button"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{
+                          transform: futureTasksExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                          transition: "transform 0.3s ease",
+                        }}
+                      >
+                        <path
+                          d="M4 6L8 10L12 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <div
+                  className={
+                    isFutureSection
+                      ? `${styles.studyGuideContent} ${
+                          futureTasksExpanded
+                            ? styles.studyGuideContentOpen
+                            : styles.studyGuideContentClosed
+                        }`
+                      : styles.todoSectionContent
+                  }
+                >
+                  <div
+                    className={
+                      isFutureSection
+                        ? styles.studyGuideContentInner
+                        : styles.todoSectionContentInner
+                    }
+                  >
+                    {sectionTasks.length > 0 ? (
+                      sectionTasks.map((task) => (
+                        <label key={task.id} className={styles.todoItem}>
+                          <input
+                            type="checkbox"
+                            checked={task.completed}
+                            onChange={() => toggleTask(task.id)}
+                            className={styles.todoCheckbox}
+                          />
+                          <span className={task.completed ? styles.todoCompleted : ""}>
+                            {task.text}
+                          </span>
+                        </label>
+                      ))
+                    ) : (
+                      <p className={styles.todoEmpty}>No tasks for this day</p>
+                    )}
+                  </div>
+                </div>
               </div>
             );
           })}

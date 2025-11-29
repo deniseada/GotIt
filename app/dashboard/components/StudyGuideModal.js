@@ -6,6 +6,14 @@ import sharedStyles from "../dashboard.module.css";
 
 const STUDY_GUIDES_STORAGE_KEY = "gotit-study-guides";
 
+// Default recently opened topics
+const DEFAULT_RECENT_TOPICS = [
+  "Delmar's Standard Textbook for Electricity",
+  "Basic Motor Controls",
+  "Apply Circuit Concepts",
+  "Circuit Concept Module",
+];
+
 // Helper functions for localStorage
 const getStoredStudyGuides = () => {
   if (typeof window === "undefined") return [];
@@ -40,12 +48,7 @@ export default function StudyGuideModal({ open, onClose }) {
   const [chosenTopics, setChosenTopics] = useState([
     "Delmar's Standard Textbook for Electricity",
   ]);
-  const [recentTopics] = useState([
-    "Delmar's Standard Textbook for Electricity",
-    "Basic Motor Controls",
-    "Apply Circuit Concepts",
-    "Circuit Concept Module",
-  ]);
+  const [recentTopics, setRecentTopics] = useState(DEFAULT_RECENT_TOPICS);
   
   // Step 2 data - Initialize startDate with today's date
   const [startDate, setStartDate] = useState(() => {
@@ -131,6 +134,8 @@ export default function StudyGuideModal({ open, onClose }) {
   const handleAddTopic = (topic) => {
     if (!chosenTopics.includes(topic) && topic.trim() !== "") {
       setChosenTopics([...chosenTopics, topic]);
+      // Remove from recently opened list
+      setRecentTopics(recentTopics.filter((t) => t !== topic));
     }
   };
 
@@ -144,6 +149,10 @@ export default function StudyGuideModal({ open, onClose }) {
 
   const handleRemoveTopic = (topic) => {
     setChosenTopics(chosenTopics.filter((t) => t !== topic));
+    // Add back to recently opened if it was originally there and not already in the list
+    if (DEFAULT_RECENT_TOPICS.includes(topic) && !recentTopics.includes(topic)) {
+      setRecentTopics([...recentTopics, topic]);
+    }
   };
 
   // Generate study guide structure and save it
@@ -220,9 +229,9 @@ export default function StudyGuideModal({ open, onClose }) {
       if (chosenTopics.length === 0) return;
       setStep(2);
     } else if (step === 2) {
-      // Validate that end date is not before start date
+      // Validate that exam date is not before start date
       if (startDate && endDate && startDate > endDate) {
-        alert("End date cannot be before start date. Please select a valid date range.");
+        alert("Exam date cannot be before start date. Please select a valid date range.");
         return;
       }
       setStep(3);
@@ -261,6 +270,8 @@ export default function StudyGuideModal({ open, onClose }) {
     setStudyGuideName("Midterm Exam");
     setSearchQuery("");
     setChosenTopics(["Delmar's Standard Textbook for Electricity"]);
+    // Reset recently opened topics
+    setRecentTopics(DEFAULT_RECENT_TOPICS);
     // Reset start date to today's date
     const today = new Date();
     const year = today.getFullYear();
@@ -354,32 +365,37 @@ export default function StudyGuideModal({ open, onClose }) {
               <div className={styles.formSection}>
                 <h3 className={styles.sectionHeading}>Recently opened</h3>
                 <div className={styles.topicsGrid}>
-                  {recentTopics.map((topic, index) => (
-                    <div key={index} className={styles.topicCard}>
-                      <p className={styles.topicCardText}>{topic}</p>
-                      <button
-                        className={styles.topicCardAddBtn}
-                        onClick={() => handleAddTopic(topic)}
-                        aria-label="Add topic"
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                  {recentTopics
+                    .filter((topic) => !chosenTopics.includes(topic))
+                    .map((topic, index) => (
+                      <div key={index} className={styles.topicCard}>
+                        <p className={styles.topicCardText}>{topic}</p>
+                        <button
+                          className={styles.topicCardAddBtn}
+                          onClick={() => handleAddTopic(topic)}
+                          aria-label="Add topic"
                         >
-                          <path
-                            d="M8 4V12M4 8H12"
-                            stroke="white"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M8 4V12M4 8H12"
+                              stroke="white"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  {recentTopics.filter((topic) => !chosenTopics.includes(topic)).length === 0 && (
+                    <p className={styles.emptyState}>No recently opened topics available</p>
+                  )}
                 </div>
               </div>
 
@@ -447,7 +463,7 @@ export default function StudyGuideModal({ open, onClose }) {
 
                   <div className={styles.dateTimeField}>
                     <label className={styles.dateTimeLabel}>
-                      End date<span className={styles.required}>*</span>
+                      Exam date<span className={styles.required}>*</span>
                     </label>
                     <input
                       type="date"
