@@ -47,13 +47,13 @@ export default function Simplification({
         <div style={{ 
                 padding: "20px"
             }}>
-        {/* <h2 style={{ 
+        <h2 style={{ 
             fontFamily: "Amiri", 
             fontSize: "24px", 
             fontWeight: "bold" 
             }}>
                 Simplification
-        </h2> */}
+        </h2>
 
         {loading && (
             <div style={{ marginTop: "20px", padding: "10px" }}>
