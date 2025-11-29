@@ -63,11 +63,8 @@ const getStoredTabValue = () => {
 };
 
 export default function TabBar() {
-  // Initialize tab value from localStorage on client, default to 0 for SSR
-  const [value, setValue] = useState(() => {
-    if (typeof window === "undefined") return 0;
-    return getStoredTabValue();
-  });
+  // Always initialize to 0 for SSR/client consistency (hydrate fix)
+  const [value, setValue] = useState(0);
   const [filterOpen, setFilterOpen] = useState(false);
   const [emotion, setEmotion] = useState("none");
   const [cardList, setCardList] = useState([]);
@@ -198,13 +195,14 @@ export default function TabBar() {
 
   }, [loadBookmarksFromStorage, loadEmotionsFromStorage]);
 
-  // Load tab from localStorage on mount (runs every time component mounts/remounts)
+  // Load tab from localStorage after mount (only on client, after hydration)
   useEffect(() => {
     if (typeof window === "undefined") return;
+    setIsClient(true);
     const savedTab = getStoredTabValue();
     setValue(savedTab);
-    hasLoadedTab.current = true; // Mark as loaded so we can start saving changes
-  }, []); // Empty deps - only run on mount/remount
+    hasLoadedTab.current = true; // Mark as loaded after we've set the initial value
+  }, []); // Only run once on mount
 
   // Save to localStorage when cards change
   useEffect(() => {

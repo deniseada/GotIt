@@ -1,7 +1,6 @@
 "use client";
 import SideBar from "./sideBar";
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import styles from "../mvp.module.css";
@@ -17,9 +16,6 @@ import ToolBar from "./ToolBar";
 import Simplification from "../../aiFeature/components/Simplification";
 import Summarization from "../../aiFeature/components/Summarization";
 import MindMap from "../../aiFeature/components/MindMap";
-
-// Settings
-import SettingsOverlay from "../../settings/components/SettingsOverlay";
 
 // Right side modals and their buttons
 import RightDockButtons from "./rightSideModals/RightDockButtons";
@@ -141,6 +137,40 @@ const MockRightPane = React.memo(function MockRightPane({
     >
       {mode === "simplified" && (
         <>
+          <div>
+            <b>Main Points:</b>
+              <ul>
+                <li>The atom is the smallest part of an element.</li> 
+                <li>The three principal parts of an atom are the proton, the electron, and the neutron.</li>
+                <li>Protons have a positive charge, electrons a negative charge, and neutrons no charge.</li>
+                <li>Valence electrons are located in the outer orbit of an atom.</li>
+                <li>Conductors are materials that provide an easy path for electron flow.</li>
+                <li>Conductors are made from materials that contain from one to three valence electrons.</li>
+                <li>Insulators are materials that do not provide an easy path for the flow of electrons.</li>
+                <li>Insulators are generally made from materials containing seven or eight valence electrons.</li>
+              </ul>
+              
+              <b>Key Concepts:</b>
+                <ul>
+                  <li>Atomic structure</li>
+                  <li>Protons, electrons, and neutrons</li>
+                  <li>Valence electrons</li>
+                  <li>Conductors and insulators</li>
+                  <li>Electron flow</li>
+                </ul>
+
+              <b>Important Definitions:</b>
+                <ul>
+                  <li>Atom: The smallest part of an element.</li>
+                  <li>Proton: A positively charged particle located in the nucleus of an atom.</li>
+                  <li>Electron: A negatively charged particle that orbits the nucleus of an atom.</li>
+                  <li>Neutron: A particle with no charge that is located in the nucleus of an atom.</li>
+                  <li>Valence electrons: Electrons located in the outer orbit of an atom.</li>
+                  <li>Conductor: A material that provides an easy path for electron flow.</li>
+                  <li>Insulator: A material that does not provide an easy path for the flow of electrons.</li>
+                </ul>
+          </div>
+
           <Simplification 
             text={simplifiedText}
             loading={aiLoading.simplify}
@@ -168,7 +198,10 @@ const MockRightPane = React.memo(function MockRightPane({
       )}
       {mode === "summarized" && (
         <div>
-
+          <b>Summary:</b>
+          <p>
+            Delmar - Section 1 introduces the concept of electricity, its history, and its importance in modern life. It explains the basic principles of electricity, including voltage, current, and resistance, and how they relate to Ohm's Law. The section also covers different types of circuits, including series and parallel, and the role of components like resistors, capacitors, and inductors. It discusses power in electrical circuits, both in terms of instantaneous and average power, and introduces the concept of electrical energy. The section also touches on electrical safety and the use of circuit breakers and fuses. Lastly, it provides an overview of electrical systems in homes and buildings, including the electrical service entrance, service panel, and branch circuits.
+          </p>
           <Summarization 
             text={summary}
             loading={aiLoading.summarize}
@@ -356,7 +389,6 @@ export default function DocScreen() {
   const [highlights, setHighlights] = useState([]);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState("simplified");
-  const [autoTriggerOptions, setAutoTriggerOptions] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [textFontSize, setTextFontSize] = useState(16);
   const [textLetterSpacing, setTextLetterSpacing] = useState(0);
@@ -393,14 +425,10 @@ export default function DocScreen() {
   const timerBtnRef = useRef(null);
   const aiBtnRef = useRef(null);
   const vocabBtnRef = useRef(null);
-  const hasAutoTriggeredRef = useRef(false);
-  const autoTriggerOptionsRef = useRef(null);
-  const autoTriggerTimeoutRef = useRef(null);
 
   // Custom hooks
   const ai = useModal(false);
   const vocab = useModal(false);
-  const settings = useModal(false);
 
   // useCallback hooks - memoize callbacks to prevent unnecessary re-renders
   const handleDocumentLoad = useCallback((e) => {
@@ -770,7 +798,7 @@ export default function DocScreen() {
   const SUMMARIZE_PROMPT =
     "Summarize Delmar - Section 1 into a concise summary. Only return the answer.";
   const MINDMAP_PROMPT =
-    "Create a mind map for the topic: atoms. After retrieving any necessary context, return ONLY a JSON array of concepts with the following structure: [{name: string, category: string, relation: string, reason: string, subtopics: []}]. Do not include any explanation or text outside the JSON array. Return the JSON array now.";
+    "topic: atoms, return the json formatted array of nodes and edges";
 
   // Clean the text to remove unnecessary characters
   const cleanText = (text) => {
@@ -789,35 +817,16 @@ export default function DocScreen() {
   const cleanMindMapText = (text) => {
     if (!text) return "";
     let cleaned = text;
-    
-    // Remove delta/SSE formatting
-    // Remove "data: " prefixes from SSE events
-    cleaned = cleaned.replace(/^data:\s*/gm, "");
-    // Remove SSE event metadata lines
-    cleaned = cleaned.replace(/^event:\s*.*$/gm, "");
-    cleaned = cleaned.replace(/^id:\s*.*$/gm, "");
-    cleaned = cleaned.replace(/^retry:\s*.*$/gm, "");
-    
-    // Extract content from delta objects if present
-    // Pattern: {"delta": {"content": "..."}}
-    if (cleaned.includes('"delta"') && cleaned.includes('"content"')) {
-      // Find all content values from delta objects and concatenate them
-      const contentMatches = cleaned.matchAll(/"content"\s*:\s*"((?:[^"\\]|\\.)*)"/g);
-      const contentParts = [];
-      for (const match of contentMatches) {
-        contentParts.push(match[1].replace(/\\"/g, '"').replace(/\\n/g, '\n'));
-      }
-      if (contentParts.length > 0) {
-        cleaned = contentParts.join('');
-      }
-    }
-    
-    // Remove empty lines and normalize whitespace
-    cleaned = cleaned.replace(/\n\s*\n+/g, "\n").trim();
-    
-    // Remove markdown code blocks if present
-    cleaned = cleaned.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-    
+    cleaned = cleaned.replace(/\\/g, "");
+    // Commented these out for now
+    cleaned = cleaned.replace(/"name"\s*:/g, "name:");
+    cleaned = cleaned.replace(/"category"\s*:/g, "category:");
+    cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
+    cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
+    cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
+    cleaned = cleaned.replace(/"{/g, "{");
+    cleaned = cleaned.replace(/"]}"/g, "]}");
+    cleaned = cleaned.replace(/}"/g, "}");
     return cleaned.trim();
   };
 
@@ -950,119 +959,9 @@ export default function DocScreen() {
     }
   };
 
-  // Auto-trigger AI features when navigating from upload screen
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (hasAutoTriggeredRef.current) {
-      console.log("Already processed auto-trigger, skipping");
-      return;
-    }
-
-    console.log("Checking for auto-trigger AI options in sessionStorage...");
-    const autoTriggerOptions = sessionStorage.getItem("gotit-auto-trigger-ai");
-    
-    if (!autoTriggerOptions) {
-      console.log("No auto-trigger options found");
-      return;
-    }
-
-    // Mark as triggered immediately
-    hasAutoTriggeredRef.current = true;
-
-    try {
-      const options = JSON.parse(autoTriggerOptions);
-      console.log("Parsed options:", options);
-      
-      // Clear sessionStorage immediately to prevent re-triggering
-      sessionStorage.removeItem("gotit-auto-trigger-ai");
-
-      // Open split screen immediately
-      console.log("Opening split screen");
-      setSplit(true);
-
-      // Determine which features to trigger
-      const shouldTriggerAll = options.includes("all");
-      
-      // Set the initial mode based on priority (simplify > summary > mindmap)
-      if (shouldTriggerAll || options.includes("simplify")) {
-        console.log("Setting mode to simplified");
-        setMode("simplified");
-      } else if (options.includes("summary")) {
-        console.log("Setting mode to summarized");
-        setMode("summarized");
-      } else if (options.includes("mindmap")) {
-        console.log("Setting mode to mindmap");
-        setMode("mindmap");
-      }
-
-      // Store options in state to trigger handlers via separate effect
-      setAutoTriggerOptions(options);
-    } catch (error) {
-      console.error("Error parsing auto-trigger AI options:", error);
-      sessionStorage.removeItem("gotit-auto-trigger-ai");
-      hasAutoTriggeredRef.current = false;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run once on mount
-
-  // Separate effect to trigger handlers when autoTriggerOptions is set
-  useEffect(() => {
-    if (!autoTriggerOptions) return;
-    
-    console.log("=== Auto-trigger options state changed, triggering handlers ===");
-    console.log("Options:", autoTriggerOptions);
-    
-    // Small delay to ensure split screen and mode are set first
-    const timeoutId = setTimeout(() => {
-      console.log("=== 🚀 TRIGGERING AI HANDLERS NOW ===");
-      try {
-        // Trigger all selected features
-        if (autoTriggerOptions.includes("all")) {
-          console.log("🔥 Triggering ALL AI features");
-          handleSimplify();
-          setTimeout(() => handleSummarize(), 1000);
-          setTimeout(() => handleMindMap(), 2000);
-        } else {
-          if (autoTriggerOptions.includes("simplify")) {
-            console.log("🔥 CALLING handleSimplify()");
-            handleSimplify();
-          }
-          if (autoTriggerOptions.includes("summary")) {
-            const delay = autoTriggerOptions.includes("simplify") ? 1000 : 0;
-            setTimeout(() => {
-              console.log("🔥 CALLING handleSummarize()");
-              handleSummarize();
-            }, delay);
-          }
-          if (autoTriggerOptions.includes("mindmap")) {
-            const delay = (autoTriggerOptions.includes("simplify") ? 1000 : 0) + 
-                          (autoTriggerOptions.includes("summary") ? 1000 : 0);
-            setTimeout(() => {
-              console.log("🔥 CALLING handleMindMap()");
-              handleMindMap();
-            }, delay);
-          }
-        }
-        
-        // Clear the state
-        setAutoTriggerOptions(null);
-      } catch (err) {
-        console.error("Error triggering handlers:", err);
-        setAutoTriggerOptions(null);
-      }
-    }, 1500);
-
-    return () => clearTimeout(timeoutId);
-  }, [autoTriggerOptions, handleSimplify, handleSummarize, handleMindMap]);
-
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
-      <NavBar 
-        title={"Delmar's Standard Textbook of Electricity"}
-        onSettingsClick={() => {
-          settings.onOpen();
-        }}
-      />
+      <NavBar title={"Delmar's Standard Textbook of Electricity"} />
       {/* Toolbar */}
       <ToolBar
         page={page}
@@ -1206,15 +1105,6 @@ export default function DocScreen() {
         onClose={() => setCompletionDialogOpen(false)}
         minutes={originalTimerMinutes}
       />
-
-      {/* Settings Modal - render in portal to ensure it's above everything */}
-      {typeof document !== "undefined" && createPortal(
-        <SettingsOverlay
-          open={settings.open}
-          onClose={settings.onClose}
-        />,
-        document.body
-      )}
 
       {/* Text-to-Speech Button */}
       <Box
