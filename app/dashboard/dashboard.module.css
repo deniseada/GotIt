@@ -936,6 +936,15 @@
   font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
 }
 
+.todoEmpty {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0;
+  padding: 0 0 0 2rem;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+}
+
 .todoItem {
   display: flex;
   align-items: center;

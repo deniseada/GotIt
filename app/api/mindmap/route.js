@@ -109,12 +109,25 @@ export async function POST(request) {
           const choice = data.choices?.[0];
           const delta = choice?.delta;
 
-          // Skip tool responses (these contain raw PDF chunks)
-          if (!delta || delta.role === "tool" || delta.tool_calls) {
+          if (!delta) continue;
+
+          // Skip tool responses (these contain raw PDF chunks, not the mindmap JSON)
+          if (delta.role === "tool") {
             continue;
           }
 
-          if (delta.content) {
+          // Skip tool calls (function definitions, not content)
+          if (delta.tool_calls) {
+            continue;
+          }
+
+          // Only extract assistant content (this contains the actual mindmap JSON)
+          if (delta.role === "assistant" && delta.content) {
+            finalText += delta.content;
+            deltas.push(delta.content);
+          }
+          // Also handle content without role specified (some formats)
+          else if (delta.content && !delta.role) {
             finalText += delta.content;
             deltas.push(delta.content);
           }

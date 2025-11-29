@@ -63,6 +63,32 @@ const getStoredStudyGuides = () => {
   }
 };
 
+// Regenerate examDate from endDate to fix timezone issues
+const fixExamDateFromEndDate = (guide) => {
+  if (!guide.endDate) return guide;
+  
+  // Parse endDate (format: yyyy-mm-dd)
+  const dateParts = guide.endDate.split('-');
+  if (dateParts.length !== 3) return guide;
+  
+  const year = parseInt(dateParts[0], 10);
+  const monthIndex = parseInt(dateParts[1], 10) - 1; // 0-indexed
+  const day = parseInt(dateParts[2], 10);
+  
+  // Create date object for day of week calculation
+  const dateObj = new Date(year, monthIndex, day);
+  const dayNamesShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  return {
+    ...guide,
+    examDate: {
+      day: day, // Use the parsed day directly
+      date: `${dayNamesShort[dateObj.getDay()]}, ${months[monthIndex]} ${day}`,
+    },
+  };
+};
+
 const deleteStudyGuideFromStorage = (guideId) => {
   if (typeof window === "undefined") return;
   try {
@@ -114,14 +140,18 @@ export default function StudyGuide() {
   // Load study guides from localStorage and combine with defaults
   const [studyGuides, setStudyGuides] = useState(() => {
     const stored = getStoredStudyGuides();
-    return [...DEFAULT_STUDY_GUIDES, ...stored];
+    // Fix exam dates from endDate for existing guides
+    const fixedStored = stored.map((guide) => fixExamDateFromEndDate(guide));
+    return [...DEFAULT_STUDY_GUIDES, ...fixedStored];
   });
   
   // Listen for updates when new study guides are added
   useEffect(() => {
     const handleStudyGuidesUpdate = () => {
       const stored = getStoredStudyGuides();
-      setStudyGuides([...DEFAULT_STUDY_GUIDES, ...stored]);
+      // Fix exam dates from endDate for existing guides
+      const fixedStored = stored.map((guide) => fixExamDateFromEndDate(guide));
+      setStudyGuides([...DEFAULT_STUDY_GUIDES, ...fixedStored]);
     };
     
     window.addEventListener("studyGuidesUpdated", handleStudyGuidesUpdate);
@@ -144,11 +174,9 @@ export default function StudyGuide() {
   );
 
   const dayKeysToRender = useMemo(() => {
-    const additionalKeys = Object.keys(tasksByDay).filter(
-      (key) => !DAY_ORDER.includes(key)
-    );
-    return [...DAY_ORDER, ...additionalKeys];
-  }, [tasksByDay]);
+    // Only show Today and Tomorrow
+    return ["today", "tomorrow"];
+  }, []);
 
   // Extract exam dates from study guides
   const examDates = useMemo(() => {
@@ -276,27 +304,28 @@ export default function StudyGuide() {
         {/* Todo List */}
         <div className={styles.todoListContainer}>
           {dayKeysToRender.map((dayKey) => {
-            const sectionTasks = tasksByDay[dayKey];
-            if (!sectionTasks || sectionTasks.length === 0) {
-              return null;
-            }
+            const sectionTasks = tasksByDay[dayKey] || [];
 
             return (
               <div key={dayKey} className={styles.todoSection}>
                 <h3 className={styles.todoSectionTitle}>{getDayLabel(dayKey)}</h3>
-                {sectionTasks.map((task) => (
-                  <label key={task.id} className={styles.todoItem}>
-                    <input
-                      type="checkbox"
-                      checked={task.completed}
-                      onChange={() => toggleTask(task.id)}
-                      className={styles.todoCheckbox}
-                    />
-                    <span className={task.completed ? styles.todoCompleted : ""}>
-                      {task.text}
-                    </span>
-                  </label>
-                ))}
+                {sectionTasks.length > 0 ? (
+                  sectionTasks.map((task) => (
+                    <label key={task.id} className={styles.todoItem}>
+                      <input
+                        type="checkbox"
+                        checked={task.completed}
+                        onChange={() => toggleTask(task.id)}
+                        className={styles.todoCheckbox}
+                      />
+                      <span className={task.completed ? styles.todoCompleted : ""}>
+                        {task.text}
+                      </span>
+                    </label>
+                  ))
+                ) : (
+                  <p className={styles.todoEmpty}>No tasks for this day</p>
+                )}
               </div>
             );
           })}

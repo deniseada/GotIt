@@ -766,7 +766,7 @@ export default function DocScreen() {
   const SUMMARIZE_PROMPT =
     "Summarize Delmar - Section 1 into a concise summary. Only return the answer.";
   const MINDMAP_PROMPT =
-    "topic: atoms, return the json formatted array of nodes and edges";
+    "Create a mind map for the topic: atoms. After retrieving any necessary context, return ONLY a JSON array of concepts with the following structure: [{name: string, category: string, relation: string, reason: string, subtopics: []}]. Do not include any explanation or text outside the JSON array. Return the JSON array now.";
 
   // Clean the text to remove unnecessary characters
   const cleanText = (text) => {
@@ -785,16 +785,35 @@ export default function DocScreen() {
   const cleanMindMapText = (text) => {
     if (!text) return "";
     let cleaned = text;
-    cleaned = cleaned.replace(/\\/g, "");
-    // Commented these out for now
-    cleaned = cleaned.replace(/"name"\s*:/g, "name:");
-    cleaned = cleaned.replace(/"category"\s*:/g, "category:");
-    cleaned = cleaned.replace(/"reason"\s*:/g, "reason:");
-    cleaned = cleaned.replace(/"relation"\s*:/g, "relation:");
-    cleaned = cleaned.replace(/"subtopics"\s*:/g, "subtopics:");
-    cleaned = cleaned.replace(/"{/g, "{");
-    cleaned = cleaned.replace(/"]}"/g, "]}");
-    cleaned = cleaned.replace(/}"/g, "}");
+    
+    // Remove delta/SSE formatting
+    // Remove "data: " prefixes from SSE events
+    cleaned = cleaned.replace(/^data:\s*/gm, "");
+    // Remove SSE event metadata lines
+    cleaned = cleaned.replace(/^event:\s*.*$/gm, "");
+    cleaned = cleaned.replace(/^id:\s*.*$/gm, "");
+    cleaned = cleaned.replace(/^retry:\s*.*$/gm, "");
+    
+    // Extract content from delta objects if present
+    // Pattern: {"delta": {"content": "..."}}
+    if (cleaned.includes('"delta"') && cleaned.includes('"content"')) {
+      // Find all content values from delta objects and concatenate them
+      const contentMatches = cleaned.matchAll(/"content"\s*:\s*"((?:[^"\\]|\\.)*)"/g);
+      const contentParts = [];
+      for (const match of contentMatches) {
+        contentParts.push(match[1].replace(/\\"/g, '"').replace(/\\n/g, '\n'));
+      }
+      if (contentParts.length > 0) {
+        cleaned = contentParts.join('');
+      }
+    }
+    
+    // Remove empty lines and normalize whitespace
+    cleaned = cleaned.replace(/\n\s*\n+/g, "\n").trim();
+    
+    // Remove markdown code blocks if present
+    cleaned = cleaned.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+    
     return cleaned.trim();
   };
 
