@@ -231,7 +231,7 @@ export default function MindMap({ text, loading, error }) {
             )}
 
             {/* Debug Section - Show raw and processed text */}
-            {text && (
+            {/* {text && (
                 <div style={{ marginTop: "20px", marginBottom: "20px" }}>
                     <button
                         onClick={() => setShowDebug(!showDebug)}
@@ -302,7 +302,7 @@ export default function MindMap({ text, loading, error }) {
                         </div>
                     )}
                 </div>
-            )}
+            )} */}
 
             <div style={{ width: "80vw", height: "80vh" }}>
                 <ReactFlow
